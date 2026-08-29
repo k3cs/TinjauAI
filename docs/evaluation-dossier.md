@@ -243,7 +243,7 @@ Deadline: 6 Sep 2026 23:59 ET (7 Sep 10:59 WIB). Repo baru dibuat setelah 13 Agu
 | 3 | `AgentHireEscrow` (premi dinamis) | **selesai**, 4 test |
 | 4 | `CoverageBounty` | **selesai**, 3 test |
 | 5 | Frontend satu halaman (`web/`, DEC-004) | **selesai**: kuitansi fakta 22771 vs 50283, mode demo/live |
-| 6 | Deploy CC3 Testnet + demo live + video | menunggu tCTC di deployer `0xd25079d4E75076b1271e2283ed94c93BF92A77B9` (Dien mengisi wallet lain) |
+| 6 | Deploy CC3 Testnet + demo live + video | menunggu tCTC di deployer `0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49` (Dien mengisi wallet lain) |
 
 Demo ≤3 menit, semuanya data mainnet nyata: (1) scout memuat feedback + senioritas pengulas agent **34135** (15 pengulas, 14 aktif di luar feedback) dan agent **50283** (32 feedback, 1 pengulas); `breadthGrounded(minAge=180 hari, minDepth=3)` berbeda nyata; (2) scout menunjukkan bukti yang ditolak (tidak mengubah angka) vs dipilih, menutup bolongan indeks, menagih bounty; (3) eskrow memberi premi rendah untuk 34135 dan premi tinggi untuk 50283 (pengulas tunggal `0x1030…` juga pemilik 23 agent), dan menunjukkan `cloneDensityLB` pemilik `0xad51…` (1.300 agent); (4) skrip verifier menghitung ulang angka dari proof. Hash tx Ethereum dan Creditcoin ditampilkan.
 
