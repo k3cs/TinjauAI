@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: 238 241 244;   /* cool ledger paper */
+  --card: 255 255 255;
+  --ink: 20 33 43;
+  --muted: 92 106 118;
+  --line: 200 208 216;
+  --proven: 14 124 102;   /* teal: proven / helps */
+  --hurts: 163 74 18;     /* burnt sienna: hurts */
+  --bound: 107 91 149;    /* mauve: lower bound / unknown */
+}
+.dark {
+  --paper: 15 23 30;
+  --card: 22 32 41;
+  --ink: 230 237 242;
+  --muted: 150 165 178;
+  --line: 52 66 80;
+  --proven: 63 191 159;
+  --hurts: 232 137 84;
+  --bound: 168 152 210;
+}
+html { color-scheme: light dark; }
+body { @apply bg-paper text-ink font-sans antialiased; }
+.receipt { background-image: radial-gradient(circle, rgb(var(--line)) 1px, transparent 1.5px); background-size: 10px 10px; background-repeat: repeat-x; background-position: 0 100%; }
+.stamp { @apply inline-block rotate-[-6deg] border-2 rounded-sm px-2 py-0.5 font-mono text-[11px] tracking-widest uppercase; }
+@media (prefers-reduced-motion: reduce) { .animate-print { animation: none !important; } }
+:focus-visible { outline: 2px solid rgb(var(--proven)); outline-offset: 2px; }

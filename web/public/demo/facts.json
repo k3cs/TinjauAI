@@ -1,0 +1,885 @@
+{
+ "agents": {
+  "34135": {
+   "agentId": "34135",
+   "thresholds": {
+    "minAge": "1300000",
+    "minDepth": 3,
+    "k": 3,
+    "c": 5
+   },
+   "owner": "0x820c5091b047b652888f6aa7e1ee615d99f7c8cd",
+   "registrant": "0x820c5091b047b652888f6aa7e1ee615d99f7c8cd",
+   "uriHash": "0xf1b6bea06ba6b721f0aa18e35a193dab1dfb2c8e92304f6e1aefa5bfebfed6a0",
+   "facts": {
+    "breadthRaw": 5,
+    "breadthGrounded": 1,
+    "breadthIndependent": 5,
+    "gapCount": 4,
+    "negatives": 0,
+    "cloneDensityLB": 0,
+    "registrantSiblings": 0,
+    "uriSiblings": 0,
+    "sameTxSiblings": 0,
+    "firstRegisteredHeight": "25242477"
+   },
+   "reviewers": [
+    {
+     "client": "0x9a36a0a01d737923208d8979d73372c7a0a80117",
+     "firstFeedbackHeight": "25286118",
+     "oldestHeight": "25286118",
+     "ageBlocks": "0",
+     "depth": 1,
+     "maxIndex": "2",
+     "proven": 1,
+     "negatives": 0,
+     "ownsAgents": 0
+    },
+    {
+     "client": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+     "firstFeedbackHeight": "25293182",
+     "oldestHeight": "16404317",
+     "ageBlocks": "8888865",
+     "depth": 3,
+     "maxIndex": "2",
+     "proven": 2,
+     "negatives": 0,
+     "ownsAgents": 0
+    },
+    {
+     "client": "0xbb090a353005e25753335e9cd94c3f82efd4dbc1",
+     "firstFeedbackHeight": "25795998",
+     "oldestHeight": "25795998",
+     "ageBlocks": "0",
+     "depth": 1,
+     "maxIndex": "3",
+     "proven": 1,
+     "negatives": 0,
+     "ownsAgents": 0
+    },
+    {
+     "client": "0x85dd6e09a79e10e683a9e4aa0d186dd3a0e88656",
+     "firstFeedbackHeight": "25831340",
+     "oldestHeight": "25831340",
+     "ageBlocks": "0",
+     "depth": 1,
+     "maxIndex": "3",
+     "proven": 1,
+     "negatives": 0,
+     "ownsAgents": 0
+    },
+    {
+     "client": "0x35934d43ee468b1373c69bff2ec892d89fe5f5cb",
+     "firstFeedbackHeight": "25831570",
+     "oldestHeight": "25831570",
+     "ageBlocks": "0",
+     "depth": 1,
+     "maxIndex": "5",
+     "proven": 1,
+     "negatives": 0,
+     "ownsAgents": 0
+    }
+   ],
+   "proofs": [
+    {
+     "kind": "registered",
+     "direction": "neutral",
+     "txHash": "0x21ffcc5c66a781f346a3935fef917520920df14b4463659d1e1ce9ab7a6423d6",
+     "height": 25242477,
+     "txIndex": 185,
+     "roots": 24,
+     "from": "0x820c5091b047b652888f6aa7e1ee615d99f7c8cd",
+     "note": "Registered: owner, registrant, uri, same-tx siblings"
+    },
+    {
+     "kind": "higherIndex",
+     "direction": "hurts",
+     "txHash": "0x2edeb0c93505d4b02e781a2bdbe57834488ca3a4d36eb254fb00d88c0b44bbef",
+     "height": 25286118,
+     "txIndex": 158,
+     "roots": 83,
+     "from": "0x9a36a0a01d737923208d8979d73372c7a0a80117",
+     "note": "latest index #2 by 0x9a36a0a0 (exposes gaps)"
+    },
+    {
+     "kind": "higherIndex",
+     "direction": "hurts",
+     "txHash": "0xa2947cf2d439cd27ef4d5474b9b6de465911878dec5c13e606eef2aace2e8880",
+     "height": 25293213,
+     "txIndex": 143,
+     "roots": 88,
+     "from": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+     "note": "latest index #2 by 0x11ac6e0d (exposes gaps)"
+    },
+    {
+     "kind": "higherIndex",
+     "direction": "hurts",
+     "txHash": "0xc3253ed3cba9a72710030235a2dfe6517c6703f268b72238b1d804f3326bbe95",
+     "height": 25795998,
+     "txIndex": 268,
+     "roots": 3,
+     "from": "0xbb090a353005e25753335e9cd94c3f82efd4dbc1",
+     "note": "latest index #3 by 0xbb090a35 (exposes gaps)"
+    },
+    {
+     "kind": "higherIndex",
+     "direction": "hurts",
+     "txHash": "0x200ba6843c91dceb516a1f66795f03eb966e9ff9e49b2ad5688db59fe0dfd9df",
+     "height": 25831340,
+     "txIndex": 237,
+     "roots": 61,
+     "from": "0x85dd6e09a79e10e683a9e4aa0d186dd3a0e88656",
+     "note": "latest index #3 by 0x85dd6e09 (exposes gaps)"
+    },
+    {
+     "kind": "higherIndex",
+     "direction": "hurts",
+     "txHash": "0x2761843bd77262f5d7a9ed7d603bbfe07b25531e72c890cdbed8dfaa7e4da124",
+     "height": 25831570,
+     "txIndex": 339,
+     "roots": 31,
+     "from": "0x35934d43ee468b1373c69bff2ec892d89fe5f5cb",
+     "note": "latest index #5 by 0x35934d43 (exposes gaps)"
+    },
+    {
+     "kind": "feedback",
+     "direction": "helps",
+     "txHash": "0x6ae801a3e04a6a0535d9be303a1d86ffb45c84f4c6b924a5a1b4f39f57abec73",
+     "height": 25293182,
+     "txIndex": 43,
+     "roots": 19,
+     "from": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+     "note": "earliest feedback by 0x11ac6e0d"
+    },
+    {
+     "kind": "activity",
+     "direction": "helps",
+     "txHash": "0x1ccac14dc093d242fe15831d72b383baeebafbaddd1aee9a37d3d9859353742a",
+     "height": 16404317,
+     "txIndex": 84,
+     "roots": 684,
+     "from": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+     "note": "activity of 0x11ac6e0d @16404317"
+    },
+    {
+     "kind": "activity",
+     "direction": "helps",
+     "txHash": "0xcd64d75f614cf16c7f28f540d2ef8c310db41c5908884100d5656374e6e29225",
+     "height": 16419847,
+     "txIndex": 8,
+     "roots": 154,
+     "from": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+     "note": "activity of 0x11ac6e0d @16419847"
+    }
+   ],
+   "decisions": {
+    "chosen": [
+     {
+      "kind": "registered",
+      "direction": "neutral",
+      "txHash": "0x21ffcc5c66a781f346a3935fef917520920df14b4463659d1e1ce9ab7a6423d6",
+      "height": "25242477",
+      "note": "Registered: owner, registrant, uri, same-tx siblings",
+      "estGas": 632200
+     },
+     {
+      "kind": "higherIndex",
+      "direction": "hurts",
+      "txHash": "0x2edeb0c93505d4b02e781a2bdbe57834488ca3a4d36eb254fb00d88c0b44bbef",
+      "height": "25286118",
+      "reviewer": "0x9a36a0a01d737923208d8979d73372c7a0a80117",
+      "note": "latest index #2 by 0x9a36a0a0 (exposes gaps)",
+      "estGas": 450400
+     },
+     {
+      "kind": "higherIndex",
+      "direction": "hurts",
+      "txHash": "0xa2947cf2d439cd27ef4d5474b9b6de465911878dec5c13e606eef2aace2e8880",
+      "height": "25293213",
+      "reviewer": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+      "note": "latest index #2 by 0x11ac6e0d (exposes gaps)",
+      "estGas": 449800
+     },
+     {
+      "kind": "higherIndex",
+      "direction": "hurts",
+      "txHash": "0xc3253ed3cba9a72710030235a2dfe6517c6703f268b72238b1d804f3326bbe95",
+      "height": "25795998",
+      "reviewer": "0xbb090a353005e25753335e9cd94c3f82efd4dbc1",
+      "note": "latest index #3 by 0xbb090a35 (exposes gaps)",
+      "estGas": 427000
+     },
+     {
+      "kind": "higherIndex",
+      "direction": "hurts",
+      "txHash": "0x200ba6843c91dceb516a1f66795f03eb966e9ff9e49b2ad5688db59fe0dfd9df",
+      "height": "25831340",
+      "reviewer": "0x85dd6e09a79e10e683a9e4aa0d186dd3a0e88656",
+      "note": "latest index #3 by 0x85dd6e09 (exposes gaps)",
+      "estGas": 425200
+     },
+     {
+      "kind": "higherIndex",
+      "direction": "hurts",
+      "txHash": "0x2761843bd77262f5d7a9ed7d603bbfe07b25531e72c890cdbed8dfaa7e4da124",
+      "height": "25831570",
+      "reviewer": "0x35934d43ee468b1373c69bff2ec892d89fe5f5cb",
+      "note": "latest index #5 by 0x35934d43 (exposes gaps)",
+      "estGas": 425200
+     },
+     {
+      "kind": "feedback",
+      "direction": "helps",
+      "txHash": "0x6ae801a3e04a6a0535d9be303a1d86ffb45c84f4c6b924a5a1b4f39f57abec73",
+      "height": "25293182",
+      "reviewer": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+      "note": "earliest feedback by 0x11ac6e0d",
+      "estGas": 449800
+     },
+     {
+      "kind": "activity",
+      "direction": "helps",
+      "txHash": "0x1ccac14dc093d242fe15831d72b383baeebafbaddd1aee9a37d3d9859353742a",
+      "height": "16404317",
+      "reviewer": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+      "note": "activity of 0x11ac6e0d @16404317",
+      "estGas": 730200
+     },
+     {
+      "kind": "activity",
+      "direction": "helps",
+      "txHash": "0xcd64d75f614cf16c7f28f540d2ef8c310db41c5908884100d5656374e6e29225",
+      "height": "16419847",
+      "reviewer": "0x11ac6e0d40f077ee11130a282de32518dd755f0e",
+      "note": "activity of 0x11ac6e0d @16419847",
+      "estGas": 729600
+     }
+    ],
+    "rejected": [
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x3c09728c2196fab971ae9fff7a4f3330b34cfc185cf95a077e92abc071825441",
+       "height": "25242555",
+       "reviewer": "0x2bf9c50e72932740c2fade031aa5d277f45523fb",
+       "note": "earliest feedback by 0x2bf9c50e",
+       "estGas": 452200
+      },
+      "why": "cannot be grounded: age 444057 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xea20eb83397ac08363f9704b3810fa1e3cef974a4b120a6bb3b7cdb7816e0ff6",
+       "height": "24798498",
+       "reviewer": "0x2bf9c50e72932740c2fade031aa5d277f45523fb",
+       "note": "activity of 0x2bf9c50e @24798498",
+       "estGas": 342600
+      },
+      "why": "cannot be grounded: age 444057 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x83495b464f04d34d1ed60bce42609a75e2d916c5c9bf8dcb5b65c96b9f7c7b5f",
+       "height": "24920345",
+       "reviewer": "0x2bf9c50e72932740c2fade031aa5d277f45523fb",
+       "note": "activity of 0x2bf9c50e @24920345",
+       "estGas": 337200
+      },
+      "why": "cannot be grounded: age 444057 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x31562ac3d32aa2d15581464956e1c5c5544968a7d562d8ca2185a57177623fd6",
+       "height": "25285932",
+       "reviewer": "0xc07fa44c3766717a2ec921e3f31648e74b3e67a4",
+       "note": "earliest feedback by 0xc07fa44c",
+       "estGas": 450400
+      },
+      "why": "cannot be grounded: age 142710 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x71b64d899879eb7f39daf5e6c5492d94fea2e5788687c8ce689a3d6b60838fe7",
+       "height": "25143222",
+       "reviewer": "0xc07fa44c3766717a2ec921e3f31648e74b3e67a4",
+       "note": "activity of 0xc07fa44c @25143222",
+       "estGas": 327000
+      },
+      "why": "cannot be grounded: age 142710 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x0c296679f09f61dc9f319e6b9fbe162b7c93c5c740cbf206133077bba8bbee2b",
+       "height": "25286037",
+       "reviewer": "0x9a36a0a01d737923208d8979d73372c7a0a80117",
+       "note": "earliest feedback by 0x9a36a0a0",
+       "estGas": 450400
+      },
+      "why": "cannot be grounded: age 7466 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x22fcaccab5ee29393e37dd6b1294a5ea5fd992b2311a6c63be156b202dd1db50",
+       "height": "25278571",
+       "reviewer": "0x9a36a0a01d737923208d8979d73372c7a0a80117",
+       "note": "activity of 0x9a36a0a0 @25278571",
+       "estGas": 320400
+      },
+      "why": "cannot be grounded: age 7466 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0xd708707c34e5ca9cbd4a4a046e7a53bb0880bb88260257b707a26547ea8d8adf",
+       "height": "25286705",
+       "reviewer": "0x3c0f814eb32a0fb03dd8aa18702891f30d33578d",
+       "note": "earliest feedback by 0x3c0f814e",
+       "estGas": 450400
+      },
+      "why": "cannot be grounded: age 11 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x1a5203b9740d5b1a081ea04ef4f50606a98f63030591b0b6dd4463e0b77c2d9f",
+       "height": "25286694",
+       "reviewer": "0x3c0f814eb32a0fb03dd8aa18702891f30d33578d",
+       "note": "activity of 0x3c0f814e @25286694",
+       "estGas": 320400
+      },
+      "why": "cannot be grounded: age 11 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x43784255c4d572122219df67385b6162949ed1c336582f1e4c1fc053847fb50b",
+       "height": "25293177",
+       "reviewer": "0x9b54af7b16f7c10b50fdd02bd160dbbd3bf508e4",
+       "note": "earliest feedback by 0x9b54af7b",
+       "estGas": 449800
+      },
+      "why": "cannot be grounded: age 415517 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xf4a1d1f7d402fc6f6d84576af84cbd7c961ace00f8d243dccdfb85864ebf9efd",
+       "height": "24877660",
+       "reviewer": "0x9b54af7b16f7c10b50fdd02bd160dbbd3bf508e4",
+       "note": "activity of 0x9b54af7b @24877660",
+       "estGas": 339000
+      },
+      "why": "cannot be grounded: age 415517 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xaf125dfbd4e8cfaff6373d0b5643670453a8038a67367650a552768a5e8d44e4",
+       "height": "25094575",
+       "reviewer": "0x9b54af7b16f7c10b50fdd02bd160dbbd3bf508e4",
+       "note": "activity of 0x9b54af7b @25094575",
+       "estGas": 329400
+      },
+      "why": "cannot be grounded: age 415517 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0xcb1d5cf37e0517476f7ee4d53ac8e1fc74eb30061b081b81c57cbf82fc01c0ad",
+       "height": "25302040",
+       "reviewer": "0x6083998f73e26631d8d08f01e9927999b1969a81",
+       "note": "earliest feedback by 0x6083998f",
+       "estGas": 449800
+      },
+      "why": "cannot be grounded: age 15032 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x192aaca704142a8c077450e2d22798b173279af9ffa517a8fe0621d2601fe49b",
+       "height": "25287008",
+       "reviewer": "0x6083998f73e26631d8d08f01e9927999b1969a81",
+       "note": "activity of 0x6083998f @25287008",
+       "estGas": 320400
+      },
+      "why": "cannot be grounded: age 15032 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x49fd37282346dd070714b60af050e31cb3a8e23059b44f1a8c2dee4297485c51",
+       "height": "25468860",
+       "reviewer": "0xe7f47e1610a9a8a8598db3890334991f9396208a",
+       "note": "earliest feedback by 0xe7f47e16",
+       "estGas": 442000
+      },
+      "why": "cannot be grounded: age 21 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xfe6c15a3e02205bff49c9a5c7ff73a54c73affd07107011494fce7d7160a226b",
+       "height": "25468839",
+       "reviewer": "0xe7f47e1610a9a8a8598db3890334991f9396208a",
+       "note": "activity of 0xe7f47e16 @25468839",
+       "estGas": 312000
+      },
+      "why": "cannot be grounded: age 21 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x811e8b71e83827ffaefecb996871085dba5ebc631696e294877ad5828524bde8",
+       "height": "25781115",
+       "reviewer": "0xe2be44602f2b90883588d38fac61dc01a4eaa593",
+       "note": "earliest feedback by 0xe2be4460",
+       "estGas": 427600
+      },
+      "why": "cannot be grounded: age 23 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x2c8710317ef1eb2a88cf734457e33147856e7750a44e807309c9cd4fd152377a",
+       "height": "25781092",
+       "reviewer": "0xe2be44602f2b90883588d38fac61dc01a4eaa593",
+       "note": "activity of 0xe2be4460 @25781092",
+       "estGas": 297600
+      },
+      "why": "cannot be grounded: age 23 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x57961c9db8387fe4584f6ff419a70ca77af41e0cba389391f396eb8224208028",
+       "height": "25781937",
+       "reviewer": "0x29cfee14513bdbc45eb6b9d90b41310107eaaac1",
+       "note": "earliest feedback by 0x29cfee14",
+       "estGas": 427600
+      },
+      "why": "cannot be grounded: age 20 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xdfce11d170910c2679223dd93ef882c2f477c9f57a3d8795708d6a0c61391c99",
+       "height": "25781917",
+       "reviewer": "0x29cfee14513bdbc45eb6b9d90b41310107eaaac1",
+       "note": "activity of 0x29cfee14 @25781917",
+       "estGas": 297600
+      },
+      "why": "cannot be grounded: age 20 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0xb10f7280052995cc02dab0180e4727597f70a4be246bd6b2c87aa7c80e0b7786",
+       "height": "25795356",
+       "reviewer": "0xbb090a353005e25753335e9cd94c3f82efd4dbc1",
+       "note": "earliest feedback by 0xbb090a35",
+       "estGas": 427000
+      },
+      "why": "cannot be grounded: age 107650 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x317c43515439ab935b497d12880493b4092279bfb5635704b5a092a8c55ff069",
+       "height": "25687706",
+       "reviewer": "0xbb090a353005e25753335e9cd94c3f82efd4dbc1",
+       "note": "activity of 0xbb090a35 @25687706",
+       "estGas": 301800
+      },
+      "why": "cannot be grounded: age 107650 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x12e78b1d86b8a98350419ec36b9362decc6f2d8fcb637885d6f4c23ca9ce14da",
+       "height": "25773355",
+       "reviewer": "0xbb090a353005e25753335e9cd94c3f82efd4dbc1",
+       "note": "activity of 0xbb090a35 @25773355",
+       "estGas": 297600
+      },
+      "why": "cannot be grounded: age 107650 < 1300000 or depth 3 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x33b9f1adfd1239a0af5da1e1213eae067edd400152bb6725f78d0da33d516773",
+       "height": "25802108",
+       "reviewer": "0x85dd6e09a79e10e683a9e4aa0d186dd3a0e88656",
+       "note": "earliest feedback by 0x85dd6e09",
+       "estGas": 426400
+      },
+      "why": "cannot be grounded: age 21 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x24bd36cfc29df61c610e22734c1043e9465c9a125699380a16a3129431329ad9",
+       "height": "25802087",
+       "reviewer": "0x85dd6e09a79e10e683a9e4aa0d186dd3a0e88656",
+       "note": "activity of 0x85dd6e09 @25802087",
+       "estGas": 296400
+      },
+      "why": "cannot be grounded: age 21 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0xa7c81e74d8e5d151c96e52c374fa04e93e785bd6ff4864fc0acd693f41a98c43",
+       "height": "25831435",
+       "reviewer": "0x35934d43ee468b1373c69bff2ec892d89fe5f5cb",
+       "note": "earliest feedback by 0x35934d43",
+       "estGas": 425200
+      },
+      "why": "cannot be grounded: age 42 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xc1d15237952b0a4c2b89c473a7659a406ddb8ec64b56ed27c54eb5fa6649ab1a",
+       "height": "25831393",
+       "reviewer": "0x35934d43ee468b1373c69bff2ec892d89fe5f5cb",
+       "note": "activity of 0x35934d43 @25831393",
+       "estGas": 295200
+      },
+      "why": "cannot be grounded: age 42 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0xb8a787a4e8e3696fe7a96c8df7efa55b43cf3629e8ea8da245664f64a0a097de",
+       "height": "25838955",
+       "reviewer": "0x3a88a5f7da2f1780ab2b90cfee304786e1902ac0",
+       "note": "earliest feedback by 0x3a88a5f7",
+       "estGas": 424600
+      },
+      "why": "cannot be grounded: age 64424 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0xdfd84ede010f9742a8ef3bf508335a8874d2b448edb1ed40ffe1abda26cf52f5",
+       "height": "25774531",
+       "reviewer": "0x3a88a5f7da2f1780ab2b90cfee304786e1902ac0",
+       "note": "activity of 0x3a88a5f7 @25774531",
+       "estGas": 297600
+      },
+      "why": "cannot be grounded: age 64424 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "feedback",
+       "direction": "helps",
+       "txHash": "0x5c719a31ddd5ee101afe806130e3208ea5eadc6c530422f348d092cf12e2de25",
+       "height": "25839208",
+       "reviewer": "0x400173e687755b212ba6c451632af4cfa9d0499a",
+       "note": "earliest feedback by 0x400173e6",
+       "estGas": 424600
+      },
+      "why": "cannot be grounded: age 8 < 1300000 or depth 2 < 3"
+     },
+     {
+      "c": {
+       "kind": "activity",
+       "direction": "helps",
+       "txHash": "0x9adc7cec432973de22cf57ddce33a59afa7d457b0d388796985bbd9f2abd349b",
+       "height": "25839200",
+       "reviewer": "0x400173e687755b212ba6c451632af4cfa9d0499a",
+       "note": "activity of 0x400173e6 @25839200",
+       "estGas": 294600
+      },
+      "why": "cannot be grounded: age 8 < 1300000 or depth 2 < 3"
+     }
+    ]
+   },
+   "source": {
+    "plan": "agent-34135-1788017292479.json",
+    "generatedAt": "2026-08-29T16:03:27.972Z",
+    "mode": "demo"
+   }
+  },
+  "50283": {
+   "agentId": "50283",
+   "thresholds": {
+    "minAge": "1300000",
+    "minDepth": 3,
+    "k": 3,
+    "c": 5
+   },
+   "owner": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+   "registrant": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+   "uriHash": "0x9542570cb0d85b47b855a79b1d365b4b711a135c433053a47e38d254abeb40e9",
+   "facts": {
+    "breadthRaw": 1,
+    "breadthGrounded": 1,
+    "breadthIndependent": 0,
+    "gapCount": 1,
+    "negatives": 0,
+    "cloneDensityLB": 4,
+    "registrantSiblings": 0,
+    "uriSiblings": 0,
+    "sameTxSiblings": 0,
+    "firstRegisteredHeight": "25792031"
+   },
+   "reviewers": [
+    {
+     "client": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "firstFeedbackHeight": "25792033",
+     "oldestHeight": "23779699",
+     "ageBlocks": "2012334",
+     "depth": 5,
+     "maxIndex": "32",
+     "proven": 2,
+     "negatives": 0,
+     "ownsAgents": 5
+    }
+   ],
+   "proofs": [
+    {
+     "kind": "registered",
+     "direction": "neutral",
+     "txHash": "0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
+     "height": 25792031,
+     "txIndex": 76,
+     "roots": 70,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "Registered: owner, registrant, uri, same-tx siblings"
+    },
+    {
+     "kind": "higherIndex",
+     "direction": "hurts",
+     "txHash": "0xff08b3f8130a6188eb428e4affbb24cdfacda294386665d0f5f94a27492e29db",
+     "height": 25823735,
+     "txIndex": 178,
+     "roots": 66,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "latest index #32 by 0x10304054 (exposes gaps)"
+    },
+    {
+     "kind": "reviewerOwnsAgent",
+     "direction": "hurts",
+     "txHash": "0x0cdb0960ffe342a977ad8d2bbc2c3825a92849734c2e35785bd4785ac3241a57",
+     "height": 24505196,
+     "txIndex": 192,
+     "roots": 805,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "reviewer 0x10304054 owns 43 agent(s) → not independent"
+    },
+    {
+     "kind": "cloneSibling",
+     "direction": "hurts",
+     "txHash": "0x0cdb0960ffe342a977ad8d2bbc2c3825a92849734c2e35785bd4785ac3241a57",
+     "height": 24505196,
+     "txIndex": 192,
+     "roots": 805,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "sibling agent 26242 of owner 0x10304054 (42 total)"
+    },
+    {
+     "kind": "cloneSibling",
+     "direction": "hurts",
+     "txHash": "0xeb8ca2004cc1c6f520a9c99e5a255c16b1813a88e624c210446e9504a609c8fc",
+     "height": 25571575,
+     "txIndex": 333,
+     "roots": 26,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "sibling agent 36657 of owner 0x10304054 (42 total)"
+    },
+    {
+     "kind": "cloneSibling",
+     "direction": "hurts",
+     "txHash": "0xb6d088b4b9679f0df782364c091771c39ba64bfbb711455ea4286d3cd88bfcfc",
+     "height": 25571583,
+     "txIndex": 99,
+     "roots": 18,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "sibling agent 36658 of owner 0x10304054 (42 total)"
+    },
+    {
+     "kind": "feedback",
+     "direction": "helps",
+     "txHash": "0xb4b0f298fd6d815c30aaaab0748744ff2b092257d343e53c7c2f7c888ffbc04a",
+     "height": 25792033,
+     "txIndex": 104,
+     "roots": 68,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "earliest feedback by 0x10304054"
+    },
+    {
+     "kind": "activity",
+     "direction": "helps",
+     "txHash": "0x00c353b20480cbc1d452e2819bbfb3ab9ac1e30e62435dc01bec57a20de0f973",
+     "height": 23779699,
+     "txIndex": 295,
+     "roots": 302,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "activity of 0x10304054 @23779699"
+    },
+    {
+     "kind": "activity",
+     "direction": "helps",
+     "txHash": "0x2ade3d5ae0d493f0f98772f81cd0744870ba575f9354618a90ceda0ae21e2523",
+     "height": 24061828,
+     "txIndex": 218,
+     "roots": 173,
+     "from": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+     "note": "activity of 0x10304054 @24061828"
+    }
+   ],
+   "decisions": {
+    "chosen": [
+     {
+      "kind": "registered",
+      "direction": "neutral",
+      "txHash": "0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
+      "height": "25792031",
+      "note": "Registered: owner, registrant, uri, same-tx siblings",
+      "estGas": 607000
+     },
+     {
+      "kind": "higherIndex",
+      "direction": "hurts",
+      "txHash": "0xff08b3f8130a6188eb428e4affbb24cdfacda294386665d0f5f94a27492e29db",
+      "height": "25823735",
+      "reviewer": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+      "note": "latest index #32 by 0x10304054 (exposes gaps)",
+      "estGas": 425200
+     },
+     {
+      "kind": "reviewerOwnsAgent",
+      "direction": "hurts",
+      "txHash": "0x0cdb0960ffe342a977ad8d2bbc2c3825a92849734c2e35785bd4785ac3241a57",
+      "height": "24505196",
+      "reviewer": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+      "note": "reviewer 0x10304054 owns 43 agent(s) → not independent",
+      "estGas": 666400
+     },
+     {
+      "kind": "cloneSibling",
+      "direction": "hurts",
+      "txHash": "0x0cdb0960ffe342a977ad8d2bbc2c3825a92849734c2e35785bd4785ac3241a57",
+      "height": "24505196",
+      "note": "sibling agent 26242 of owner 0x10304054 (42 total)",
+      "estGas": 666400
+     },
+     {
+      "kind": "cloneSibling",
+      "direction": "hurts",
+      "txHash": "0xeb8ca2004cc1c6f520a9c99e5a255c16b1813a88e624c210446e9504a609c8fc",
+      "height": "25571575",
+      "note": "sibling agent 36657 of owner 0x10304054 (42 total)",
+      "estGas": 617200
+     },
+     {
+      "kind": "cloneSibling",
+      "direction": "hurts",
+      "txHash": "0xb6d088b4b9679f0df782364c091771c39ba64bfbb711455ea4286d3cd88bfcfc",
+      "height": "25571583",
+      "note": "sibling agent 36658 of owner 0x10304054 (42 total)",
+      "estGas": 617200
+     },
+     {
+      "kind": "feedback",
+      "direction": "helps",
+      "txHash": "0xb4b0f298fd6d815c30aaaab0748744ff2b092257d343e53c7c2f7c888ffbc04a",
+      "height": "25792033",
+      "reviewer": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+      "note": "earliest feedback by 0x10304054",
+      "estGas": 427000
+     },
+     {
+      "kind": "activity",
+      "direction": "helps",
+      "txHash": "0x00c353b20480cbc1d452e2819bbfb3ab9ac1e30e62435dc01bec57a20de0f973",
+      "height": "23779699",
+      "reviewer": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+      "note": "activity of 0x10304054 @23779699",
+      "estGas": 390000
+     },
+     {
+      "kind": "activity",
+      "direction": "helps",
+      "txHash": "0x2ade3d5ae0d493f0f98772f81cd0744870ba575f9354618a90ceda0ae21e2523",
+      "height": "24061828",
+      "reviewer": "0x103040545ac5031a11e8c03dd11324c7333a13c7",
+      "note": "activity of 0x10304054 @24061828",
+      "estGas": 376800
+     }
+    ],
+    "rejected": [
+     {
+      "c": {
+       "kind": "cloneSibling",
+       "direction": "hurts",
+       "txHash": "0xcb8b1f08db4c01d4bbed8bdc114a819cf12fdb23e1cc6707a6f7101a9a116624",
+       "height": "25611799",
+       "note": "sibling agent 36837 of owner 0x10304054 (42 total)",
+       "estGas": 615400
+      },
+      "why": "hurts cap reached (60% of budget = 3600000 gas)"
+     },
+     {
+      "c": {
+       "kind": "cloneSibling",
+       "direction": "hurts",
+       "txHash": "0xd9926ba462c204d6ba0ce7fa5dc38707e6ba7148a90f4b3989408ac47b56617c",
+       "height": "25619520",
+       "note": "sibling agent 36865 of owner 0x10304054 (42 total)",
+       "estGas": 614800
+      },
+      "why": "hurts cap reached (60% of budget = 3600000 gas)"
+     }
+    ]
+   },
+   "source": {
+    "plan": "agent-50283-1788017183287.json",
+    "generatedAt": "2026-08-29T16:04:30.457Z",
+    "mode": "demo"
+   }
+  }
+ },
+ "chainKey": 3,
+ "registries": {
+  "identity": "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432",
+  "reputation": "0x8004baa17c55a88189ae136b182e5fda19de9b63"
+ },
+ "note": "Recomputed off-chain from the same Attestcoin proofs the contract admits; see agent/src/verify.ts"
+}
