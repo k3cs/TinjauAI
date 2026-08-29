@@ -1,6 +1,6 @@
 # Tinjau (Grounded Agent Reputation) — dokumen penilaian untuk BUIDL CTC 2026 Fall
 
-Versi dokumen: 1.3 (nama produk: Tinjau) · Tanggal: 2026-08-29 · Status proyek: **kontrak + agent dibangun dan diuji lokal (14/14 test), belum dideploy ke CC3 Testnet (menunggu faucet)**. Repo: `hackathons/ctc/build/grounded-reputation/` (Foundry + TypeScript). Semua angka berasal dari pengukuran langsung terhadap Ethereum mainnet, Sepolia, dan Creditcoin CC3 Testnet pada 29 Agu 2026.
+Versi dokumen: 1.4 · Tanggal: 2026-08-30 · Status proyek: **dideploy dan terverifikasi di Creditcoin CC3 Testnet** (`GroundedFacts` 0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc, `AgentHireEscrow` 0x153201A94E83AB5aA1C64f095375F2916EDA9F98, `CoverageBounty` 0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70); 17/17 test; 15 tx testnet (18 proof: 17 mainnet + 1 Sepolia); UI live https://k3cs.github.io/TinjauAI/; repo https://github.com/k3cs/TinjauAI. Semua angka berasal dari pengukuran langsung terhadap Ethereum mainnet, Sepolia, dan Creditcoin CC3 Testnet pada 29–30 Agu 2026.
 
 Dokumen ini ditulis agar penilai (manusia atau AI agent) dapat memeriksa setiap klaim secara independen. Setiap klaim substantif diberi label **[Fakta]** (ada sumber/perintah yang bisa dijalankan ulang) atau **[Inferensi]** (penalaran penulis). Bagian 9 berisi perintah verifikasi.
 
@@ -114,7 +114,9 @@ Setiap baris di bawah sudah **diuji pada 29 Agu 2026** kecuali ditandai.
 | 6 | Batch proof | docs: `MAX_BATCH_SIZE` 10, `MAX_BATCH_RANGE` 1.000 blok; terukur di loop lain: 5 proof rentang 900 blok = 998.872 gas |
 | 7 | `verify` (view) tanpa `queryId` global → dedup per kunci fakta | docs: `verify()` "only view, no events"; diuji dua `STATICCALL` identik keduanya `true` |
 | 8 | Provenance agent dari registri identitas (v4) | `Registered`/`Transfer` dari `0x8004A169…`; `sameTxSiblings` memakai semua log satu tx dari decoder (belum diuji, §8.4) |
-| 9 | Cadangan penuh di Sepolia (chainKey 1) | registri Sepolia `0x8004A818BFB912233c491871b3d84c89A494BD9e` (11.307 tx), `0x8004B663056A597Dffe9eCcC1965A193B7388713` (11.240 tx) |
+| 9 | **Dua chainKey dalam satu kontrak, live**: proof `NewFeedback` registri Sepolia (chainKey 1) dicatat oleh kontrak yang sama | tx `0xefd5f240330f…` 303.069 gas |
+| 10 | **Tx pendaftaran massal** (10 `Registered`, txBytes 52 KB) → `sameTxSiblings` | tx `0x8e519fe95194…` 2.821.552 gas, `txRegisteredCount = 10` |
+| 11 | Cadangan penuh di Sepolia (chainKey 1) | registri Sepolia `0x8004A818BFB912233c491871b3d84c89A494BD9e` (11.307 tx), `0x8004B663056A597Dffe9eCcC1965A193B7388713` (11.240 tx) |
 
 [Inferensi] Yang membedakan dari pola "bayar di Sepolia → buka di Creditcoin" yang dipakai mayoritas peserta: (a) sumber mainnet, (b) riwayat berumur tahunan sebagai input fakta, (c) kelengkapan parsial dari counter protokol sumber, (d) dua registri × tiga jenis event.
 
@@ -183,10 +185,32 @@ Setiap baris di bawah sudah **diuji pada 29 Agu 2026** kecuali ditandai.
 | Peternak klon memecah pemilik ke satu EOA per agent | gratis | sebagian ditutup: `sameTxSiblings`, `uriSiblings`; klon dengan EOA, tx, dan URI semua berbeda tidak terlihat (biaya naik: N tx + N URI) |
 | Operator sah dengan banyak agent tampak seperti klon | — | fakta, bukan vonis; konsumen menetapkan ambang `c`; `breadthIndependent` tetap dihitung |
 
-### 8.4 Yang sudah diukur setelah build (29 Agu, forge test dengan precompile di-mock dan `txBytes` mainnet asli)
+### 8.4 Terukur di testnet (v2, 29–30 Agu; daftar lengkap di `ATTESTCOIN_INTEGRATION.md`)
 
-| Item | Hasil [Fakta] |
-|---|---|
+| Tx | Blok | gasUsed |
+|---|---|---|
+| deploy GroundedFacts `0xb617ab23ccc0…` | 5395591 | 2,808,637 |
+| deploy AgentHireEscrow `0x04fa55a60997…` | 5395592 | 814,892 |
+| deploy CoverageBounty `0x05339b92afea…` | 5395593 | 770,359 |
+| GroundedFacts.record `0x76605e445ed7…` | 5395605 | 2,246,165 |
+| GroundedFacts.record `0x3fae28b32c9e…` | 5395606 | 1,973,870 |
+| GroundedFacts.record `0x5f3f7a14a729…` | 5395611 | 1,972,690 |
+| GroundedFacts.record `0xe58b1d2c68eb…` | 5395612 | 1,229,062 |
+| GroundedFacts.record `0xefd5f240330f…` | 5395613 | 303,069 |
+| GroundedFacts.record `0x8e519fe95194…` | 5395615 | 2,821,552 |
+| CoverageBounty.fund `0xb90f504bf28d…` | 5395616 | 252,252 |
+| GroundedFacts.record `0xa493d6a19ac3…` | 5395622 | 1,725,895 |
+| CoverageBounty.proveAndClaim `0xf4b3ae8f034c…` | 5395623 | 861,110 |
+| AgentHireEscrow.hire `0xc1435ce2e8b6…` | 5395624 | 307,650 |
+| AgentHireEscrow.hire `0x7f902dbb29ab…` | 5395626 | 307,650 |
+| AgentHireEscrow.release `0x7f6ecbb0d6e1…` | 5395627 | 72,086 |
+| `hire` 50283 | — | revert `Gated(1)` |
+
+Per proof ≈0,30–0,56 jt gas; 18 proof (17 mainnet incl. tx 2024–2026 dan tx massal 52 KB, 1 Sepolia) dalam 7 tx `record`. `facts(3, 22771)` on-chain = (3,3,3,0,0,0,0,0,0,24.365.879) = hitung ulang off-chain `verify.ts`. Scout live: memilih target dari bounty (21548) + registri (50283), membuktikan 7 proof, menagih bounty #0 (0,05 tCTC), menyewa 21548 (R4), dan pada siklus kedua melewati 8 proof yang sudah `txSeen` (0 gas).
+
+Belum diukur: biaya cakupan agent dengan >50 pengulas; perilaku pada agent dengan >256 pengulas (`truncated`).
+
+---|---|
 | Gas kontrak (tanpa precompile) `recordFeedback` | 259.094 |
 | Gas kontrak `record` tx `Registered` mainnet dengan 8 log (Registered + 2 Transfer + MetadataSet) | 439.104 |
 | Gas kontrak aktivitas (tx Jan 2024 / tx Agu 2026) | 183.724 / 129.475 |
@@ -243,7 +267,8 @@ Deadline: 6 Sep 2026 23:59 ET (7 Sep 10:59 WIB). Repo baru dibuat setelah 13 Agu
 | 3 | `AgentHireEscrow` (premi dinamis) | **selesai**, 4 test |
 | 4 | `CoverageBounty` | **selesai**, 3 test |
 | 5 | Frontend satu halaman (`web/`, DEC-004) | **selesai**: kuitansi fakta 22771 vs 50283, mode demo/live |
-| 6 | Deploy CC3 Testnet + demo live + video | menunggu tCTC di deployer `0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49` (Dien mengisi wallet lain) |
+| 6 | Deploy CC3 Testnet + demo live | **selesai** (v2 terverifikasi; 15 tx; UI live) |
+| 7 | Video ≤3 menit | skrip siap (`docs/demo-script.md` dengan hash), rekaman oleh Dien |
 
 Demo ≤3 menit, semuanya data mainnet nyata: (1) scout memuat feedback + senioritas pengulas agent **34135** (15 pengulas, 14 aktif di luar feedback) dan agent **50283** (32 feedback, 1 pengulas); `breadthGrounded(minAge=180 hari, minDepth=3)` berbeda nyata; (2) scout menunjukkan bukti yang ditolak (tidak mengubah angka) vs dipilih, menutup bolongan indeks, menagih bounty; (3) eskrow memberi premi rendah untuk 34135 dan premi tinggi untuk 50283 (pengulas tunggal `0x1030…` juga pemilik 23 agent), dan menunjukkan `cloneDensityLB` pemilik `0xad51…` (1.300 agent); (4) skrip verifier menghitung ulang angka dari proof. Hash tx Ethereum dan Creditcoin ditampilkan.
 
@@ -253,11 +278,11 @@ Demo ≤3 menit, semuanya data mainnet nyata: (1) scout memuat feedback + senior
 
 | Dimensi | Nilai diri (1–5) | Dasar |
 |---|---|---|
-| K1 kedalaman Attestcoin | 4 | 8 pemakaian terukur, termasuk mainnet dan proof 2,5 tahun; belum ada kode |
-| K2 track AI | 4 | agent dengan keputusan alokasi nyata; tanpa oracle; LLM di luar jalur fakta |
+| K1 kedalaman Attestcoin | 5 | 10 pemakaian, semuanya live di testnet: dua chainKey dalam satu kontrak, proof 2024–2026, tx massal 52 KB, `calculateTxIndex`, decoder, counter registri |
+| K2 track AI | 4 | scout live: memilih target (bounty/registri), bukti dua arah, `txSeen`, menagih bounty, menyewa (R4); log tersimpan di `agent/plans/live-*.log` |
 | K3 masalah nyata | 4 | angka mainnet (pengulas dan klon) + studi arXiv; tetapi penderita dari sisi Creditcoin belum ada |
 | K4 kebaruan | 3 | 0 peserta di ceruk ini; sinyal umur wallet/klon sudah dipakai RNWY; yang baru = verifikasi oleh kontrak + kelengkapan dari counter + provenance dari event registrasi |
-| K5 kejujuran batas | 5 | semua batas ditulis; tidak ada klaim permintaan |
+| K5 kejujuran batas | 5 | semua batas ditulis; code review terbuka (`hackathons/ctc/outputs/06-quality/code-review.md`); tidak ada klaim permintaan |
 
 Penilai diminta menurunkan K1 bila kode akhir tidak mencakup butir 5.1–5.5, dan menurunkan K3 bila menilai "konsumen contoh yang dibangun sendiri" sebagai kegagalan masalah.
 

@@ -19,9 +19,9 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 |---|---|---|---|
 | T2.1 | Wallet deployer + `.env` | ✅ | `0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49` (wallet Dien, kunci di `.env` proyek; wallet lama `0xd250…` disimpan sebagai `PRIVATE_KEY_OLD`) |
 | T2.2 | tCTC ke deployer | ✅ | 10.000 tCTC di `0x3D36…0E49` |
-| T2.3 | Deploy 3 kontrak | ✅ v1 (29 Agu 23:2x) → 🔄 v2 setelah code review (`scripts/live-sequence.sh`) | `forge create --broadcast` per kontrak; `forge script` simulasi gagal di Creditcoin (LEARN-002) |
-| T2.4 | Verifikasi kontrak di Blockscout CC3 | ✅ (v1; v2 dalam skrip) | `forge verify-contract --verifier blockscout` |
-| T2.5 | `record` live: proof mainnet + Sepolia; gas nyata | ✅ (v1) → 🔄 v2 | mainnet 16 proof/4 tx (1,23–2,25 jt gas); Sepolia chainKey 1 `0x5ee427fa…` 303.047 gas; tabel di `ATTESTCOIN_INTEGRATION.md` |
+| T2.3 | Deploy 3 kontrak | ✅ v2 | `0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc`, `0x153201A94E83AB5aA1C64f095375F2916EDA9F98`, `0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70` (`scripts/live-sequence.sh`); v1 tetap di chain |
+| T2.4 | Verifikasi kontrak di Blockscout CC3 | ✅ v2 (3/3 verified) | `forge verify-contract --verifier blockscout` |
+| T2.5 | `record` live: proof mainnet + Sepolia; gas nyata | ✅ v2 | 18 proof/7 tx; tabel 15 tx di `ATTESTCOIN_INTEGRATION.md` + dosier §8.4 |
 | T2.6 | Cadangan demo chainKey 1 | ✅ diganti: proof `NewFeedback` **nyata** di registri Sepolia (agent 9865) dicatat live, tanpa membuat ulasan sendiri | `agent/src/record-one.ts 1 <tx>` |
 
 ## T3 Agent (A4–A6)
@@ -34,7 +34,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T3.5 | Peran R4 konsumen (`hire` / `fund`) | ✅ live | `[R4] … → HIRE`, tx hire 21548 oleh scout |
 | T3.6 | Verifier off-chain | ✅ | `verify.ts` 22771 = `facts()` on-chain (3,3,·,0,0) |
 | T3.7 | Kebijakan anggaran: "helps" tidak boleh selalu kalah oleh "hurts" (alokasi per arah) + lengkapi semua indeks pengulas yang dijadikan dasar (supaya tidak gated) | ✅ | cadangan 40% helps; commit 91d7319, 022bfc3; demo 22771: 3 senior, 0 celah |
-| T3.8 | Scout live end-to-end + `proveAndClaim` + `hire` | ✅ (v1) → 🔄 v2 | bounty #0 21548 diklaim (860.928 gas), hire 21548 (304.304 gas); `plans/live-full-cycle.log` |
+| T3.8 | Scout live end-to-end + `proveAndClaim` + `hire` | ✅ v2 | bounty #0 diklaim (861.110 gas), hire 21548 (307.650); `agent/plans/live-full-cycle.log` |
 | T3.9 | Dua scout berurutan untuk R3 | ✅ (varian) | siklus kedua menemukan semua bukti 50283 sudah `txSeen` → 0 gas; paralel sejati tetap tidak dijalankan (satu kunci) |
 
 ## T6 Frontend (DEC-004, 29 Agu)
@@ -45,16 +45,16 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T6.3 | Halaman: ambang konsumen, kuitansi fakta (klik → rantai bukti + stempel), meter premi, pengulas, log scout, verifikasi | ✅ | `web/src/App.tsx` |
 | T6.4 | Mode live (baca `facts()`/`quote()` via RPC CC3) | ✅ kode; uji setelah deploy | `VITE_FACTS`, `VITE_ESCROW` |
 | T6.5 | Audit kontras/aksesibilitas + kritik visual | ✅ | semua teks ≥4,5:1 terang & gelap |
-| T6.6 | Hosting (Vercel/Pages) | ⬜ SVC-007 deferred | localhost cukup untuk video |
+| T6.6 | Hosting | ✅ GitHub Pages | https://k3cs.github.io/TinjauAI/ (branch `gh-pages`, mode live ke kontrak v2) |
 
 ## T4 Dokumen & submission (A8)
 | ID | Task | Status | Bukti/Catatan |
 |---|---|---|---|
 | T4.1 | README, `ATTESTCOIN_INTEGRATION.md` | ✅ | perbarui alamat setelah deploy |
-| T4.2 | Dosier penilaian (`docs/evaluation-dossier.md`) | ✅ v1.2 | revisi §6 dengan peran agent |
+| T4.2 | Dosier penilaian (`docs/evaluation-dossier.md`) | ✅ v1.4 | status deploy, §8.4 tabel testnet, §11 diperbarui |
 | T4.3 | Dokumen produk / teknis / tracker | ✅ | `docs/01-03` |
-| T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | 🔄 skrip ✅ (`docs/demo-script.md`), rekaman ⏳ Dien | placeholder hash diisi setelah T2–T3 |
-| T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | 🔄 draf ✅ (`docs/deck.md`), PDF via marp | placeholder alamat/URL |
+| T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | 🔄 skrip ✅ dengan hash v2 (`docs/demo-script.md`), rekaman ⏳ Dien | |
+| T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | ✅ | `docs/deck.pdf` dengan alamat v2, repo, live UI; video URL menyusul |
 | T4.6 | Commit & push repo publik (original work) | ✅ | https://github.com/k3cs/TinjauAI (gh auth `dienmsk`); 11 commit |
 | T4.7 | Submission DoraHacks (nama, deskripsi, Integration Summary, repo, video, tim) | 🔄 teks ✅ (`docs/submission.md`); submit ⏳ Dien | |
 
@@ -71,7 +71,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T5.7 | 4 → `engineering:architecture` | ✅ | `outputs/04-planning/adr-001-architecture.md` |
 | T5.8 | 4 → `superpowers:writing-plans` | ✅ | `outputs/04-planning/implementation-plan.md` (Task 1–11) |
 | T5.9 | 4 → Checkpoint 2 (DEC-003) | ✅ disetujui Dien 29 Agu | `DECISIONS.md` |
-| T5.10 | 5 → `superpowers:executing-plans` | 🔄 | Task 1–6, 8 (draf), 9 ✅; Task 7 rekaman (Dien), 10, 11 tersisa |
+| T5.10 | 5 → `superpowers:executing-plans` | ✅ | Task 1–6, 8, 9, 10 ✅; Task 7 rekaman (Dien) dan 11 submit (Dien) tersisa |
 | T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | ✅ | `web/` (Vite+React+Tailwind): kuitansi fakta 2 agent, meter premi, tabel pengulas, log scout, blok verifikasi; mode demo (`public/demo/facts.json`) / live (`VITE_FACTS`); kontras AA diaudit (proven `#0B6B58`, token `edge`), reduced-motion, fokus; screenshot ditinjau di Chrome; commit 98dbc16, 022bfc3 |
 | T5.12 | 6 → `superpowers:verification-before-completion` (wajib sebelum exit stage) | ⬜ | |
 | T5.13 | 6 → `engineering:code-review` | ✅ | `outputs/06-quality/code-review.md`; 0 kritis, 4 perbaikan diterapkan |
