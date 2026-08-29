@@ -52,7 +52,7 @@ BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet + Attestcoin
 ---
 
 ## Demo (mainnet data, Creditcoin txs)
-- Agent **34135**: 3 senior reviewers → premium 2%
+- Agent **22771**: 3 senior reviewers → premium 2%
 - Agent **50283**: 1 reviewer who owns **43 agents**, 5 clone siblings proven → premium 20%
 - Tx hashes on both chains in the video; every number reproducible from the README commands
 

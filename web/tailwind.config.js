@@ -9,6 +9,7 @@ export default {
         ink: "rgb(var(--ink) / <alpha-value>)",
         muted: "rgb(var(--muted) / <alpha-value>)",
         line: "rgb(var(--line) / <alpha-value>)",
+        edge: "rgb(var(--edge) / <alpha-value>)",
         proven: "rgb(var(--proven) / <alpha-value>)",
         hurts: "rgb(var(--hurts) / <alpha-value>)",
         bound: "rgb(var(--bound) / <alpha-value>)",

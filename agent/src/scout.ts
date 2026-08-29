@@ -134,13 +134,14 @@ async function gatherEvidence(t: Target, attested: bigint) {
     const first = logs[0]; const fh = BigInt(first.blockNumber);
     // helps: earliest feedback + seniority
     const hist = await reviewerHistory(rv, fh);
-    const cands: Candidate[] = [{ kind: "feedback", direction: "helps", txHash: first.transactionHash, height: fh, reviewer: rv, note: `earliest feedback by ${rv.slice(0, 10)}`, estGas: estimateGas("feedback", fh, attested) }];
+    // helps: every feedback index of this reviewer (so the pair has no gaps and the escrow is not gated), oldest first
+    const cands: Candidate[] = logs.map((l, i) => ({ kind: "feedback" as const, direction: "helps" as const, txHash: l.transactionHash, height: BigInt(l.blockNumber), reviewer: rv, note: `${i === 0 ? "earliest" : "next"} feedback #${decodeFb(l.data)[0]} by ${rv.slice(0, 10)}`, estGas: estimateGas("feedback", BigInt(l.blockNumber), attested) }));
     let age = 0n, depth = 1;
     if (hist.length) { age = fh - BigInt(hist[0].blockNumber); for (const tx of hist.slice(0, Math.max(1, t.thresholds.minDepth - 1))) { cands.push({ kind: "activity", direction: "helps", txHash: tx.hash, height: BigInt(tx.blockNumber), reviewer: rv, note: `activity of ${rv.slice(0, 10)} @${tx.blockNumber}`, estGas: estimateGas("activity", BigInt(tx.blockNumber), attested) }); depth++; } }
     helps.push({ reviewer: rv, cands, age, depth, cost: cands.reduce((s, c) => s + c.estGas, 0) });
     // hurts: negatives, higher indices, reviewer owns agents
     for (const l of logs) { const [idx, value] = decodeFb(l.data); if (BigInt(value) < 0n) hurts.push({ kind: "negative", direction: "hurts", txHash: l.transactionHash, height: BigInt(l.blockNumber), reviewer: rv, note: `negative feedback #${idx} by ${rv.slice(0, 10)}`, estGas: estimateGas("negative", BigInt(l.blockNumber), attested) }); }
-    if (logs.length > 1) { const last = logs[logs.length - 1]; const [idx] = decodeFb(last.data); hurts.push({ kind: "higherIndex", direction: "hurts", txHash: last.transactionHash, height: BigInt(last.blockNumber), reviewer: rv, note: `latest index #${idx} by ${rv.slice(0, 10)} (exposes gaps)`, estGas: estimateGas("higherIndex", BigInt(last.blockNumber), attested) }); }
+    if (logs.length > 6) { const last = logs[logs.length - 1]; const [idx] = decodeFb(last.data); hurts.push({ kind: "higherIndex", direction: "hurts", txHash: last.transactionHash, height: BigInt(last.blockNumber), reviewer: rv, note: `latest index #${idx} by ${rv.slice(0, 10)} (exposes gaps; ${logs.length} reviews, too many to prove all)`, estGas: estimateGas("higherIndex", BigInt(last.blockNumber), attested) }); }
     const owned = await getLogs(ID_REG, SIG_REGISTERED, { topic2: pad32(rv) });
     if (owned.length) hurts.push({ kind: "reviewerOwnsAgent", direction: "hurts", txHash: owned[0].transactionHash, height: BigInt(owned[0].blockNumber), reviewer: rv, note: `reviewer ${rv.slice(0, 10)} owns ${owned.length} agent(s) → not independent`, estGas: estimateGas("reviewerOwnsAgent", BigInt(owned[0].blockNumber), attested) });
   }

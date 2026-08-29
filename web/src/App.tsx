@@ -3,7 +3,7 @@ import type { AgentDemo, Facts, Quote, Thresholds } from "./lib/types";
 import { attestedHeight, live, liveFacts, liveQuote, quoteLocal, FACTS_ADDR, ESCROW_ADDR, CC3_RPC } from "./lib/chain";
 import { blocksToDuration, num, pct, short } from "./lib/format";
 
-const DEFAULT_T: Thresholds = { minAge: 1_300_000, minDepth: 3, k: 3, c: 5 };
+const DEFAULT_T: Thresholds = { minAge: 500_000, minDepth: 2, k: 3, c: 5 };
 const CHAIN_KEY = 3;
 
 type FactKey = keyof Facts;
@@ -28,7 +28,7 @@ function useTheme() {
 export default function App() {
   const { dark, setDark } = useTheme();
   const [demo, setDemo] = useState<Record<string, AgentDemo> | null>(null);
-  const [ids, setIds] = useState<[string, string]>(["34135", "50283"]);
+  const [ids, setIds] = useState<[string, string]>(["22771", "50283"]);
   const [t, setT] = useState<Thresholds>(DEFAULT_T);
   const [attested, setAttested] = useState<number | null>(null);
   const [liveData, setLiveData] = useState<Record<string, { facts: Facts; quote: Quote } | { error: string }>>({});
@@ -59,7 +59,7 @@ export default function App() {
           <div className="flex items-center gap-3 font-mono text-xs text-muted">
             <span className={`stamp ${mode === "live" ? "border-proven text-proven" : "border-bound text-bound"}`}>{mode === "live" ? `LIVE · ${short(FACTS_ADDR, 4)}` : "DEMO · from proofs"}</span>
             <span>attested mainnet height {attested ? num(attested) : "…"}</span>
-            <button onClick={() => setDark(!dark)} className="rounded border border-line px-2 py-1 hover:bg-card" aria-label="Toggle theme">{dark ? "light" : "dark"}</button>
+            <button onClick={() => setDark(!dark)} className="rounded border border-edge px-2 py-1 hover:bg-card" aria-label="Toggle theme">{dark ? "light" : "dark"}</button>
           </div>
         </div>
       </header>
@@ -96,7 +96,7 @@ function ThresholdBar({ t, onChange, ids, onIds }: { t: Thresholds; onChange: (t
   const F = ({ label, k, step, help }: { label: string; k: keyof Thresholds; step: number; help: string }) => (
     <label className="flex flex-col gap-1 text-xs">
       <span className="text-muted">{label} <span title={help} className="cursor-help underline decoration-dotted">?</span></span>
-      <input type="number" min={0} step={step} value={t[k]} onChange={(e) => onChange({ ...t, [k]: Number(e.target.value) })} className="w-32 rounded border border-line bg-card px-2 py-1 font-mono" />
+      <input type="number" min={0} step={step} value={t[k]} onChange={(e) => onChange({ ...t, [k]: Number(e.target.value) })} className="w-32 rounded border border-edge bg-card px-2 py-1 font-mono" />
     </label>
   );
   return (
@@ -106,14 +106,14 @@ function ThresholdBar({ t, onChange, ids, onIds }: { t: Thresholds; onChange: (t
           <div className="text-xs text-muted mb-1">Consumer thresholds</div>
           <p className="text-sm max-w-md">The contract has no weights. These four numbers are yours; the receipt below is what the contract answers for them.</p>
         </div>
-        <F label="minAge (blocks before first review)" k="minAge" step={50_000} help="Reviewer's oldest proven tx must be at least this many Ethereum blocks before its first feedback on the agent. 1,300,000 ≈ 6 months." />
+        <F label="minAge (blocks before first review)" k="minAge" step={50_000} help="Reviewer's oldest proven tx must be at least this many Ethereum blocks before its first feedback on the agent. 500,000 ≈ 70 days; 1,300,000 ≈ 6 months." />
         <F label="minDepth (activity months)" k="minDepth" step={1} help="Distinct ~30-day windows with a proven tx from the reviewer." />
         <F label="k (reviewers for full coverage)" k="k" step={1} help="breadthGrounded ≥ k gives full coverage in the premium formula." />
         <F label="c (clone tolerance)" k="c" step={1} help="Risk factor c / (c + cloneDensityLB)." />
         <div className="ml-auto flex gap-3">
           {ids.map((id, i) => (
             <label key={i} className="flex flex-col gap-1 text-xs"><span className="text-muted">agent {i === 0 ? "A" : "B"}</span>
-              <input value={id} onChange={(e) => onIds(i === 0 ? [e.target.value, ids[1]] : [ids[0], e.target.value])} className="w-24 rounded border border-line bg-card px-2 py-1 font-mono" /></label>
+              <input value={id} onChange={(e) => onIds(i === 0 ? [e.target.value, ids[1]] : [ids[0], e.target.value])} className="w-24 rounded border border-edge bg-card px-2 py-1 font-mono" /></label>
           ))}
         </div>
       </div>
@@ -144,7 +144,7 @@ function AgentReceipt({ id, demo, facts, quote, t, mode, error, loading }: { id:
                 <li key={m.key}>
                   <button onClick={() => setOpen(isOpen ? null : m.key)} aria-expanded={isOpen} className="w-full px-5 py-2.5 flex items-baseline justify-between gap-4 text-left hover:bg-paper/60">
                     <span className="text-sm">{m.label}<span className="ml-2 text-muted text-xs" title={m.hint}>?</span></span>
-                    <span className={`font-mono text-2xl tabular-nums ${v > 0 && m.tone === "hurts" ? "text-hurts" : v > 0 && m.tone === "bound" ? "text-bound" : v > 0 ? "text-proven" : "text-muted"}`}>{num(v)}</span>
+                    <span className={`font-mono text-xl sm:text-2xl tabular-nums ${v > 0 && m.tone === "hurts" ? "text-hurts" : v > 0 && m.tone === "bound" ? "text-bound" : v > 0 ? "text-proven" : "text-muted"}`}>{num(v)}</span>
                   </button>
                   {isOpen && (
                     <div className="receipt px-5 pb-4 pt-1 font-mono text-[11px] leading-relaxed text-muted">
@@ -182,13 +182,13 @@ function Reviewers({ d, t }: { d: AgentDemo; t: Thresholds }) {
   return (
     <div className="px-5 pb-5">
       <div className="text-xs text-muted mb-2">Reviewers (from proofs)</div>
-      <table className="w-full text-xs font-mono">
+      <div className="overflow-x-auto"><table className="w-full text-xs font-mono">
         <thead className="text-muted"><tr><th className="text-left font-normal">client</th><th className="text-right font-normal">age</th><th className="text-right font-normal">months</th><th className="text-right font-normal">idx</th><th className="text-right font-normal">owns</th><th className="text-right font-normal">senior</th></tr></thead>
         <tbody>
           {d.reviewers.map((r) => { const ok = Number(r.ageBlocks) >= t.minAge && r.depth >= t.minDepth && Number(r.ageBlocks) > 0; return (
             <tr key={r.client} className="border-t border-line/60"><td className="py-1"><a className="underline" href={`https://eth.blockscout.com/address/${r.client}`} target="_blank" rel="noreferrer">{short(r.client)}</a></td><td className="text-right">{r.oldestHeight ? blocksToDuration(r.ageBlocks) : "—"}</td><td className="text-right">{r.depth}</td><td className="text-right">{r.proven}/{r.maxIndex}</td><td className={`text-right ${r.ownsAgents > 0 ? "text-hurts" : ""}`}>{r.ownsAgents}</td><td className={`text-right ${ok ? "text-proven" : "text-muted"}`}>{ok ? "yes" : "no"}</td></tr>); })}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }

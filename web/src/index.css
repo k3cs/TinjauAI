@@ -9,7 +9,8 @@
   --ink: 20 33 43;
   --muted: 92 106 118;
   --line: 200 208 216;
-  --proven: 14 124 102;   /* teal: proven / helps */
+  --edge: 154 166 178;    /* form/control borders ≥3:1 on paper */
+  --proven: 11 107 88;   /* teal: proven / helps */
   --hurts: 163 74 18;     /* burnt sienna: hurts */
   --bound: 107 91 149;    /* mauve: lower bound / unknown */
 }
@@ -19,6 +20,7 @@
   --ink: 230 237 242;
   --muted: 150 165 178;
   --line: 52 66 80;
+  --edge: 85 102 119;
   --proven: 63 191 159;
   --hurts: 232 137 84;
   --bound: 168 152 210;
