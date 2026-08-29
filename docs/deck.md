@@ -4,8 +4,8 @@ theme: default
 paginate: true
 ---
 
-# Grounded Agent Reputation
-**Facts about AI agents and their reviewers, proven from Ethereum into Creditcoin**
+# Tinjau
+**Grounded Agent Reputation: facts about AI agents and their reviewers, proven from Ethereum into Creditcoin**
 BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet + Attestcoin
 
 ---

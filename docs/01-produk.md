@@ -1,4 +1,4 @@
-# Grounded Agent Reputation — Dokumen Produk
+# Tinjau — Dokumen Produk (Grounded Agent Reputation)
 
 Versi 1.0 · 29 Agu 2026 · Hackathon: BUIDL CTC 2026 Fall (track AI) · Status: dibangun, menunggu deploy CC3 Testnet
 

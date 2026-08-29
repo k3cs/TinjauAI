@@ -1,6 +1,6 @@
 # DoraHacks submission text (draft; isi placeholder setelah Task 3–9)
 
-**Project name:** Grounded Agent Reputation
+**Project name:** Tinjau (Grounded Agent Reputation)
 **Sector / track:** AI (secondary: DeFi)
 
 **One-liner (≤140 chars):** Facts about ERC-8004 agents and their reviewers, proven from Ethereum mainnet into a Creditcoin contract. No score, no oracle.
@@ -8,7 +8,7 @@
 **Description (≤300 words):**
 The ERC-8004 reputation registry on Ethereum mainnet is live and unusable raw: 346 of 367 rated agents have exactly one reviewer, one wallet wrote 225 reviews, 16 of 105 reviewers own agents themselves and wrote 59% of all feedback, and 83% of the last 60 days' registrations came from owners holding ten or more agents. The standard's own answer is to aggregate off-chain and trust the aggregator.
 
-Grounded Agent Reputation is a Creditcoin contract, `GroundedFacts`, that admits data only through Attestcoin proofs of Ethereum transactions. From proven `NewFeedback`, `FeedbackRevoked`, `Registered` and `Transfer` events — plus any proven transaction as evidence of its sender's activity — it records facts: which reviews are real, how long each reviewer had been active before reviewing, whether review indices have gaps, whether a reviewer owns agents, and how many agents share the same owner, registrant, URI or minting transaction. It computes no score. Consumers pass their own thresholds and get numbers that anyone can recompute from the same proofs.
+Tinjau is a Creditcoin contract, `GroundedFacts`, that admits data only through Attestcoin proofs of Ethereum transactions. From proven `NewFeedback`, `FeedbackRevoked`, `Registered` and `Transfer` events — plus any proven transaction as evidence of its sender's activity — it records facts: which reviews are real, how long each reviewer had been active before reviewing, whether review indices have gaps, whether a reviewer owns agents, and how many agents share the same owner, registrant, URI or minting transaction. It computes no score. Consumers pass their own thresholds and get numbers that anyone can recompute from the same proofs.
 
 Two example consumers turn facts into money without a reserve or an oracle: `AgentHireEscrow` charges a dynamic premium paid to the agent, and `CoverageBounty` pays whoever submits proofs that change a consumer's decision, in either direction. `GroundedScout` is the autonomous agent: it picks targets from open bounties and registry activity, gathers evidence that helps and evidence that hurts, skips proofs another scout already admitted, proves only when the bounty covers gas, and hires or funds bounties on its own thresholds.
 

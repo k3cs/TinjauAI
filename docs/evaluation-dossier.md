@@ -1,6 +1,6 @@
-# Grounded Agent Reputation — dokumen penilaian untuk BUIDL CTC 2026 Fall
+# Tinjau (Grounded Agent Reputation) — dokumen penilaian untuk BUIDL CTC 2026 Fall
 
-Versi dokumen: 1.2 · Tanggal: 2026-08-29 · Status proyek: **kontrak + agent dibangun dan diuji lokal (14/14 test), belum dideploy ke CC3 Testnet (menunggu faucet)**. Repo: `hackathons/ctc/build/grounded-reputation/` (Foundry + TypeScript). Semua angka berasal dari pengukuran langsung terhadap Ethereum mainnet, Sepolia, dan Creditcoin CC3 Testnet pada 29 Agu 2026.
+Versi dokumen: 1.3 (nama produk: Tinjau) · Tanggal: 2026-08-29 · Status proyek: **kontrak + agent dibangun dan diuji lokal (14/14 test), belum dideploy ke CC3 Testnet (menunggu faucet)**. Repo: `hackathons/ctc/build/grounded-reputation/` (Foundry + TypeScript). Semua angka berasal dari pengukuran langsung terhadap Ethereum mainnet, Sepolia, dan Creditcoin CC3 Testnet pada 29 Agu 2026.
 
 Dokumen ini ditulis agar penilai (manusia atau AI agent) dapat memeriksa setiap klaim secara independen. Setiap klaim substantif diberi label **[Fakta]** (ada sumber/perintah yang bisa dijalankan ulang) atau **[Inferensi]** (penalaran penulis). Bagian 9 berisi perintah verifikasi.
 

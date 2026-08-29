@@ -1,4 +1,4 @@
-# Skrip video demo (≤3:00) — Grounded Agent Reputation
+# Skrip video demo (≤3:00) — Tinjau
 
 Format: rekaman layar satu take; kiri terminal, kanan browser (Blockscout Creditcoin + Ethereum). Narasi Bahasa Inggris singkat, teks di layar. Placeholder `<FACTS>`, `<ESCROW>`, `<TX_…>` diisi setelah Task 3–6.
 

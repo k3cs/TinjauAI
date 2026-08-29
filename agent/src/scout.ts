@@ -1,5 +1,5 @@
 /**
- * GroundedScout — autonomous agent over GroundedFacts (Creditcoin CC3 Testnet).
+ * Tinjau scout (GroundedScout) — autonomous agent over GroundedFacts (Creditcoin CC3 Testnet).
  *
  * Roles (each is a decision the agent makes on its own, logged with the alternatives it rejected):
  *   R1 TARGETING   pick which agents to work on: open bounties first (money), then registry activity

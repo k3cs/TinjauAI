@@ -53,7 +53,7 @@ export default function App() {
       <header className="border-b border-line">
         <div className="mx-auto max-w-6xl px-5 py-4 flex flex-wrap items-baseline justify-between gap-3">
           <div>
-            <h1 className="font-display text-2xl leading-tight">Grounded Agent Reputation</h1>
+            <h1 className="font-display text-2xl leading-tight">Tinjau <span className="text-muted text-base font-sans">· grounded agent reputation</span></h1>
             <p className="text-muted text-sm mt-1">Facts about ERC-8004 agents, admitted into Creditcoin only through Attestcoin proofs. No score: you set the thresholds.</p>
           </div>
           <div className="flex items-center gap-3 font-mono text-xs text-muted">

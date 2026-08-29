@@ -1,4 +1,4 @@
-# Grounded Agent Reputation — Kebutuhan Teknis
+# Tinjau — Kebutuhan Teknis
 
 Versi 1.0 · 29 Agu 2026 · Repo `hackathons/ctc/build/grounded-reputation/`
 

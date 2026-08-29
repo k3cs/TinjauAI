@@ -1,6 +1,6 @@
-# Grounded Agent Reputation
+# Tinjau
 
-**Facts about ERC-8004 agents and their reviewers, admitted into a Creditcoin contract only through Attestcoin proofs of Ethereum transactions. No score, no oracle, no aggregator signature: consumers bring their own thresholds and anyone can recompute the facts from the published proofs.**
+**Grounded Agent Reputation.** Facts about ERC-8004 agents and their reviewers, admitted into a Creditcoin contract only through Attestcoin proofs of Ethereum transactions. No score, no oracle, no aggregator signature: consumers bring their own thresholds and anyone can recompute the facts from the published proofs.**
 
 BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet (chainId 102031) · Source chains: Ethereum mainnet (Attestcoin chainKey 3) and Sepolia (chainKey 1).
 
