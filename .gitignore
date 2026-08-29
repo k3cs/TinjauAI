@@ -1,0 +1,7 @@
+out/
+cache/
+node_modules/
+.env
+agent/dist/
+agent/plans/
+broadcast/*/dry-run/
