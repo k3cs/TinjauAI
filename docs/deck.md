@@ -79,5 +79,5 @@ BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet + Attestcoin
 
 ## Team & links
 - Dien — builder (Veritas UHI9 winner: dynamic fee / DRS pattern reused here without the insurance reserve)
-- Repo: `<GITHUB_URL>` · Contracts: `<FACTS>`, `<ESCROW>`, `<BOUNTY>` · Video: `<VIDEO_URL>`
+- Repo: `https://github.com/k3cs/TinjauAI` · Contracts: `0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc`, `0x153201A94E83AB5aA1C64f095375F2916EDA9F98`, `0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70` · Video: `<VIDEO_URL>`
 - Dossier with verification commands: `docs/evaluation-dossier.md`

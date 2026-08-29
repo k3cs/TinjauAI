@@ -30,7 +30,7 @@ Consumers (examples): `AgentHireEscrow` (dynamic premium paid to the agent owner
 - Two chain keys in one contract; `calculateTxIndex` for dedup; `EvmV1Decoder` for `from`, receipt status and log address filtering; registry counters (`feedbackIndex`) as a partial completeness oracle.
 
 ## Deployed (Creditcoin CC3 Testnet)
-`GroundedFacts` 0x7DDE4Ad36827e1e975ef98c0d876454BD4c215Ad · `AgentHireEscrow` 0x20497F17A14669E4D149374061BC063a4880eb7c · `CoverageBounty` 0x1f29E8427aBaF8b2Fdc24906a17fb0Fde2d885BB (all verified on creditcoin-testnet.blockscout.com). Live facts: `facts(3, 22771)` → 3 senior reviewers, premium 1%; `facts(3, 50283)` → 1 reviewer owning 6+ agents, 5 clone siblings, gated. Tx list and gas: `ATTESTCOIN_INTEGRATION.md`.
+`GroundedFacts` 0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc · `AgentHireEscrow` 0x153201A94E83AB5aA1C64f095375F2916EDA9F98 · `CoverageBounty` 0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70 (all verified on creditcoin-testnet.blockscout.com). Live UI: https://k3cs.github.io/TinjauAI/. Live facts: `facts(3, 22771)` → 3 senior reviewers, premium 1%; `facts(3, 50283)` → 1 reviewer owning 6+ agents, 5 clone siblings, gated. Tx list and gas: `ATTESTCOIN_INTEGRATION.md`.
 
 ## Run
 
@@ -39,7 +39,7 @@ forge test -vv                      # unit tests with real mainnet txBytes fixtu
 cd agent && npm i
 npx tsx src/scout.ts --agents=34135,50283 --minAge=1300000 --minDepth=3 --k=3 --c=5   # dry-run: plan + proofs
 npx tsx src/verify.ts plans/agent-34135-*.json                                          # recompute facts
-# live: PRIVATE_KEY=… npx tsx src/scout.ts --facts=0x7DDE4Ad36827e1e975ef98c0d876454BD4c215Ad --bounty=0x20497F17A14669E4D149374061BC063a4880eb7c --escrow=0x1f29E8427aBaF8b2Fdc24906a17fb0Fde2d885BB --maxTargets=2 --hireWei=10000000000000000
+# live: PRIVATE_KEY=… npx tsx src/scout.ts --facts=0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc --bounty=0x153201A94E83AB5aA1C64f095375F2916EDA9F98 --escrow=0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70 --maxTargets=2 --hireWei=10000000000000000
 cd web && cp .env.example .env.local && npx vite dev   # set VITE_FACTS/VITE_ESCROW for live mode
 forge script script/Deploy.s.sol --rpc-url cc3 --broadcast --private-key $PRIVATE_KEY
 ```

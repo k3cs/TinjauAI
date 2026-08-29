@@ -17,6 +17,6 @@ Attestcoin depth: mainnet (chainKey 3) and Sepolia (chainKey 1) in one contract;
 Limits, stated: Ethereum-side registries only; unsubmitted newest reviews are undetectable; clone density is a lower bound; no consumer contract exists on Creditcoin yet.
 
 **Attestcoin Integration Summary:** (salin `ATTESTCOIN_INTEGRATION.md`)
-**Repository:** `<GITHUB_URL>` · **Demo video:** `<VIDEO_URL>` · **Deck:** `<DECK_PDF_URL>`
-**Contracts (CC3 Testnet):** GroundedFacts `<FACTS>` · AgentHireEscrow `<ESCROW>` · CoverageBounty `<BOUNTY>`
+**Repository:** `https://github.com/k3cs/TinjauAI` · **Demo video:** `<VIDEO_URL>` · **Deck:** `https://github.com/k3cs/TinjauAI/blob/main/docs/deck.pdf`
+**Contracts (CC3 Testnet):** GroundedFacts `0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc` · AgentHireEscrow `0x153201A94E83AB5aA1C64f095375F2916EDA9F98` · CoverageBounty `0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70`
 **Team:** Dien (builder) — data per form DoraHacks (nama, email, negara, bio, peran).
