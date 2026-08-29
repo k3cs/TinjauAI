@@ -18,8 +18,8 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | ID | Task | Status | Bukti/Catatan |
 |---|---|---|---|
 | T2.1 | Wallet deployer + `.env` | ✅ | `0xd25079d4E75076b1271e2283ed94c93BF92A77B9` |
-| T2.2 | tCTC dari faucet Discord | ⏳ Dien | `/faucet address:0xd250…77B9` |
-| T2.3 | `forge script Deploy --broadcast` | ⬜ | tergantung T2.2 |
+| T2.2 | tCTC ke deployer | ⏳ Dien | Dien mengisi wallet-nya sendiri `0x3D36…0E49` (10.000 tCTC), tetapi deployer `0xd250…77B9` masih 0 dan kuncinya `0x3D36…` tidak ada di `.env`. Pilih: kirim ≥0,1 tCTC ke `0xd250…77B9`, atau tulis `PRIVATE_KEY` wallet `0x3D36…` ke `.env` sendiri |
+| T2.3 | `forge script Deploy --broadcast` | ⏸ ditunda Dien (29 Agu: "task 3–5 nanti") | tergantung T2.2 |
 | T2.4 | Verifikasi kontrak di Blockscout CC3 | ⬜ | |
 | T2.5 | `record` live: 1 proof mainnet + 1 proof Sepolia; catat gas nyata | ⬜ | perbarui dosier §5/§8.4 |
 | T2.6 | Buat ulasan & agent sendiri di registri **Sepolia** (cadangan demo chainKey 1) | ❌ dipotong | scope-cut 29 Agu |
@@ -45,8 +45,30 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T4.3 | Dokumen produk / teknis / tracker | ✅ | `docs/01-03` |
 | T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | 🔄 skrip ✅ (`docs/demo-script.md`), rekaman ⏳ Dien | placeholder hash diisi setelah T2–T3 |
 | T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | 🔄 draf ✅ (`docs/deck.md`), PDF via marp | placeholder alamat/URL |
-| T4.6 | Commit & push repo publik (original work) | 🔄 commit ✅ (0993947, 91d7319, a8f8e5a); push ⏳ Dien buat repo | |
+| T4.6 | Commit & push repo publik (original work) | 🔄 commit ✅ (5 commit); push ❌ 403 | remote `k3cs/TinjauAI` ada (publik), tapi git lokal terautentikasi sebagai `scientivan` → Dien: tambah `scientivan` sebagai collaborator, atau jalankan `gh auth login` sebagai `k3cs` di mesin ini |
 | T4.7 | Submission DoraHacks (nama, deskripsi, Integration Summary, repo, video, tim) | 🔄 teks ✅ (`docs/submission.md`); submit ⏳ Dien | |
+
+## T5 Pipeline web3-hackathon (skill & plugin per stage, mulai 29 Agu malam)
+| ID | Stage → skill/plugin | Status | Output |
+|---|---|---|---|
+| T5.0 | 0 → `web3-hackathon-pipeline` (workspace `hackathons/ctc/` disinkronkan: HACKATHON, TEAM, REFERENCES REF-001..012, DECISIONS DEC-001..004, SERVICES SVC-001..007, SKILLS, PIPELINE, LEARNINGS; validator 0 error) | ✅ | `hackathons/ctc/*.md` |
+| T5.1 | 1 → `wh-core:prior-art-scan` (4 lapis, konfirmasi ide terkunci) | ✅ | `docs/hackathon/prior-art/grounded-agent-reputation.md`; verdict CELAH NYATA sempit; Kleros/MainStreet |
+| T5.2 | 1 → `wh-core:onchain-validate` (RPC 60 hari, pembanding Base/Arbitrum; tanpa Dune) | ✅ | `docs/hackathon/validation/grounded-agent-reputation.md`; 121 ulasan/60 hari; 83% klon |
+| T5.3 | 2 → `superpowers:brainstorming`, `validate-idea`, `find-next-crypto-idea` | ❌ tidak dijalankan | Checkpoint 1 sudah disetujui; diganti idea-loop (OVERRIDE-001/002) |
+| T5.4 | 3 → `pm-product-strategy:value-proposition` | ✅ | `hackathons/ctc/outputs/03-product/value-proposition.md` |
+| T5.5 | 3 → `wh-core:scope-cut` | ✅ | `outputs/03-product/scope-cut.md`; 43 jam, gerbang 1/3/6 Sep |
+| T5.6 | 3 → `product-review` (opsional) | ⬜ | bila waktu tersisa, setelah UI |
+| T5.7 | 4 → `engineering:architecture` | ✅ | `outputs/04-planning/adr-001-architecture.md` |
+| T5.8 | 4 → `superpowers:writing-plans` | ✅ | `outputs/04-planning/implementation-plan.md` (Task 1–11) |
+| T5.9 | 4 → Checkpoint 2 (DEC-003) | ✅ disetujui Dien 29 Agu | `DECISIONS.md` |
+| T5.10 | 5 → `superpowers:executing-plans` | 🔄 | Task 1 ✅, Task 6 Step 1–3 ✅, Task 7 skrip ✅, Task 8 draf+PDF ✅, Task 11 teks ✅; Task 3–5 ditunda Dien |
+| T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | 🔄 | `web/` |
+| T5.12 | 6 → `superpowers:verification-before-completion` (wajib sebelum exit stage) | ⬜ | |
+| T5.13 | 6 → `engineering:code-review` / `review-and-iterate` / `cso` (opsional, sesuai risiko) | ⬜ | |
+| T5.14 | 7 → `wh-core:demo-package` (wajib sebelum Checkpoint 3) | ⬜ | |
+| T5.15 | 7 → `elements-of-style:writing-clearly-and-concisely` (README, deskripsi) | ⬜ | |
+| T5.16 | 7 → `hyperframes:hyperframes` / `marketing-video` / `create-pitch-deck` / `submit-to-hackathon` | ⬜ | video/deck; submit oleh Dien |
+| T5.17 | 8 → `learn`, `pm-execution:retro` | ⬜ | setelah pengumuman |
 
 ## Rencana implementasi rinci: `hackathons/ctc/outputs/04-planning/implementation-plan.md` (Task 1–11, owner & exit criterion per langkah)
 
