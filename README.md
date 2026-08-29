@@ -5,10 +5,10 @@
 **Live:** https://k3cs.github.io/TinjauAI/ · **Contracts (Creditcoin CC3 Testnet, verified):** [`GroundedFacts`](https://creditcoin-testnet.blockscout.com/address/0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc) · [`AgentHireEscrow`](https://creditcoin-testnet.blockscout.com/address/0x153201A94E83AB5aA1C64f095375F2916EDA9F98) · [`CoverageBounty`](https://creditcoin-testnet.blockscout.com/address/0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70) · BUIDL CTC 2026 Fall, track AI
 
 ## Problem
-The ERC-8004 reputation registry on Ethereum mainnet is live and unusable raw. In the last 600 reviews, 346 of 367 agents have exactly one reviewer and one wallet wrote 225 reviews; 16 of 105 reviewers own agents themselves and wrote 59% of all feedback; in the last 60 days 83% of new registrations came from owners holding ten or more agents, 8,136 of them minted in batch transactions (RPC measurement, 29 Aug 2026; arXiv 2606.26028 finds 73.5% coordinated Sybil reviewers on Ethereum). The standard's own answer is "aggregate off-chain and trust the aggregator".
+The ERC-8004 reputation registry on Ethereum mainnet is live, and nobody can read it raw. Of the last 600 reviews, 346 of 367 agents have one reviewer and one wallet wrote 225 reviews; 16 of 105 reviewers own agents and wrote 59% of all feedback; in the last 60 days, owners holding ten or more agents made 83% of new registrations, 8,136 of them in batch transactions (RPC measurement, 29 Aug 2026; arXiv 2606.26028 finds 73.5% coordinated Sybil reviewers on Ethereum). The standard answers: aggregate off-chain and trust the aggregator.
 
 ## Solution
-Tinjau is a Creditcoin contract that admits **facts** about agents and their reviewers only through Attestcoin proofs of Ethereum transactions: which reviews are real, how long each reviewer had been active before reviewing, whether review indices have gaps, whether a reviewer owns agents, and how many agents share the same owner, registrant, URI or minting transaction. It computes no score; you pass your thresholds and get numbers anyone can recompute from the same proofs. An escrow turns the facts into a hiring premium, a bounty pays whoever brings evidence that changes a decision, and an autonomous scout decides what to prove.
+Tinjau is a Creditcoin contract that admits **facts** about agents and their reviewers only through Attestcoin proofs of Ethereum transactions: which reviews exist, how long each reviewer was active before reviewing, whether review indices have gaps, whether a reviewer owns agents, and how many agents share an owner, registrant, URI or minting transaction. It computes no score. You pass your thresholds; it returns numbers anyone can recompute from the same proofs. An escrow turns the facts into a hiring premium, a bounty pays whoever brings evidence that changes a decision, and an autonomous scout decides what to prove.
 
 ## How it works
 ```mermaid
@@ -49,9 +49,9 @@ All code in this repository was written during BUIDL CTC 2026 Fall (first commit
 
 ## Known limitations
 - Ethereum-side registries only (Attestcoin chainKey 1 and 3); Base has ~139× more registry activity and is out of reach today.
-- The newest review nobody submitted is undetectable; only gaps below the highest proven `feedbackIndex` are. Bounties pay for higher indices.
-- Clone density is a lower bound; aged wallets can be bought; legitimate multi-agent operators look like clone farms. Facts are reported, not judged.
+- A review nobody has submitted yet is invisible; the contract detects only gaps below the highest proven `feedbackIndex`. Bounties pay for higher indices.
+- Clone density is a lower bound; anyone can buy aged wallets; honest multi-agent operators look like clone farms. The contract reports facts and does not judge them.
 - `facts()` iterates at most 256 reviewers per query (`truncated` flag beyond that).
-- No consumer contract exists on Creditcoin today; the escrow is an example consumer. Attestcoin moves trust from RPC/indexers to Creditcoin's bonded attestor set; it does not remove it.
+- No consumer contract exists on Creditcoin today; the escrow is an example. Attestcoin moves trust from RPCs and indexers to Creditcoin's bonded attestors; it does not remove trust.
 
 Docs: product `docs/01-produk.md`, technical `docs/02-teknis.md`, tracker `docs/03-task-tracker.md`, evaluation dossier with verification commands `docs/evaluation-dossier.md`, deck `docs/deck.pdf`, demo script `docs/demo-script.md`. License: MIT.

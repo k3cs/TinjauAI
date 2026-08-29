@@ -56,7 +56,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | 🔄 skrip ✅ dengan hash v2 (`docs/demo-script.md`), rekaman ⏳ Dien | |
 | T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | ✅ | `docs/deck.pdf` dengan alamat v2, repo, live UI; video URL menyusul |
 | T4.6 | Commit & push repo publik (original work) | ✅ | https://github.com/k3cs/TinjauAI (gh auth `dienmsk`); 11 commit |
-| T4.7 | Submission DoraHacks (nama, deskripsi, Integration Summary, repo, video, tim) | 🔄 teks ✅ (`docs/submission.md`); submit ⏳ Dien | |
+| T4.7 | Submission DoraHacks | 🔄 checklist `outputs/07-submission/demo-package.md` §4; Checkpoint 3 DEC-005 proposed | Dien: video URL, data tim, submit |
 
 ## T5 Pipeline web3-hackathon (skill & plugin per stage, mulai 29 Agu malam)
 | ID | Stage → skill/plugin | Status | Output |
@@ -75,9 +75,9 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | ✅ | `web/` (Vite+React+Tailwind): kuitansi fakta 2 agent, meter premi, tabel pengulas, log scout, blok verifikasi; mode demo (`public/demo/facts.json`) / live (`VITE_FACTS`); kontras AA diaudit (proven `#0B6B58`, token `edge`), reduced-motion, fokus; screenshot ditinjau di Chrome; commit 98dbc16, 022bfc3 |
 | T5.12 | 6 → `superpowers:verification-before-completion` | ✅ | `hackathons/ctc/outputs/06-quality/verification.md`: A1–A5, A7 terbukti segar; A6 direvisi (kontras via quote + gate); A8 menunggu video |
 | T5.13 | 6 → `engineering:code-review` | ✅ | `outputs/06-quality/code-review.md`; 0 kritis, 4 perbaikan diterapkan |
-| T5.14 | 7 → `wh-core:demo-package` (wajib sebelum Checkpoint 3) | ⬜ | |
-| T5.15 | 7 → `elements-of-style:writing-clearly-and-concisely` (README, deskripsi) | ⬜ | |
-| T5.16 | 7 → `hyperframes:hyperframes` / `marketing-video` / `create-pitch-deck` / `submit-to-hackathon` | ⬜ | video/deck; submit oleh Dien |
+| T5.14 | 7 → `wh-core:demo-package` | ✅ | `outputs/07-submission/demo-package.md`; README ditulis ulang, LICENSE, skrip video v2, copy sosial, checklist |
+| T5.15 | 7 → `elements-of-style:writing-clearly-and-concisely` | ✅ | README (Problem/Solution/Limits), `docs/submission.md` (297 kata), copy sosial: kalimat aktif, kata mubazir dibuang, angka/alamat tetap |
+| T5.16 | 7 → video/deck/submit | 🔄 | deck ✅ (`docs/deck.pdf` via marp; `create-pitch-deck` tidak dipakai); video = rekaman layar Dien (`hyperframes`/`marketing-video` tidak dipakai: bukan video render); `submit-to-hackathon` = Solana, tidak cocok; submit oleh Dien |
 | T5.17 | 8 → `learn`, `pm-execution:retro` | ⬜ | setelah pengumuman |
 
 ## Rencana implementasi rinci: `hackathons/ctc/outputs/04-planning/implementation-plan.md` (Task 1–11, owner & exit criterion per langkah)
