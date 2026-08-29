@@ -6,8 +6,8 @@ export const FACTS_ADDR = (import.meta.env.VITE_FACTS as string | undefined) ?? 
 export const ESCROW_ADDR = (import.meta.env.VITE_ESCROW as string | undefined) ?? "";
 export const PROVER = "https://proof-gen-api.cc3-testnet.creditcoin.network/api/v1";
 
-const FACTS_ABI = ["function facts(uint64,uint256,uint64,uint32) view returns ((uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64))", "function clientsOf(uint64,uint256) view returns (address[])"];
-const ESCROW_ABI = ["function quote(uint64,uint256,(uint64,uint32,uint64,uint64,uint16,uint16)) view returns (uint256,uint16,uint64,(uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64))"];
+const FACTS_ABI = ["function facts(uint64,uint256,uint64,uint32) view returns ((uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,bool))", "function clientsOf(uint64,uint256) view returns (address[])"];
+const ESCROW_ABI = ["function quote(uint64,uint256,(uint64,uint32,uint64,uint64,uint16,uint16)) view returns (uint256,uint16,uint64,(uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,uint64,bool))"];
 
 export const live = () => FACTS_ADDR.length === 42;
 

@@ -43,6 +43,7 @@ contract AgentHireEscrow {
     error Closed();
     error TooEarly();
     error BadParams();
+    error BadDeadline();
 
     constructor(GroundedFacts facts_) {
         facts = facts_;
@@ -60,12 +61,15 @@ contract AgentHireEscrow {
         if (coverage > 10_000) coverage = 10_000;
         uint256 cloneFactor = p.c == 0 ? (f.cloneDensityLB == 0 ? 10_000 : 0) : uint256(p.c) * 10_000 / (uint256(p.c) + f.cloneDensityLB);
         riskBps = 10_000 - coverage * cloneFactor / 10_000;
+        // safe: baseBps <= maxBps <= 10_000 and riskBps <= 10_000, so the result is <= 10_000
+        // forge-lint: disable-next-line(unsafe-typecast)
         premiumBps = uint16(uint256(p.baseBps) + (uint256(p.maxBps) - p.baseBps) * riskBps / 10_000);
         gapCount = f.gapCount;
     }
 
     /// @notice Open a job. msg.value = task payment; the premium is deducted and paid to the agent owner now.
     function hire(uint64 chainKey, uint256 agentId, Params calldata p, uint64 deadline) external payable returns (uint256 jobId) {
+        if (deadline <= block.timestamp) revert BadDeadline();
         (, uint16 premiumBps, uint64 gapCount,) = quote(chainKey, agentId, p);
         if (gapCount > 0) revert Gated(gapCount);
         (bool exists, address owner,,,,,) = facts.agents(facts.agentKey(chainKey, agentId));

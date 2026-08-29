@@ -36,6 +36,7 @@ contract CoverageBounty {
     error NoChange();
     error NotFunder();
     error NotExpired();
+    error BadExpiry();
 
     constructor(GroundedFacts facts_) {
         facts = facts_;
@@ -55,6 +56,7 @@ contract CoverageBounty {
         payable
         returns (uint256 id)
     {
+        if (expiry <= block.timestamp) revert BadExpiry();
         bytes32 d = decisionOf(chainKey, agentId, minAge, minDepth, k, c);
         id = bounties.length;
         bounties.push(Bounty(msg.sender, chainKey, agentId, minAge, minDepth, k, c, msg.value, expiry, d, true));

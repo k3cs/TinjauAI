@@ -189,7 +189,8 @@ async function main() {
     log(`[R2] evidence: ${ev.fbLogs.length} feedbacks / ${ev.byReviewer.size} reviewers · helps ${ev.helps.length} reviewers · hurts ${ev.hurts.length} (${ev.hurts.map((h) => h.kind).join(",") || "none"})`);
     const d = decide(t, ev);
     // R3: drop what another scout already admitted; prove now only if it pays
-    const fresh: Candidate[] = []; for (const c of d.chosen) { if (await alreadyAdmitted(c)) d.rejected.push({ c, why: "already admitted on-chain by someone else (txSeen)" }); else fresh.push(c); }
+    const fresh: Candidate[] = []; let seen = 0; for (const c of d.chosen) { if (await alreadyAdmitted(c)) { seen++; d.rejected.push({ c, why: "already admitted on-chain by someone else (txSeen)" }); } else fresh.push(c); }
+    if (seen) log(`[R3] skipped ${seen} proof(s) already admitted on-chain (txSeen) — no gas spent re-proving what another scout submitted`);
     const costWei = BigInt(fresh.reduce((s, c) => s + c.estGas, 0)) * GAS_PRICE_WEI;
     const worth = t.bountyWei === undefined ? true : t.bountyWei >= costWei;
     log(`[R3] ${fresh.length} proofs to submit (~${fresh.reduce((s, c) => s + c.estGas, 0)} gas ≈ ${ethers.formatEther(costWei)} tCTC)` + (t.bountyWei !== undefined ? ` vs bounty ${ethers.formatEther(t.bountyWei)} tCTC → ${worth ? "prove now" : "WAIT (bounty below cost)"}` : ""));
@@ -204,10 +205,15 @@ async function main() {
     writeFileSync(out, JSON.stringify({ target: { ...t, bountyWei: t.bountyWei?.toString(), thresholds: { ...t.thresholds, minAge: t.thresholds.minAge.toString() } }, chosen: fresh.map((c) => ({ ...c, height: c.height.toString() })), rejected: d.rejected.map((r) => ({ ...r, c: { ...r.c, height: r.c.height.toString() } })), proofs: proofs.length }, null, 1));
     log(`[plan] ${out} · ${proofs.length} proofs fetched`);
     if (!live || !worth || proofs.length === 0) continue;
-    // submit: via bounty (atomic claim) or plain record, ≤4 proofs per tx
+    // submit ≤4 proofs per tx. With a bounty, the LAST batch goes through proveAndClaim so the decision
+    // is compared after all evidence is in (claiming on the first batch reverts NoChange when k>1).
     for (let i = 0; i < proofs.length; i += 4) {
-      const slice = proofs.slice(i, i + 4);
-      const tx = t.bountyId !== undefined && i === 0 ? await bounty!.proveAndClaim(t.bountyId, slice) : await facts!.record(slice);
+      const slice = proofs.slice(i, i + 4); const last = i + 4 >= proofs.length;
+      let tx;
+      if (t.bountyId !== undefined && last) {
+        try { tx = await bounty!.proveAndClaim(t.bountyId, slice); log(`[R3] claiming bounty #${t.bountyId} with final batch`); }
+        catch (e: any) { log(`[R3] claim would revert (${e.shortMessage ?? e.message}); submitting as plain record`); tx = await facts!.record(slice); }
+      } else tx = await facts!.record(slice);
       log(`[tx] ${tx.hash}`); const rc = await tx.wait(); log(`[tx] mined block ${rc?.blockNumber} gasUsed ${rc?.gasUsed}`);
     }
     // R4: act as a consumer on own thresholds

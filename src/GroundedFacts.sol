@@ -14,6 +14,9 @@ contract GroundedFacts {
     // ---- constants -------------------------------------------------------------------------
     INativeQueryVerifier internal constant VERIFIER = INativeQueryVerifier(NativeQueryVerifierLib.PRECOMPILE);
     uint64 public constant BUCKET_BLOCKS = 216_000; // ~30 days on Ethereum (12 s blocks)
+    /// @dev facts() iterates reviewers; cap keeps on-chain consumers (escrow.quote) within block gas. Agents with
+    ///      more proven reviewers than this report `truncated` and consumers should paginate off-chain.
+    uint256 public constant MAX_CLIENTS_PER_QUERY = 256;
 
     bytes32 public constant SIG_NEW_FEEDBACK =
         keccak256("NewFeedback(uint256,address,uint64,int128,uint8,string,string,string,string,string,bytes32)");
@@ -67,6 +70,7 @@ contract GroundedFacts {
         uint64 uriSiblings;
         uint64 sameTxSiblings;
         uint64 firstRegisteredHeight; // earliest proven registration for the agent's URI
+        bool truncated; // true when more than MAX_CLIENTS_PER_QUERY reviewers are proven; counts cover the first 256
     }
 
     // ---- storage ---------------------------------------------------------------------------
@@ -325,7 +329,9 @@ contract GroundedFacts {
         AgentRec storage a = agents[ak];
         address[] storage cl = _clients[ak];
         f.breadthRaw = uint64(cl.length);
-        for (uint256 i; i < cl.length; i++) {
+        uint256 n = cl.length;
+        if (n > MAX_CLIENTS_PER_QUERY) { n = MAX_CLIENTS_PER_QUERY; f.truncated = true; }
+        for (uint256 i; i < n; i++) {
             address c = cl[i];
             PairRec storage pr = pairs[pairKey(chainKey, agentId, c)];
             if (pr.maxIndex > pr.provenCount) f.gapCount += 1;

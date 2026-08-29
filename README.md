@@ -29,6 +29,9 @@ Consumers (examples): `AgentHireEscrow` (dynamic premium paid to the agent owner
 - `verify` on-chain for mainnet `NewFeedback` (100 continuity roots): 117,971 gas; for a Jan-2024 tx (604 roots): 414,624 gas. Contract-side decode+storage (forge tests, precompile mocked): feedback 259k, Registered tx with 8 logs 439k, activity 130–184k.
 - Two chain keys in one contract; `calculateTxIndex` for dedup; `EvmV1Decoder` for `from`, receipt status and log address filtering; registry counters (`feedbackIndex`) as a partial completeness oracle.
 
+## Deployed (Creditcoin CC3 Testnet)
+`GroundedFacts` 0x7DDE4Ad36827e1e975ef98c0d876454BD4c215Ad · `AgentHireEscrow` 0x20497F17A14669E4D149374061BC063a4880eb7c · `CoverageBounty` 0x1f29E8427aBaF8b2Fdc24906a17fb0Fde2d885BB (all verified on creditcoin-testnet.blockscout.com). Live facts: `facts(3, 22771)` → 3 senior reviewers, premium 1%; `facts(3, 50283)` → 1 reviewer owning 6+ agents, 5 clone siblings, gated. Tx list and gas: `ATTESTCOIN_INTEGRATION.md`.
+
 ## Run
 
 ```bash
@@ -36,7 +39,8 @@ forge test -vv                      # unit tests with real mainnet txBytes fixtu
 cd agent && npm i
 npx tsx src/scout.ts --agents=34135,50283 --minAge=1300000 --minDepth=3 --k=3 --c=5   # dry-run: plan + proofs
 npx tsx src/verify.ts plans/agent-34135-*.json                                          # recompute facts
-# live: PRIVATE_KEY=… npx tsx src/scout.ts --facts=<GroundedFacts address> …
+# live: PRIVATE_KEY=… npx tsx src/scout.ts --facts=0x7DDE4Ad36827e1e975ef98c0d876454BD4c215Ad --bounty=0x20497F17A14669E4D149374061BC063a4880eb7c --escrow=0x1f29E8427aBaF8b2Fdc24906a17fb0Fde2d885BB --maxTargets=2 --hireWei=10000000000000000
+cd web && cp .env.example .env.local && npx vite dev   # set VITE_FACTS/VITE_ESCROW for live mode
 forge script script/Deploy.s.sol --rpc-url cc3 --broadcast --private-key $PRIVATE_KEY
 ```
 

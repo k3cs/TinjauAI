@@ -106,6 +106,13 @@ contract GroundedFactsTest is Fixtures {
         assertEq(admitted, 2);
     }
 
+    function test_facts_notTruncated_smallAgent() public {
+        gf.record(one(load("feedback_mainnet")));
+        GroundedFacts.Facts memory f = gf.facts(3, AGENT_FB, 0, 0);
+        assertFalse(f.truncated);
+        assertEq(gf.MAX_CLIENTS_PER_QUERY(), 256);
+    }
+
     function test_reject_unknownChain() public {
         GroundedFacts.Proof memory p = load("feedback_mainnet");
         p.chainKey = 99;

@@ -25,7 +25,8 @@ function decodeTx(txBytes: string) {
 }
 
 async function main() {
-  const plan = JSON.parse(readFileSync(process.argv[2], "utf8"));
+  const raw = JSON.parse(readFileSync(process.argv[2], "utf8"));
+  const plan = { ...raw, agentId: raw.target?.agentId ?? raw.agentId, thresholds: raw.target?.thresholds ?? raw.thresholds };
   const thr = plan.thresholds;
   const oldest = new Map<string, bigint>(); const buckets = new Map<string, Set<bigint>>();
   const pairs = new Map<string, { first: bigint; maxIndex: bigint; proven: Set<bigint>; negatives: number }>();

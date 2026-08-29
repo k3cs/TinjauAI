@@ -98,6 +98,19 @@ contract ConsumersTest is Fixtures {
         bounty.proveAndClaim(id, one(load("registered_mainnet")));
     }
 
+    function test_hire_pastDeadline_reverts() public {
+        gf.record(one(load("registered_mainnet")));
+        vm.prank(hirer);
+        vm.expectRevert(AgentHireEscrow.BadDeadline.selector);
+        esc.hire{value: 1 ether}(3, AGENT_REG, params(), uint64(block.timestamp));
+    }
+
+    function test_bounty_pastExpiry_reverts() public {
+        vm.prank(hirer);
+        vm.expectRevert(CoverageBounty.BadExpiry.selector);
+        bounty.fund{value: 0.5 ether}(3, AGENT_FB, 0, 0, 1, 1, uint64(block.timestamp));
+    }
+
     function test_bounty_withdrawAfterExpiry() public {
         vm.prank(hirer);
         uint256 id = bounty.fund{value: 0.5 ether}(3, AGENT_FB, 0, 0, 1, 1, uint64(block.timestamp + 7 days));
