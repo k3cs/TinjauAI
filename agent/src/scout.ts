@@ -157,8 +157,14 @@ async function alreadyAdmitted(c: Candidate): Promise<boolean> {
 function decide(t: Target, ev: Awaited<ReturnType<typeof gatherEvidence>>) {
   const thr = t.thresholds; const chosen: Candidate[] = []; const rejected: { c: Candidate; why: string }[] = []; let spent = 0;
   for (const c of ev.neutral) { chosen.push(c); spent += c.estGas; }
-  // hurts first: they change the decision tuple most often (gaps, independence, clones) and pay the same
-  for (const c of ev.hurts) { if (spent + c.estGas > gasBudget) { rejected.push({ c, why: "over gas budget" }); continue; } chosen.push(c); spent += c.estGas; }
+  // Per-direction budget (T3.7): reserve at least 40% of the budget for "helps" evidence so that "hurts"
+  // (usually more numerous: clones, higher indices) cannot crowd out grounding senior reviewers.
+  // "helps" may later spend into whatever "hurts" left unused.
+  const helpsReserve = Math.floor(gasBudget * 0.4);
+  for (const c of ev.hurts) {
+    if (spent + c.estGas > gasBudget - helpsReserve) { rejected.push({ c, why: `hurts cap reached (60% of budget = ${gasBudget - helpsReserve} gas)` }); continue; }
+    chosen.push(c); spent += c.estGas;
+  }
   const groundable = ev.helps.filter((o) => o.age >= thr.minAge && o.depth >= thr.minDepth).sort((a, b) => a.cost - b.cost);
   let grounded = 0;
   for (const o of groundable) {
