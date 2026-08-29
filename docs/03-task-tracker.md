@@ -33,7 +33,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T3.4 | Peran R3 timing (`txSeen`, bounty ≥ biaya) | ✅ (dry-run) | uji live setelah T2.3 |
 | T3.5 | Peran R4 konsumen (`hire` / `fund`) | ✅ (kode) | uji live |
 | T3.6 | Verifier off-chain | ✅ | `verify.ts` = `facts()` untuk 34135 |
-| T3.7 | Kebijakan anggaran: "helps" tidak boleh selalu kalah oleh "hurts" (alokasi per arah) | ⬜ | dry-run: helps ditolak karena budget habis |
+| T3.7 | Kebijakan anggaran: "helps" tidak boleh selalu kalah oleh "hurts" (alokasi per arah) | ✅ | cadangan 40% helps; commit 91d7319; dry-run 50283: 5 hurts + 3 helps |
 | T3.8 | Scout live end-to-end + `proveAndClaim` + `hire` | ⬜ | tergantung T2 |
 | T3.9 | Jalankan 2 scout paralel untuk menunjukkan R3 (kompetisi) | ❌ dipotong | scope-cut 29 Agu |
 
@@ -43,10 +43,10 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T4.1 | README, `ATTESTCOIN_INTEGRATION.md` | ✅ | perbarui alamat setelah deploy |
 | T4.2 | Dosier penilaian (`docs/evaluation-dossier.md`) | ✅ v1.2 | revisi §6 dengan peran agent |
 | T4.3 | Dokumen produk / teknis / tracker | ✅ | `docs/01-03` |
-| T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | ⬜ | |
-| T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | ⬜ | bisa dari `01-produk.md` |
-| T4.6 | Commit & push repo publik (original work) | ⏳ Dien | belum ada commit |
-| T4.7 | Submission DoraHacks (nama, deskripsi, Integration Summary, repo, video, tim) | ⬜ | |
+| T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | 🔄 skrip ✅ (`docs/demo-script.md`), rekaman ⏳ Dien | placeholder hash diisi setelah T2–T3 |
+| T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | 🔄 draf ✅ (`docs/deck.md`), PDF via marp | placeholder alamat/URL |
+| T4.6 | Commit & push repo publik (original work) | 🔄 commit ✅ (0993947, 91d7319, a8f8e5a); push ⏳ Dien buat repo | |
+| T4.7 | Submission DoraHacks (nama, deskripsi, Integration Summary, repo, video, tim) | 🔄 teks ✅ (`docs/submission.md`); submit ⏳ Dien | |
 
 ## Rencana implementasi rinci: `hackathons/ctc/outputs/04-planning/implementation-plan.md` (Task 1–11, owner & exit criterion per langkah)
 
