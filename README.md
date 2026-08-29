@@ -1,54 +1,57 @@
-# Tinjau
+# Tinjau — reputation facts for AI agents, proven from Ethereum into Creditcoin
 
-**Grounded Agent Reputation.** Facts about ERC-8004 agents and their reviewers, admitted into a Creditcoin contract only through Attestcoin proofs of Ethereum transactions. No score, no oracle, no aggregator signature: consumers bring their own thresholds and anyone can recompute the facts from the published proofs.**
+![Tinjau live UI: agent 22771 (3 senior reviewers, premium 1%) vs agent 50283 (one reviewer who owns 6+ agents, 5 clone siblings, gated)](docs/screenshot-live.jpg)
 
-BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet (chainId 102031) · Source chains: Ethereum mainnet (Attestcoin chainKey 3) and Sepolia (chainKey 1).
+**Live:** https://k3cs.github.io/TinjauAI/ · **Contracts (Creditcoin CC3 Testnet, verified):** [`GroundedFacts`](https://creditcoin-testnet.blockscout.com/address/0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc) · [`AgentHireEscrow`](https://creditcoin-testnet.blockscout.com/address/0x153201A94E83AB5aA1C64f095375F2916EDA9F98) · [`CoverageBounty`](https://creditcoin-testnet.blockscout.com/address/0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70) · BUIDL CTC 2026 Fall, track AI
 
-## Why
+## Problem
+The ERC-8004 reputation registry on Ethereum mainnet is live and unusable raw. In the last 600 reviews, 346 of 367 agents have exactly one reviewer and one wallet wrote 225 reviews; 16 of 105 reviewers own agents themselves and wrote 59% of all feedback; in the last 60 days 83% of new registrations came from owners holding ten or more agents, 8,136 of them minted in batch transactions (RPC measurement, 29 Aug 2026; arXiv 2606.26028 finds 73.5% coordinated Sybil reviewers on Ethereum). The standard's own answer is "aggregate off-chain and trust the aggregator".
 
-The ERC-8004 Reputation Registry on Ethereum mainnet is live (19k identity txs, feedback every day) and unusable raw: in the last 600 feedbacks, 346 of 367 agents have exactly one reviewer, one EOA wrote 225 feedbacks for 195 agents, 16 of 105 reviewers own agents themselves and wrote 59% of all feedback, and 59% of the latest registrations belong to owners holding ≥10 agents. The spec itself says aggregation "will happen off-chain" through trusted aggregators. See `docs/` for the full evidence.
+## Solution
+Tinjau is a Creditcoin contract that admits **facts** about agents and their reviewers only through Attestcoin proofs of Ethereum transactions: which reviews are real, how long each reviewer had been active before reviewing, whether review indices have gaps, whether a reviewer owns agents, and how many agents share the same owner, registrant, URI or minting transaction. It computes no score; you pass your thresholds and get numbers anyone can recompute from the same proofs. An escrow turns the facts into a hiring premium, a bounty pays whoever brings evidence that changes a decision, and an autonomous scout decides what to prove.
 
-## What
-
-`GroundedFacts` (Creditcoin) accepts `record(Proof[])`. For every proof it calls the BlockProver precompile (`0x…0FD2`) `verify`, decodes the proven `txBytes` with the official `EvmV1Decoder`, and only admits logs emitted by the official registries (`0x8004A…` identity, `0x8004B…` reputation). It records:
-
-| Fact | From | Property |
-|---|---|---|
-| feedback per (agent, reviewer, `feedbackIndex`), revocations | `NewFeedback`, `FeedbackRevoked` | gaps *below* the highest proven index are detectable (`feedbackIndex` is `++_lastIndex[agent][client]` in the registry) |
-| reviewer seniority: oldest proven tx, distinct ~30-day activity buckets | any proven tx (`from`) | can only grow with evidence; absence reads as "new" |
-| agent provenance: owner (follows `Transfer`), registrant (tx sender), URI hash, same-tx siblings | `Registered`, `Transfer` | clone density by owner *and* by registrant (robust to factory / token-bound-account patterns) |
-
-`facts(chainKey, agentId, minAge, minDepth)` returns `breadthRaw, breadthGrounded, breadthIndependent, gapCount, negatives, cloneDensityLB, registrantSiblings, uriSiblings, sameTxSiblings, firstRegisteredHeight`. Thresholds are the consumer's; the contract has no weights.
-
-Consumers (examples): `AgentHireEscrow` (dynamic premium paid to the agent owner, gate only on gaps) and `CoverageBounty` (pays whoever submits proofs that change the consumer's decision tuple; evidence that hurts the agent pays the same as evidence that helps).
-
-`agent/src/scout.ts` is the autonomous agent: it discovers registry events, decides which evidence is worth proving under a gas budget (cheapest reviewer to ground first, stops when `k` is reached, logs every rejection with its reason), fetches proofs from the CC3 prover API and submits `record`. `agent/src/verify.ts` recomputes the facts from the same proofs off-chain.
-
-## Attestcoin depth (all measured on 29 Aug 2026)
-
-- `verify` on-chain for mainnet `NewFeedback` (100 continuity roots): 117,971 gas; for a Jan-2024 tx (604 roots): 414,624 gas. Contract-side decode+storage (forge tests, precompile mocked): feedback 259k, Registered tx with 8 logs 439k, activity 130–184k.
-- Two chain keys in one contract; `calculateTxIndex` for dedup; `EvmV1Decoder` for `from`, receipt status and log address filtering; registry counters (`feedbackIndex`) as a partial completeness oracle.
-
-## Deployed (Creditcoin CC3 Testnet)
-`GroundedFacts` 0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc · `AgentHireEscrow` 0x153201A94E83AB5aA1C64f095375F2916EDA9F98 · `CoverageBounty` 0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70 (all verified on creditcoin-testnet.blockscout.com). Live UI: https://k3cs.github.io/TinjauAI/. Live facts: `facts(3, 22771)` → 3 senior reviewers, premium 1%; `facts(3, 50283)` → 1 reviewer owning 6+ agents, 5 clone siblings, gated. Tx list and gas: `ATTESTCOIN_INTEGRATION.md`.
-
-## Run
-
-```bash
-forge test -vv                      # unit tests with real mainnet txBytes fixtures (precompile mocked)
-cd agent && npm i
-npx tsx src/scout.ts --agents=34135,50283 --minAge=1300000 --minDepth=3 --k=3 --c=5   # dry-run: plan + proofs
-npx tsx src/verify.ts plans/agent-34135-*.json                                          # recompute facts
-# live: PRIVATE_KEY=… npx tsx src/scout.ts --facts=0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc --bounty=0x153201A94E83AB5aA1C64f095375F2916EDA9F98 --escrow=0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70 --maxTargets=2 --hireWei=10000000000000000
-cd web && cp .env.example .env.local && npx vite dev   # set VITE_FACTS/VITE_ESCROW for live mode
-forge script script/Deploy.s.sol --rpc-url cc3 --broadcast --private-key $PRIVATE_KEY
+## How it works
+```mermaid
+flowchart LR
+  A[Ethereum mainnet / Sepolia<br/>ERC-8004 registries + any tx] -->|logs| S[GroundedScout<br/>targets · two-way evidence · timing]
+  S -->|proof-by-tx| P[Attestcoin prover API]
+  P -->|proof| G[GroundedFacts on Creditcoin<br/>verify precompile 0x…0FD2 → decode → facts]
+  G --> E[AgentHireEscrow<br/>premium = f(facts, your thresholds)]
+  G --> B[CoverageBounty<br/>pays evidence that changes a decision]
+  G --> V[verify.ts / UI<br/>anyone recomputes the same facts]
 ```
 
-## Limits (stated, not hidden)
+## Run locally
+```bash
+git clone https://github.com/k3cs/TinjauAI && cd TinjauAI
+forge test -vv                                   # 17 tests; real mainnet txBytes fixtures, precompile mocked
+cd agent && npm i
+npx tsx src/scout.ts --agents=22771 --minAge=500000 --minDepth=2 --k=3 --c=5      # dry-run: decisions + proofs
+npx tsx src/verify.ts plans/agent-22771-*.json                                     # recompute facts off-chain
+cd ../web && npm i && cp .env.example .env.local                                   # fill VITE_FACTS / VITE_ESCROW for live mode
+npx vite build && npx vite preview                                                 # http://localhost:4173
+```
+Live run (needs tCTC): `PRIVATE_KEY=… npx tsx src/scout.ts --facts=0x47212CE7… --bounty=0xBaAEAb3f… --escrow=0x153201A9… --maxTargets=2 --hireWei=10000000000000000`. Deploy on Creditcoin uses `forge create --broadcast` (forge's simulation rejects Creditcoin headers), see `scripts/live-sequence.sh`.
 
-- Only Ethereum-side registries (chainKey 1/3); payments for ERC-8004 feedback happen on Base/Celo/Polygon and are not admitted.
-- Newest feedback that nobody submits is undetectable (only gaps below the highest proven index are); mitigated by bounties that pay for higher indices.
-- Clone density is a lower bound; aged wallets can be bought; multi-agent operators look like clone farms — all reported as facts for the consumer to weigh.
+## Contract addresses
+| Chain | Contract | Address |
+|---|---|---|
+| Creditcoin CC3 Testnet (102031) | GroundedFacts | `0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc` |
+| Creditcoin CC3 Testnet | AgentHireEscrow | `0x153201A94E83AB5aA1C64f095375F2916EDA9F98` |
+| Creditcoin CC3 Testnet | CoverageBounty | `0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70` |
+| Ethereum mainnet (Attestcoin chainKey 3) | ERC-8004 Identity / Reputation (read via proofs) | `0x8004A169…a432` / `0x8004BAa1…9b63` |
+| Ethereum Sepolia (chainKey 1) | ERC-8004 Identity / Reputation | `0x8004A818…BD9e` / `0x8004B663…8713` |
+
+15 testnet transactions (18 proofs: 17 mainnet incl. a 2024 tx and a 52 KB batch-mint, 1 Sepolia), gas per tx and on-chain facts: `ATTESTCOIN_INTEGRATION.md`.
+
+## What was built during the hackathon
+All code in this repository was written during BUIDL CTC 2026 Fall (first commit 29 Aug 2026): three Solidity contracts (`src/`), the scout / verifier / exporter (`agent/src/`), the web UI (`web/`), tests and fixtures. Vendored, not written by us: `lib/usc/` (`EvmV1Decoder`, `INativeQueryVerifier` from `@gluwa/usc-contracts` 0.2.0) and `lib/forge-std`. The dynamic-premium formula reuses the pattern from the author's earlier Veritas (UHI9) work, without its insurance reserve.
+
+## Known limitations
+- Ethereum-side registries only (Attestcoin chainKey 1 and 3); Base has ~139× more registry activity and is out of reach today.
+- The newest review nobody submitted is undetectable; only gaps below the highest proven `feedbackIndex` are. Bounties pay for higher indices.
+- Clone density is a lower bound; aged wallets can be bought; legitimate multi-agent operators look like clone farms. Facts are reported, not judged.
+- `facts()` iterates at most 256 reviewers per query (`truncated` flag beyond that).
 - No consumer contract exists on Creditcoin today; the escrow is an example consumer. Attestcoin moves trust from RPC/indexers to Creditcoin's bonded attestor set; it does not remove it.
 
-License: MIT. Original work created during the hackathon.
+Docs: product `docs/01-produk.md`, technical `docs/02-teknis.md`, tracker `docs/03-task-tracker.md`, evaluation dossier with verification commands `docs/evaluation-dossier.md`, deck `docs/deck.pdf`, demo script `docs/demo-script.md`. License: MIT.

@@ -73,7 +73,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T5.9 | 4 → Checkpoint 2 (DEC-003) | ✅ disetujui Dien 29 Agu | `DECISIONS.md` |
 | T5.10 | 5 → `superpowers:executing-plans` | ✅ | Task 1–6, 8, 9, 10 ✅; Task 7 rekaman (Dien) dan 11 submit (Dien) tersisa |
 | T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | ✅ | `web/` (Vite+React+Tailwind): kuitansi fakta 2 agent, meter premi, tabel pengulas, log scout, blok verifikasi; mode demo (`public/demo/facts.json`) / live (`VITE_FACTS`); kontras AA diaudit (proven `#0B6B58`, token `edge`), reduced-motion, fokus; screenshot ditinjau di Chrome; commit 98dbc16, 022bfc3 |
-| T5.12 | 6 → `superpowers:verification-before-completion` (wajib sebelum exit stage) | ⬜ | |
+| T5.12 | 6 → `superpowers:verification-before-completion` | ✅ | `hackathons/ctc/outputs/06-quality/verification.md`: A1–A5, A7 terbukti segar; A6 direvisi (kontras via quote + gate); A8 menunggu video |
 | T5.13 | 6 → `engineering:code-review` | ✅ | `outputs/06-quality/code-review.md`; 0 kritis, 4 perbaikan diterapkan |
 | T5.14 | 7 → `wh-core:demo-package` (wajib sebelum Checkpoint 3) | ⬜ | |
 | T5.15 | 7 → `elements-of-style:writing-clearly-and-concisely` (README, deskripsi) | ⬜ | |
