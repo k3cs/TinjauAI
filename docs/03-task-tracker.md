@@ -19,7 +19,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 |---|---|---|---|
 | T2.1 | Wallet deployer + `.env` | ✅ | `0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49` (wallet Dien, kunci di `.env` proyek; wallet lama `0xd250…` disimpan sebagai `PRIVATE_KEY_OLD`) |
 | T2.2 | tCTC ke deployer | ⏳ Dien | Dien mengisi wallet-nya sendiri `0x3D36…0E49` (10.000 tCTC), tetapi deployer `0x3D36…0E49` masih 0 dan kuncinya `0x3D36…` tidak ada di `.env`. Pilih: kirim ≥0,1 tCTC ke `0x3D36…0E49`, atau tulis `PRIVATE_KEY` wallet `0x3D36…` ke `.env` sendiri |
-| T2.3 | `forge script Deploy --broadcast` | ⏸ ditunda Dien (29 Agu: "task 3–5 nanti"); simulasi tanpa broadcast OK | siap jalan begitu diminta |
+| T2.3 | Deploy 3 kontrak | ⏸ ditunda Dien (29 Agu: "task 3–5 nanti") | `forge script` simulasi gagal di Creditcoin (`prevrandao not set`, LEARN-002) → deploy memakai `forge create --broadcast` per kontrak (tanpa simulasi) atau `forge script --skip-simulation --broadcast` |
 | T2.4 | Verifikasi kontrak di Blockscout CC3 | ⬜ | |
 | T2.5 | `record` live: 1 proof mainnet + 1 proof Sepolia; catat gas nyata | ⬜ | perbarui dosier §5/§8.4 |
 | T2.6 | Buat ulasan & agent sendiri di registri **Sepolia** (cadangan demo chainKey 1) | ❌ dipotong | scope-cut 29 Agu |
