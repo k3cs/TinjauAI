@@ -33,9 +33,19 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T3.4 | Peran R3 timing (`txSeen`, bounty ≥ biaya) | ✅ (dry-run) | uji live setelah T2.3 |
 | T3.5 | Peran R4 konsumen (`hire` / `fund`) | ✅ (kode) | uji live |
 | T3.6 | Verifier off-chain | ✅ | `verify.ts` = `facts()` untuk 34135 |
-| T3.7 | Kebijakan anggaran: "helps" tidak boleh selalu kalah oleh "hurts" (alokasi per arah) | ✅ | cadangan 40% helps; commit 91d7319; dry-run 50283: 5 hurts + 3 helps |
+| T3.7 | Kebijakan anggaran: "helps" tidak boleh selalu kalah oleh "hurts" (alokasi per arah) + lengkapi semua indeks pengulas yang dijadikan dasar (supaya tidak gated) | ✅ | cadangan 40% helps; commit 91d7319, 022bfc3; demo 22771: 3 senior, 0 celah |
 | T3.8 | Scout live end-to-end + `proveAndClaim` + `hire` | ⬜ | tergantung T2 |
 | T3.9 | Jalankan 2 scout paralel untuk menunjukkan R3 (kompetisi) | ❌ dipotong | scope-cut 29 Agu |
+
+## T6 Frontend (DEC-004, 29 Agu)
+| ID | Task | Status | Bukti/Catatan |
+|---|---|---|---|
+| T6.1 | Scaffold Vite+React+TS+Tailwind, token desain, font | ✅ | `web/tailwind.config.js`, `src/index.css` |
+| T6.2 | Ekspor data demo dari plan + proof (`export-demo.ts`) | ✅ | `web/public/demo/facts.json` (22771 vs 50283) |
+| T6.3 | Halaman: ambang konsumen, kuitansi fakta (klik → rantai bukti + stempel), meter premi, pengulas, log scout, verifikasi | ✅ | `web/src/App.tsx` |
+| T6.4 | Mode live (baca `facts()`/`quote()` via RPC CC3) | ✅ kode; uji setelah deploy | `VITE_FACTS`, `VITE_ESCROW` |
+| T6.5 | Audit kontras/aksesibilitas + kritik visual | ✅ | semua teks ≥4,5:1 terang & gelap |
+| T6.6 | Hosting (Vercel/Pages) | ⬜ SVC-007 deferred | localhost cukup untuk video |
 
 ## T4 Dokumen & submission (A8)
 | ID | Task | Status | Bukti/Catatan |
@@ -62,7 +72,7 @@ Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menungg
 | T5.8 | 4 → `superpowers:writing-plans` | ✅ | `outputs/04-planning/implementation-plan.md` (Task 1–11) |
 | T5.9 | 4 → Checkpoint 2 (DEC-003) | ✅ disetujui Dien 29 Agu | `DECISIONS.md` |
 | T5.10 | 5 → `superpowers:executing-plans` | 🔄 | Task 1 ✅, Task 6 Step 1–3 ✅, Task 7 skrip ✅, Task 8 draf+PDF ✅, Task 11 teks ✅; Task 3–5 ditunda Dien |
-| T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | 🔄 | `web/` |
+| T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | ✅ | `web/` (Vite+React+Tailwind): kuitansi fakta 2 agent, meter premi, tabel pengulas, log scout, blok verifikasi; mode demo (`public/demo/facts.json`) / live (`VITE_FACTS`); kontras AA diaudit (proven `#0B6B58`, token `edge`), reduced-motion, fokus; screenshot ditinjau di Chrome; commit 98dbc16, 022bfc3 |
 | T5.12 | 6 → `superpowers:verification-before-completion` (wajib sebelum exit stage) | ⬜ | |
 | T5.13 | 6 → `engineering:code-review` / `review-and-iterate` / `cso` (opsional, sesuai risiko) | ⬜ | |
 | T5.14 | 7 → `wh-core:demo-package` (wajib sebelum Checkpoint 3) | ⬜ | |
