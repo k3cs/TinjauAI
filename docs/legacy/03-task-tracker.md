@@ -1,0 +1,90 @@
+# Tinjau — Task Tracker
+
+Turunan dari `02-teknis.md`. Status: ✅ selesai · 🔄 berjalan · ⏳ menunggu · ⬜ belum · ❌ dibatalkan. Deadline submission: **14 Sep 2026 10:59 WIB** (diperpanjang dari 7 Sep; halaman DoraHacks dibaca 11 Sep). Aturan kerja dan status terkini: `docs/00-panduan-pengembangan.md`.
+
+## T1 Kontrak (A1)
+| ID | Task | Status | Bukti/Catatan |
+|---|---|---|---|
+| T1.1 | Foundry project, vendor `usc-contracts` (`EvmV1Decoder`, `INativeQueryVerifier`) | ✅ | `foundry.toml`, `lib/usc/` |
+| T1.2 | `GroundedFacts`: verify, dedup, decode, feedback/revoke, aktivitas, identitas, `facts()` | ✅ | `src/GroundedFacts.sol` (342 baris) |
+| T1.3 | Provenance: `registrant`, `registrantSiblings`, `sameTxSiblings`, `uriSiblings`, owner mengikuti `Transfer` | ✅ | test `test_recordRegistered_mainnet` (pola pabrik → ERC-6551) |
+| T1.4 | `AgentHireEscrow` premi dinamis, release/refund | ✅ | 4 test |
+| T1.5 | `CoverageBounty` fund/proveAndClaim/withdraw | ✅ | 3 test |
+| T1.6 | Fixture proof mainnet asli (feedback, Registered, aktivitas 2024 & 2026) | ✅ | `test/fixtures/` |
+| T1.7 | Uji `sameTxSiblings` dengan tx pendaftaran massal | ✅ (dibuka lagi 29 Agu malam) | tx mainnet `0x6c89bc77…` (10 `Registered`, txBytes 52 KB): `record` 2.821.530 gas, `txRegisteredCount = 10` |
+| T1.8 | Review keamanan ringan (reentrancy, overflow cast) + lint | ✅ | `engineering:code-review` → `hackathons/ctc/outputs/06-quality/code-review.md`; perbaikan: cap 256 pengulas + `truncated`, `BadDeadline`, `BadExpiry`, lint cast, klaim bounty batch akhir, log txSeen; 17/17 test; kontrak dideploy ulang (v2) |
+
+## T2 Deploy (A2, A3)
+| ID | Task | Status | Bukti/Catatan |
+|---|---|---|---|
+| T2.1 | Wallet deployer + `.env` | ✅ | `0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49` (wallet Dien, kunci di `.env` proyek; wallet lama `0xd250…` disimpan sebagai `PRIVATE_KEY_OLD`) |
+| T2.2 | tCTC ke deployer | ✅ | 10.000 tCTC di `0x3D36…0E49` |
+| T2.3 | Deploy 3 kontrak | ✅ v2 | `0x47212CE74EA4D6e300922AeB389A7b0a9D81Aabc`, `0x153201A94E83AB5aA1C64f095375F2916EDA9F98`, `0xBaAEAb3f635D39F6a9019745270Daf1812E0aE70` (`scripts/live-sequence.sh`); v1 tetap di chain |
+| T2.4 | Verifikasi kontrak di Blockscout CC3 | ✅ v2 (3/3 verified) | `forge verify-contract --verifier blockscout` |
+| T2.5 | `record` live: proof mainnet + Sepolia; gas nyata | ✅ v2 | 18 proof/7 tx; tabel 15 tx di `ATTESTCOIN_INTEGRATION.md` + dosier §8.4 |
+| T2.6 | Cadangan demo chainKey 1 | ✅ diganti: proof `NewFeedback` **nyata** di registri Sepolia (agent 9865) dicatat live, tanpa membuat ulasan sendiri | `agent/src/record-one.ts 1 <tx>` |
+
+## T3 Agent (A4–A6)
+| ID | Task | Status | Bukti/Catatan |
+|---|---|---|---|
+| T3.1 | Scout v1: discovery, keputusan, proof, dry-run | ✅ | plan 34135/50283 |
+| T3.2 | Peran R1 targeting (bounty → registri aktif) | ✅ | log `[R1]` |
+| T3.3 | Peran R2 bukti dua arah (negatif, indeks tinggi, pencabutan, pengulas-pemilik, klon) | ✅ | log `[R2]` 50283: 7 hurts |
+| T3.4 | Peran R3 timing (`txSeen`, bounty ≥ biaya) | ✅ live | log: `vs bounty 0.05 tCTC → prove now`; 50283 pada siklus kedua: 0 proof (semua sudah `txSeen`) |
+| T3.5 | Peran R4 konsumen (`hire` / `fund`) | ✅ live | `[R4] … → HIRE`, tx hire 21548 oleh scout |
+| T3.6 | Verifier off-chain | ✅ | `verify.ts` 22771 = `facts()` on-chain (3,3,·,0,0) |
+| T3.7 | Kebijakan anggaran: "helps" tidak boleh selalu kalah oleh "hurts" (alokasi per arah) + lengkapi semua indeks pengulas yang dijadikan dasar (supaya tidak gated) | ✅ | cadangan 40% helps; commit 91d7319, 022bfc3; demo 22771: 3 senior, 0 celah |
+| T3.8 | Scout live end-to-end + `proveAndClaim` + `hire` | ✅ v2 | bounty #0 diklaim (861.110 gas), hire 21548 (307.650); `agent/plans/live-full-cycle.log` |
+| T3.9 | Dua scout berurutan untuk R3 | ✅ (varian) | siklus kedua menemukan semua bukti 50283 sudah `txSeen` → 0 gas; paralel sejati tetap tidak dijalankan (satu kunci) |
+
+## T6 Frontend (DEC-004, 29 Agu)
+| ID | Task | Status | Bukti/Catatan |
+|---|---|---|---|
+| T6.1 | Scaffold Vite+React+TS+Tailwind, token desain, font | ✅ | `web/tailwind.config.js`, `src/index.css` |
+| T6.2 | Ekspor data demo dari plan + proof (`export-demo.ts`) | ✅ | `web/public/demo/facts.json` (22771 vs 50283) |
+| T6.3 | Halaman: ambang konsumen, kuitansi fakta (klik → rantai bukti + stempel), meter premi, pengulas, log scout, verifikasi | ✅ | `web/src/App.tsx` |
+| T6.4 | Mode live (baca `facts()`/`quote()` via RPC CC3) | ✅ kode; uji setelah deploy | `VITE_FACTS`, `VITE_ESCROW` |
+| T6.5 | Audit kontras/aksesibilitas + kritik visual | ✅ | semua teks ≥4,5:1 terang & gelap |
+| T6.6 | Hosting | ✅ GitHub Pages | https://k3cs.github.io/TinjauAI/ (branch `gh-pages`, mode live ke kontrak v2) |
+
+## T4 Dokumen & submission (A8)
+| ID | Task | Status | Bukti/Catatan |
+|---|---|---|---|
+| T4.1 | README, `ATTESTCOIN_INTEGRATION.md` | ✅ | perbarui alamat setelah deploy |
+| T4.2 | Dosier penilaian (`docs/evaluation-dossier.md`) | ✅ v1.4 | status deploy, §8.4 tabel testnet, §11 diperbarui |
+| T4.3 | Dokumen produk / teknis / tracker | ✅ | `docs/01-03` |
+| T4.4 | Skrip video 3 adegan + rekaman ≤3 menit | 🔄 skrip ✅ (11 Sep: framing biro kredit, angka 50283 dikoreksi ke 6 agent on-chain), rekaman ⏳ Dien **setelah frontend final** | |
+| T4.8 | Reframe "biro kredit untuk agent AI" di README, deck, submission, dosier, produk | ✅ 11 Sep | deck.pdf dibuild ulang (11 hal.); angka demo deck dikoreksi (1% / 16,8% / `Gated(1)`) |
+| T4.9 | Dosier v1.5: cabut klaim "tidak ada peserta memakai mainnet", data 87 BUIDL, perbaiki tabel §8.5, demo §10 | ✅ 11 Sep | `docs/evaluation-dossier.md` |
+| T4.10 | Living document panduan pengembangan | ✅ 11 Sep | `docs/00-panduan-pengembangan.md` |
+| T4.5 | Deck/whitepaper PDF (syarat DoraHacks) | ✅ | `docs/deck.pdf` dengan alamat v2, repo, live UI; video URL menyusul |
+| T4.6 | Commit & push repo publik (original work) | ✅ | https://github.com/k3cs/TinjauAI (gh auth `dienmsk`); 11 commit |
+| T4.7 | Submission DoraHacks | 🔄 checklist `outputs/07-submission/demo-package.md` §4; Checkpoint 3 DEC-005 proposed | Dien: video URL, data tim, submit |
+
+## T5 Pipeline web3-hackathon (skill & plugin per stage, mulai 29 Agu malam)
+| ID | Stage → skill/plugin | Status | Output |
+|---|---|---|---|
+| T5.0 | 0 → `web3-hackathon-pipeline` (workspace `hackathons/ctc/` disinkronkan: HACKATHON, TEAM, REFERENCES REF-001..012, DECISIONS DEC-001..004, SERVICES SVC-001..007, SKILLS, PIPELINE, LEARNINGS; validator 0 error) | ✅ | `hackathons/ctc/*.md` |
+| T5.1 | 1 → `wh-core:prior-art-scan` (4 lapis, konfirmasi ide terkunci) | ✅ | `docs/hackathon/prior-art/grounded-agent-reputation.md`; verdict CELAH NYATA sempit; Kleros/MainStreet |
+| T5.2 | 1 → `wh-core:onchain-validate` (RPC 60 hari, pembanding Base/Arbitrum; tanpa Dune) | ✅ | `docs/hackathon/validation/grounded-agent-reputation.md`; 121 ulasan/60 hari; 83% klon |
+| T5.3 | 2 → `superpowers:brainstorming`, `validate-idea`, `find-next-crypto-idea` | ❌ tidak dijalankan | Checkpoint 1 sudah disetujui; diganti idea-loop (OVERRIDE-001/002) |
+| T5.4 | 3 → `pm-product-strategy:value-proposition` | ✅ | `hackathons/ctc/outputs/03-product/value-proposition.md` |
+| T5.5 | 3 → `wh-core:scope-cut` | ✅ | `outputs/03-product/scope-cut.md`; 43 jam, gerbang 1/3/6 Sep |
+| T5.6 | 3 → `product-review` (opsional) | ⬜ | bila waktu tersisa, setelah UI |
+| T5.7 | 4 → `engineering:architecture` | ✅ | `outputs/04-planning/adr-001-architecture.md` |
+| T5.8 | 4 → `superpowers:writing-plans` | ✅ | `outputs/04-planning/implementation-plan.md` (Task 1–11) |
+| T5.9 | 4 → Checkpoint 2 (DEC-003) | ✅ disetujui Dien 29 Agu | `DECISIONS.md` |
+| T5.10 | 5 → `superpowers:executing-plans` | ✅ | Task 1–6, 8, 9, 10 ✅; Task 7 rekaman (Dien) dan 11 submit (Dien) tersisa |
+| T5.11 | 5 → `frontend-design:frontend-design` + `ui-ux-pro-max:ui-styling` (UI, DEC-004) | ✅ | `web/` (Vite+React+Tailwind): kuitansi fakta 2 agent, meter premi, tabel pengulas, log scout, blok verifikasi; mode demo (`public/demo/facts.json`) / live (`VITE_FACTS`); kontras AA diaudit (proven `#0B6B58`, token `edge`), reduced-motion, fokus; screenshot ditinjau di Chrome; commit 98dbc16, 022bfc3 |
+| T5.12 | 6 → `superpowers:verification-before-completion` | ✅ | `hackathons/ctc/outputs/06-quality/verification.md`: A1–A5, A7 terbukti segar; A6 direvisi (kontras via quote + gate); A8 menunggu video |
+| T5.13 | 6 → `engineering:code-review` | ✅ | `outputs/06-quality/code-review.md`; 0 kritis, 4 perbaikan diterapkan |
+| T5.14 | 7 → `wh-core:demo-package` | ✅ | `outputs/07-submission/demo-package.md`; README ditulis ulang, LICENSE, skrip video v2, copy sosial, checklist |
+| T5.15 | 7 → `elements-of-style:writing-clearly-and-concisely` | ✅ | README (Problem/Solution/Limits), `docs/submission.md` (297 kata), copy sosial: kalimat aktif, kata mubazir dibuang, angka/alamat tetap |
+| T5.16 | 7 → video/deck/submit | 🔄 | deck ✅ (`docs/deck.pdf` via marp; `create-pitch-deck` tidak dipakai); video = rekaman layar Dien (`hyperframes`/`marketing-video` tidak dipakai: bukan video render); `submit-to-hackathon` = Solana, tidak cocok; submit oleh Dien |
+| T5.17 | 8 → `learn`, `pm-execution:retro` | ⬜ | setelah pengumuman |
+
+## Rencana implementasi rinci: `hackathons/ctc/outputs/04-planning/implementation-plan.md` (Task 1–11, owner & exit criterion per langkah)
+
+## Urutan berikutnya (setelah scope-cut 29 Agu, `hackathons/ctc/outputs/03-product/scope-cut.md`)
+Jalur kritis (≈21,5 jam dari 43 tersedia): T2.2 faucet (Dien) → T2.3 deploy → T2.5 record live 2 agent → facts/quote + hire → T3.7 → T3.8 scout live → T4.6 commit/push → T4.4 video → T4.5 deck → T4.7 submit → T4.2 dosier v1.3.
+Dipotong (sengaja, jawaban ke juri di scope-cut): T1.7, T1.8, T3.9, T2.6, bounty di demo live. Gerbang: 1 Sep 11:00 deploy + 1 record; 3 Sep 06:00 hire + scout live + push; 6 Sep 04:00 video/deck/form; 6 Sep 22:00 kunci.
