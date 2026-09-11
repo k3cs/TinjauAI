@@ -103,7 +103,7 @@ async function extract(client: Anthropic, doc: string) {
   return { claims: response.parsed_output?.claims ?? [], refused: false };
 }
 
-async function checkClaim(prover: ProverClient, doc: string, c: { network: string; txHash: string; quote: string }): Promise<ClaimResult> {
+export async function checkClaim(prover: ProverClient, doc: string, c: { network: string; txHash: string; quote: string }): Promise<ClaimResult> {
   const base = { network: c.network, txHash: c.txHash, quote: c.quote.slice(0, 200) };
   if (!/^0x[0-9a-fA-F]{64}$/.test(c.txHash)) return { ...base, verdict: "malformed-hash", detail: "not a 32-byte hex hash" };
   if (!doc.toLowerCase().includes(c.txHash.toLowerCase())) {
