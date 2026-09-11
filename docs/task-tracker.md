@@ -274,7 +274,7 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §
 **SCT-7 · Ekspor data demo** · P0 · agent · 30 menit · ✅ (`scout export`) · dep: SCT-6
 - Detail: `scripts/export-demo.ts` menulis `apps/web/public/demo/facts.json` dari plan + proof (mode demo web).
 
-**SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · ⬜ · dep: DEP-7
+**SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · 🔄 (`scripts/scout-cron.sh` siap; belum dipasang ke cron, butuh izin Dien karena mengubah konfigurasi mesin) · dep: DEP-7
 - Detail: jadwal berkala **lokal** (launchd/cron di mesin Dien, bukan Vercel; alasan di §5.12) dengan batas anggaran; laporan N proof, N agent, N pengulas, gas total; dipakai di dosier dan video.
 
 ### 5.6 SRV: `apps/server` (P1, DEC-B)
@@ -337,33 +337,33 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 
 ### 5.9 DOC: Dokumen (G4)
 
-**DOC-1 · Panduan pengembangan v3 (living document)** · P0 · agent · 1,5 jam · ⬜ · dep: SET-5
+**DOC-1 · Panduan pengembangan v3 (living document)** · P0 · agent · 1,5 jam · ✅ (`docs/panduan-pengembangan.md` v3.0) · dep: SET-5
 - Detail: `docs/panduan-pengembangan.md`, diturunkan dari `docs/legacy/00-panduan-pengembangan.md`, diperbarui untuk struktur monorepo, alamat v3, perintah pnpm/forge baru. Wajib: invariant, aturan tindakan, klaim terlarang, angka resmi (§8 tracker ini), peta folder, changelog.
 
-**DOC-2 · README** · P0 · agent · 1 jam · ⬜ · dep: DEP-6
+**DOC-2 · README** · P0 · agent · 1 jam · ✅ (tanpa screenshot sampai frontend) · dep: DEP-6
 - Detail: judul "a credit bureau for AI agents…"; bagian Why a credit bureau, Problem, Solution, How it works (mermaid), Run locally (pnpm), Contract addresses v3, What was built during the hackathon, Known limitations. Screenshot dari WEB-9.
 
-**DOC-3 · `ATTESTCOIN_INTEGRATION.md`** · P0 · agent · 1 jam · ⬜ · dep: DEP-5
+**DOC-3 · `ATTESTCOIN_INTEGRATION.md`** · P0 · agent · 1 jam · ✅ (`ATTESTCOIN_INTEGRATION.md`, 15 tx + gas) · dep: DEP-5
 - Detail: precompile yang dipakai (0x0FD2, dan 0x0FD3/0x0FD4 bila CON-10/11), decoding, kenapa produk mati tanpa Attestcoin, tabel semua tx testnet v3 dengan gas, fakta on-chain. Teks ini ditempel ke form DoraHacks.
 
-**DOC-4 · Dosier penilaian v3** · P0 · agent · 1,5 jam · ⬜ · dep: DOC-3
+**DOC-4 · Dosier penilaian v3** · P0 · agent · 1,5 jam · ✅ (`docs/evaluation-dossier.md` v3.0, bahasa Inggris untuk juri) · dep: DOC-3
 - Detail: turunan `docs/legacy/evaluation-dossier.md` v1.5 dengan angka v3; bagian verifikasi berisi perintah yang bisa dijalankan juri.
 
-**DOC-5 · Deck** · P0 · agent · 1 jam · ⬜ · dep: DOC-3
+**DOC-5 · Deck** · P0 · agent · 1 jam · ✅ (11 halaman; `<VIDEO_URL>` menyusul) · dep: DOC-3
 - Detail: `docs/deck.md` (Marp) dari `docs/legacy/deck.md` dengan angka v3; build `npx -y @marp-team/marp-cli@latest docs/deck.md --pdf --allow-local-files -o docs/deck.pdf`; periksa halaman yang berubah sebagai gambar.
 
 **DOC-6 · Naskah video** · P0 · agent · 45 menit · ⬜ · dep: WEB-9
 - Detail: `docs/demo-script.md` dengan hash v3 dan angka yang diucapkan = fakta on-chain; urutan adegan dari `docs/legacy/demo-script.md`.
 
-**DOC-7 · Produk dan teknis v3** · P1 · agent · 1 jam · ⬜ · dep: DOC-1
+**DOC-7 · Produk dan teknis v3** · P1 · agent · 1 jam · ✅ (digabung ke panduan §5–§9 dan dosier §4) · dep: DOC-1
 - Detail: `docs/produk.md`, `docs/teknis.md` turunan legacy dengan arsitektur monorepo.
 
-**DOC-8 · Perbarui `CLAUDE.md` workspace** · P0 · agent · 10 menit · ⬜ · dep: DOC-1
+**DOC-8 · Perbarui `CLAUDE.md` workspace** · P0 · agent · 10 menit · ✅ · dep: DOC-1
 - Detail: baris status Tinjau menunjuk ke `Tinjau/` dan tracker ini; path lama `docs/build/grounded-reputation/` dicabut.
 
 ### 5.10 GH: Repo GitHub
 
-**GH-1 · Commit bertahap** · P0 · agent · berjalan · ⬜ · dep: SET-4
+**GH-1 · Commit bertahap** · P0 · agent · berjalan · 🔄 (commit bertahap, semua atas nama Scientivan tanpa trailer) · dep: SET-4
 - Detail: commit kecil per task (`feat:`, `fix:`, `docs:`, `chore:`), tanpa atribusi AI, tanpa `.env`. Periksa `git log --format='%an %(trailers)'` sebelum push.
 
 **GH-2 · Force-push ke `k3cs/TinjauAI`** · P0 · agent · 15 menit · ⏳ izin Dien · dep: WEB-9, DOC-2
@@ -383,7 +383,7 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 **SUB-4 · Isi `<VIDEO_URL>`** · P0 · agent · 15 menit · ⬜ · dep: SUB-3
 - Detail: di `docs/submission.md` dan `docs/deck.md`; build ulang deck; commit + push (izin Dien).
 
-**SUB-5 · Teks form** · P0 · agent · 45 menit · ⬜ · dep: DOC-3
+**SUB-5 · Teks form** · P0 · agent · 45 menit · ✅ (284 kata; `<VIDEO_URL>`, `<APP_URL>` menyusul) · dep: DOC-3
 - Detail: `docs/submission.md`: nama, sektor AI, one-liner ≤140 karakter, deskripsi ≤300 kata (framing biro kredit), Integration Summary, repo, deck URL, video URL, alamat v3. Tanpa data pribadi.
 
 **SUB-6 · Submit DoraHacks** · P0 · **Dien** · 30 menit · ⬜ · dep: GH-2, SUB-4, SUB-5
@@ -463,6 +463,7 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 11 Sep 23:55 | DOC-1…5/7/8, SUB-5, SCT-8 | README, integration summary, dosier v3, deck, submission, panduan v3; klaim "active for years" untuk 22771 dikoreksi (97 hari sampai 4 tahun); scan angka v2: bersih | Claude |
 | 11 Sep 23:40 | PKG, SCT, DEP-4…8, SRV-1/3, MCP-1 | core + scout + server + MCP; urutan live: bounty diklaim, 2 hire (100 bps), 50283 Gated, siklus kedua 0 gas; verify identik (plan lokal dan data chain saja); CC3 mainnet verify = true; mainnet AttestorStash: 7 attestor, bond minimal 0 | Claude |
 | 11 Sep 22:55 | CON-14, DEP-1…3 | Review: 3 temuan diperbaiki (bounty free-ride, truncated, grounded butuh indeks lengkap), 41/41 tes; deploy + verifikasi 3 kontrak; `attestedTip(3)` on-chain = 25.955.150 (ChainInfo terbaca dari kontrak) | Claude |
 | 11 Sep 22:43 | CON-1…CON-12 | Kontrak v3 ditulis ulang dari nol, 38/38 tes; precompile dicek live; CON-14 self-review | Claude |

@@ -4,7 +4,7 @@ Tinjau is a credit bureau for AI agents: facts about ERC-8004 agents and their r
 
 Read first, in order:
 1. `docs/task-tracker.md`: every task, its priority, dependencies, and status. Pick the top P0 whose dependencies are done. Update its status and the log (§9) when you finish.
-2. `docs/panduan-pengembangan.md` (living guide, task DOC-1). Until it exists, rules come from `docs/legacy/00-panduan-pengembangan.md` §2–§3.
+2. `docs/panduan-pengembangan.md` (living guide: invariants, allowed actions, official v3 numbers, forbidden claims, commands).
 3. `docs/legacy/`: v2 design references (specs, numbers, scripts described in prose). Do not copy v2 code; it was deleted on purpose. v2 addresses and numbers must not appear in v3 public materials.
 
 Hard rules:
