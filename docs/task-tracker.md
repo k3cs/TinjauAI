@@ -195,23 +195,23 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 
 ### 5.3 PKG: Paket bersama `packages/core` (G2)
 
-**PKG-1 · Konfigurasi chain dan alamat** · P0 · agent · 30 menit · ⬜ · dep: SET-2
+**PKG-1 · Konfigurasi chain dan alamat** · P0 · agent · 30 menit · ✅ · dep: SET-2
 - Detail: RPC CC3 testnet, explorer, prover API, chainKey (testnet: Sepolia 1, mainnet 3; CC3 mainnet: Ethereum 1), alamat registri ERC-8004 per chain, alamat kontrak Tinjau (diisi dari DEP-2, satu sumber).
 - Kriteria selesai: satu modul `config.ts` diimpor semua app.
 
-**PKG-2 · ABI dan tipe** · P0 · agent · 30 menit · ⬜ · dep: CON-7…CON-9
+**PKG-2 · ABI dan tipe** · P0 · agent · 30 menit · ✅ · dep: CON-7…CON-9
 - Detail: skrip ekspor ABI dari `contracts/out` ke `packages/core/src/abi/`; tipe `Facts`, `Quote`, `Params`.
 - Kriteria selesai: build gagal bila ABI tidak sinkron dengan kontrak.
 
-**PKG-3 · Klien prover API** · P0 · agent · 1 jam · ⬜ · dep: PKG-1
+**PKG-3 · Klien prover API** · P0 · agent · 1 jam · ✅ (uji live mainnet + Sepolia lulus) · dep: PKG-1
 - Detail: `attestedHeight(chainKey)`, `proofByTx(chainKey, tx)`, `proofBatch(chainKey, txs)`; retry, penanganan `BlockNotReady` dan `TxHashNotFound`, batas ukuran tx 500 KB.
 - Kriteria selesai: uji ke API nyata untuk satu tx mainnet dan satu Sepolia.
 
-**PKG-4 · Decoder `txBytes` dan hitung-ulang fakta** · P0 · agent · 2 jam · ⬜ · dep: PKG-3
+**PKG-4 · Decoder `txBytes` dan hitung-ulang fakta** · P0 · agent · 2 jam · ✅ (model TS = kontrak pada 4 fixture dan 3 agent live) · dep: PKG-3
 - Detail: decode `(uint8, bytes[])` (chunk common + receipt), ekstrak `from`, status, log; hitung ulang fakta per agent dari kumpulan proof dengan logika identik dengan kontrak.
 - Kriteria selesai: untuk data demo, hasil = `facts()` on-chain (DEP-6).
 
-**PKG-5 · Klien kontrak** · P0 · agent · 45 menit · ⬜ · dep: PKG-2
+**PKG-5 · Klien kontrak** · P0 · agent · 45 menit · ✅ · dep: PKG-2
 - Detail: `readFacts`, `readQuote`, `record`, `hire`, `fund`, `proveAndClaim` (ethers v6), dipakai scout, server, MCP, web.
 - Kriteria selesai: `readFacts` berjalan terhadap kontrak baru.
 
@@ -229,23 +229,23 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 - Detail: `forge verify-contract --verifier blockscout --verifier-url https://creditcoin-testnet.blockscout.com/api/`.
 - Kriteria selesai: 3/3 terverifikasi.
 
-**DEP-4 · Record data demo** · P0 · agent · 1,5 jam · ⬜ · dep: DEP-2, PKG-5
+**DEP-4 · Record data demo** · P0 · agent · 1,5 jam · ✅ (22 proof via scout + 2 record-one) · dep: DEP-2, PKG-5
 - Detail: rekam ulang bukti untuk agent demo mainnet **22771** (target: 3 pengulas senior, 0 celah), **50283** (pengulas tunggal pemilik agent, saudara klon, celah → `Gated`), **21548** (target bounty), satu `NewFeedback` Sepolia, tx pendaftaran massal, tx aktivitas Jan 2024. Daftar tx acuan: `docs/legacy/ATTESTCOIN_INTEGRATION.md` dan plan scout.
 - Kriteria selesai: semua tx `record` tercatat dengan gas; fakta sesuai skenario.
 
-**DEP-5 · Bounty, hire, release live** · P0 · agent · 45 menit · ⬜ · dep: DEP-4
+**DEP-5 · Bounty, hire, release live** · P0 · agent · 45 menit · ✅ · dep: DEP-4
 - Detail: `fund` bounty untuk 21548; `hire` 22771 (sukses); `hire` 50283 (harus revert `Gated`); `release`. Bila CON-11 ada: baca `attestorsAt`.
 - Kriteria selesai: hash dan hasil tercatat.
 
-**DEP-6 · Rekonsiliasi on-chain vs off-chain** · P0 · agent · 30 menit · ⬜ · dep: DEP-4, PKG-4
+**DEP-6 · Rekonsiliasi on-chain vs off-chain** · P0 · agent · 30 menit · ✅ (identik untuk 22771, 50283, 21548) · dep: DEP-4, PKG-4
 - Detail: `facts()` on-chain = hitung ulang `packages/core` untuk 22771 dan 50283.
 - Kriteria selesai: identik; output disimpan di `docs/`.
 
-**DEP-7 · Scout live end-to-end** · P0 · agent · 1 jam · ⬜ · dep: SCT-6
+**DEP-7 · Scout live end-to-end** · P0 · agent · 1 jam · ✅ · dep: SCT-6
 - Detail: scout memilih target sendiri (bounty dulu), mengirim bukti dua arah, menagih bounty, menyewa (R4), dan siklus kedua 0 gas (`txSeen`).
 - Kriteria selesai: log live tersimpan; hash tercatat.
 
-**DEP-8 · Bukti siap mainnet CC3** · P1 · agent · 1–2 jam · ⬜ · dep: PKG-3
+**DEP-8 · Bukti siap mainnet CC3** · P1 · agent · 1–2 jam · ✅ (verify=true di CC3 mainnet, 127.746 gas) · dep: PKG-3
 - Detail: ambil proof event ERC-8004 dari proof builder CC3 **mainnet** (Ethereum = chainKey 1 di sana) dan `verify` via `eth_call` ke `0x0FD2` CC3 mainnet. Tanpa deploy.
 - Kriteria selesai: hasil `verify` + gas dicatat di dosier.
 
@@ -253,25 +253,25 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 
 Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §3.3.
 
-**SCT-1 · Discovery registri** · P0 · agent · 1,5 jam · ⬜ · dep: PKG-1
+**SCT-1 · Discovery registri** · P0 · agent · 1,5 jam · ✅ (Blockscout REST v2; /api v1 kena rate limit) · dep: PKG-1
 - Detail: ambil log `NewFeedback`/`Registered` per agent dan `txlist` pengulas (Blockscout `eth.blockscout.com`), dengan rate limit dan cache lokal.
 
-**SCT-2 · R1 Targeting** · P0 · agent · 45 menit · ⬜ · dep: SCT-1, PKG-5
+**SCT-2 · R1 Targeting** · P0 · agent · 45 menit · ✅ · dep: SCT-1, PKG-5
 - Detail: bounty terbuka dulu, lalu agent paling aktif 7 hari; `--agents`, `--maxTargets`; alasan dicetak di log `[R1]`.
 
-**SCT-3 · R2 Bukti dua arah** · P0 · agent · 2 jam · ⬜ · dep: SCT-1
+**SCT-3 · R2 Bukti dua arah** · P0 · agent · 2 jam · ✅ (gap proof hanya untuk pengulas yang memiliki agent (--gapProofs)) · dep: SCT-1
 - Detail: helps (ulasan pertama, tx tertua, bucket berbeda) dan hurts (negatif, indeks tertinggi, pencabutan, pengulas-pemilik, saudara klon); 40% anggaran gas dicadangkan untuk helps; lengkapi semua indeks pengulas dasar (agar tidak gated karena kelalaian scout).
 
-**SCT-4 · R3 Timing dan biaya** · P0 · agent · 1 jam · ⬜ · dep: SCT-3
+**SCT-4 · R3 Timing dan biaya** · P0 · agent · 1 jam · ✅ · dep: SCT-3
 - Detail: buang yang sudah `txSeen`; estimasi gas (precompile ≈110k + 600·roots; roots ≈ 90 + umur/13.000 blok; decode ulasan 260k, pendaftaran 440k, aktivitas 130k); buktikan hanya bila bounty ≥ biaya; batch ≤4 proof per `record`.
 
-**SCT-5 · R4 Konsumen** · P0 · agent · 45 menit · ⬜ · dep: SCT-4
+**SCT-5 · R4 Konsumen** · P0 · agent · 45 menit · ✅ · dep: SCT-4
 - Detail: sewa lewat eskrow bila fakta lolos ambang scout sendiri; jika tidak, danai bounty.
 
-**SCT-6 · Mode dry-run dan live, plan JSON** · P0 · agent · 45 menit · ⬜ · dep: SCT-2…SCT-5
+**SCT-6 · Mode dry-run dan live, plan JSON** · P0 · agent · 45 menit · ✅ · dep: SCT-2…SCT-5
 - Detail: tanpa `PRIVATE_KEY` → dry-run menulis `services/scout/plans/*.json`; dengan kunci → kirim tx. Log bertag `[R1]…[R4]`, `[tx]`.
 
-**SCT-7 · Ekspor data demo** · P0 · agent · 30 menit · ⬜ · dep: SCT-6
+**SCT-7 · Ekspor data demo** · P0 · agent · 30 menit · ✅ (`scout export`) · dep: SCT-6
 - Detail: `scripts/export-demo.ts` menulis `apps/web/public/demo/facts.json` dari plan + proof (mode demo web).
 
 **SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · ⬜ · dep: DEP-7
@@ -279,19 +279,19 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §
 
 ### 5.6 SRV: `apps/server` (P1, DEC-B)
 
-**SRV-1 · Kerangka Hono** · P1 · agent · 30 menit · ⬜ · dep: PKG-5
+**SRV-1 · Kerangka Hono** · P1 · agent · 30 menit · ✅ (diuji lokal) · dep: PKG-5
 - Detail: `GET /health`, `GET /facts/:chainKey/:agentId?minAge&minDepth`, `GET /quote/...`, `GET /scout/log`; semua angka dibaca dari chain via `packages/core`, tanpa database.
 
-**SRV-2 · LLM pembaca klaim** · P1 (DEC-C) · agent · 3 jam · ⬜ · dep: SRV-1, PKG-3
+**SRV-2 · LLM pembaca klaim** · P1 (DEC-C) · agent · 3 jam · 🔄 (kode selesai: Anthropic SDK `claude-opus-5`, structured output Zod; uji LLM live ⏳ butuh `ANTHROPIC_API_KEY` dari Dien) · dep: SRV-1, PKG-3
 - Detail: baca `feedbackURI`, ekstrak `proof_of_payment {network, txHash}` dengan AI SDK (skema terstruktur), coba ambil proof via prover API; hasil: "terbukti", "chain salah", "tidak ditemukan". **Tidak menulis fakta on-chain.** Wajib ada contoh kasus LLM salah → precompile/prover menolak.
 - Kriteria selesai: laporan untuk agent demo; angka dibandingkan dengan temuan v2 (0 dari 12 klaim benar chain-nya).
 
-**SRV-3 · Endpoint laporan klaim** · P1 · agent · 30 menit · ⬜ · dep: SRV-2
+**SRV-3 · Endpoint laporan klaim** · P1 · agent · 30 menit · ✅ · dep: SRV-2
 - Detail: `GET /claims/:agentId` untuk web dan MCP.
 
 ### 5.7 MCP: `apps/mcp-server` (P1, DEC-B)
 
-**MCP-1 · Server MCP stdio** · P1 · agent · 1,5 jam · ⬜ · dep: PKG-5
+**MCP-1 · Server MCP stdio** · P1 · agent · 1,5 jam · ✅ (diuji via SDK client stdio; tinjau_verify identik dari data chain saja) · dep: PKG-5
 - Detail: tools `tinjau_facts(chainKey, agentId, minAge, minDepth)`, `tinjau_quote(...)`, `tinjau_verify(agentId)` (hitung ulang dari proof). Keluaran berisi angka + hash tx sumber.
 - Kriteria selesai: bisa dipanggil dari Claude/Inspector MCP; contoh transkrip disimpan.
 
@@ -450,11 +450,11 @@ Paralel yang aman: PKG-1…PKG-3 dan WEB-1…WEB-2 bisa dikerjakan saat kontrak 
 | `AgentHireEscrow` | `0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB` (tx `0x64a8f850…eace`, blok 5.470.069, 920.666 gas) | DEP-2 |
 | `CoverageBounty` | `0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b` (tx `0x2035fa49…abb8`, blok 5.470.070, 862.895 gas) | DEP-2 |
 | Jumlah tes | 41/41 (`forge test`) | CON-14 |
-| Jumlah proof / tx `record` | ⬜ | DEP-4 |
-| `facts(3, 22771)` / premi | ⬜ | DEP-5 |
-| `facts(3, 50283)` / quote / `Gated` | ⬜ | DEP-5 |
-| Bounty diklaim / hire scout | ⬜ | DEP-7 |
-| Gas `verify` per umur tx | ⬜ | DEP-4 |
+| Jumlah tx sumber teradmit | 23 (22 mainnet chainKey 3, 1 Sepolia chainKey 1); `recomputeFromChain` = 23 | DEP-4 |
+| `facts(3, 22771)` / premi | raw 3, grounded 3, independent 3, gaps 0, clones 0, attestors 4 → premi **100 bps**, disewa scout (tx `0x3c70c911…c8fe`) | DEP-5 |
+| `facts(3, 50283)` / quote / `Gated` | raw 1, grounded 0, gaps 1, clones 5, registrantSib 5 → quote **2.000 bps**, `hire` revert `Gated(1)` (`0x393108e5…01`) | DEP-5 |
+| Bounty diklaim / hire scout | bounty #0 0,05 tCTC (fund `0x8a4dc077…dc3f`) diklaim scout via `proveAndClaim` `0xfd342f65…cc79`; hire 21548 `0xe6ba85dd…077d` (100 bps) | DEP-7 |
+| Gas `verify` precompile | 62.292 (7 root) … 631.434 (984 root); tx tertua blok 14.306.215 (±Feb 2022) = 506.986 gas; gas ≈ 55k + ~580·roots, jumlah root tidak monoton terhadap umur | DEP-4 |
 | URL video | ⬜ | SUB-3 |
 
 Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/ATTESTCOIN_INTEGRATION.md`.
@@ -463,6 +463,7 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 11 Sep 23:40 | PKG, SCT, DEP-4…8, SRV-1/3, MCP-1 | core + scout + server + MCP; urutan live: bounty diklaim, 2 hire (100 bps), 50283 Gated, siklus kedua 0 gas; verify identik (plan lokal dan data chain saja); CC3 mainnet verify = true; mainnet AttestorStash: 7 attestor, bond minimal 0 | Claude |
 | 11 Sep 22:55 | CON-14, DEP-1…3 | Review: 3 temuan diperbaiki (bounty free-ride, truncated, grounded butuh indeks lengkap), 41/41 tes; deploy + verifikasi 3 kontrak; `attestedTip(3)` on-chain = 25.955.150 (ChainInfo terbaca dari kontrak) | Claude |
 | 11 Sep 22:43 | CON-1…CON-12 | Kontrak v3 ditulis ulang dari nol, 38/38 tes; precompile dicek live; CON-14 self-review | Claude |
 | 11 Sep 22:50 | GH-2, VCL-1 | Dien: `gh-pages` dihapus saat force-push; Vercel ditunda | Claude |
