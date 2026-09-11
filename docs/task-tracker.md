@@ -127,60 +127,71 @@ Invariant yang tidak berubah (sumber: `docs/legacy/00-panduan-pengembangan.md` �
 
 Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-dossier.md` §4. Tulis ulang dari nol; jangan menyalin kode v2 dari Trash.
 
-**CON-1 · Proyek Foundry** · P0 · agent · 30 menit · ⬜ · dep: SET-6
+**CON-1 · Proyek Foundry** · P0 · agent · 30 menit · ✅ · dep: SET-6
 - Detail: `contracts/foundry.toml` (solc 0.8.28, `via_ir = true`, optimizer, `rpc_endpoints.cc3`), `forge-std`, vendor `@gluwa/usc-contracts` 0.2.0 (`EvmV1Decoder`, `INativeQueryVerifier`) ke `contracts/lib/usc/` beserta catatan asal dan lisensi.
 - Kriteria selesai: `forge build` sukses dengan kontrak kosong.
 
-**CON-2 · Fixture proof asli** · P0 · agent · 1 jam · ⬜ · dep: CON-1
+**CON-2 · Fixture proof asli** · P0 · agent · 1 jam · ✅ · dep: CON-1
 - Detail: skrip (`scripts/fetch-fixture.ts`) yang mengambil `proof-by-tx/{chainKey}/{tx}` dari prover API dan menyimpan `txBytes` + proof ke `contracts/test/fixtures/`. Minimal: satu `NewFeedback` mainnet, satu `Registered` mainnet (pola pabrik → ERC-6551, agent 50609), satu tx aktivitas Jan 2024, satu tx aktivitas 2026, satu tx pendaftaran massal (`0x6c89bc776674e98a1b773aadcd22ba09c0de333e84a29994ead20c163a1a23c6`, 10 `Registered`), satu `NewFeedback` Sepolia (`0x5ee427faa835e1064e60b281095b87fe58eb900cf42d39df79fe8e6e8e5cab07`).
 - Kriteria selesai: fixture tersimpan; ukuran dan jumlah root dicatat.
 
-**CON-3 · `GroundedFacts`: jalur proof** · P0 · agent · 2 jam · ⬜ · dep: CON-1
+**CON-3 · `GroundedFacts`: jalur proof** · P0 · agent · 2 jam · ✅ · dep: CON-1
 - Detail: `record(Proof[] calldata) returns (uint256 admitted)`. Per proof: tolak chainKey tak dikenal (`UnknownChain`); panggil `verify` di `0x0FD2` (`ProofRejected` bila false); dedup kunci `(chainKey, height, txIndex)` via `calculateTxIndex` (duplikat di-skip, bukan revert); decode `from` (aktivitas) dan receipt (status harus 1); log diproses hanya bila `address_` = registri resmi chainKey itu. Registri per chainKey di-hardcode (mainnet = 3, Sepolia = 1 di testnet).
 - Kriteria selesai: tes proof palsu ditolak, duplikat di-skip, log dari alamat lain diabaikan, status 0 diabaikan.
 
-**CON-4 · `GroundedFacts`: fakta ulasan** · P0 · agent · 2 jam · ⬜ · dep: CON-3
+**CON-4 · `GroundedFacts`: fakta ulasan** · P0 · agent · 2 jam · ✅ · dep: CON-3
 - Detail: `NewFeedback` (agentId, client, feedbackIndex, value int128, decimals), `FeedbackRevoked`. Simpan per pasangan (agent, pengulas, indeks); negatif dihitung; pencabutan membatalkan; `gapCount` dari indeks monoton per pasangan.
 - Kriteria selesai: tes dengan fixture mainnet; gap terdeteksi saat indeks 1 dan 3 ada tanpa 2.
 
-**CON-5 · `GroundedFacts`: senioritas pengulas** · P0 · agent · 1 jam · ⬜ · dep: CON-3
+**CON-5 · `GroundedFacts`: senioritas pengulas** · P0 · agent · 1 jam · ✅ · dep: CON-3
 - Detail: `oldestHeight[addr]` = minimum tinggi tx terbukti; `bucketCount[addr]` = jumlah bucket 216.000 blok berbeda; `reviewerSeniority(addr)`.
 - Kriteria selesai: fixture Jan 2024 menurunkan `oldestHeight`; bucket tidak dihitung ganda.
 
-**CON-6 · `GroundedFacts`: provenance agent** · P0 · agent · 2 jam · ⬜ · dep: CON-3
+**CON-6 · `GroundedFacts`: provenance agent** · P0 · agent · 2 jam · ✅ · dep: CON-3
 - Detail: `Registered` (owner, registrant = `from` tx, uriHash, txKey), `Transfer` (ikuti pemilik bila `from` = pemilik tercatat; mint diabaikan), `cloneDensityLB`, `registrantSiblings`, `uriSiblings`, `sameTxSiblings`, `firstRegisteredHeight`, `reviewerOwnsAgents(client)`.
 - Kriteria selesai: tes pola pabrik → ERC-6551 (pemilik akhir + registrant EOA); tx massal → `sameTxSiblings` = 9.
 
-**CON-7 · `GroundedFacts.facts()`** · P0 · agent · 1 jam · ⬜ · dep: CON-4…CON-6
+**CON-7 · `GroundedFacts.facts()`** · P0 · agent · 1 jam · ✅ · dep: CON-4…CON-6
 - Detail: `facts(chainKey, agentId, minAge, minDepth)` → `breadthRaw`, `breadthGrounded`, `breadthIndependent`, `gapCount`, `negatives`, `cloneDensityLB`, `registrantSiblings`, `uriSiblings`, `sameTxSiblings`, `firstRegisteredHeight`, `truncated` (batas iterasi 256 pengulas). Tanpa admin, tanpa upgrade, tanpa bobot.
 - Kriteria selesai: tes angka untuk dua skenario (agent dengan pengulas senior vs pengulas tunggal yang memiliki agent).
 
-**CON-8 · `AgentHireEscrow`** · P0 · agent · 1,5 jam · ⬜ · dep: CON-7
+**CON-8 · `AgentHireEscrow`** · P0 · agent · 1,5 jam · ✅ · dep: CON-7
 - Detail: `quote(chainKey, agentId, Params)` → (riskBps, premiumBps, gapCount, Facts); `risk = 10000 − coverage·cloneFactor/10000`, `coverage = min(10000, breadthGrounded·10000/k)`, `cloneFactor = c·10000/(c + cloneDensityLB)`, `premium = base + (max − base)·risk`. `hire` payable: `Gated` bila `gapCount > 0`, `UnknownAgent` bila belum ada `Registered` terbukti, `BadDeadline`; premi ke `owner` saat itu; `release` oleh penyewa; `refund` setelah deadline. Pola CEI.
 - Kriteria selesai: tes premi, gate, release, refund, deadline buruk.
 
-**CON-9 · `CoverageBounty`** · P0 · agent · 1,5 jam · ⬜ · dep: CON-7
+**CON-9 · `CoverageBounty`** · P0 · agent · 1,5 jam · ✅ · dep: CON-7
 - Detail: `fund(chainKey, agentId, minAge, minDepth, k, c, expiry)` menyimpan `decision = keccak(bg ≥ k, gap == 0, cloneLB ≥ c, negatives > 0)`; `proveAndClaim(id, proofs)` memanggil `record` lalu membandingkan; `NoChange` revert; bayar penuh; `withdraw` setelah `expiry`; `BadExpiry`. Pola CEI.
 - Kriteria selesai: tes klaim sekali, `NoChange`, withdraw.
 
-**CON-10 · Penjaga finalitas ChainInfo di kontrak** · P1 (DEC-A) · agent · 1,5 jam · ⬜ · dep: CON-3
+**CON-10 · Penjaga finalitas ChainInfo di kontrak** · P1 (DEC-A) · agent · 1,5 jam · ✅ · dep: CON-3
 - Detail: sebelum menerima proof, baca tinggi teratestasi dari `0x0FD3` di dalam transaksi yang sama dan tolak proof yang terlalu dekat dengan ujung (konstanta finalitas per chainKey, didokumentasikan). Pola ini dipakai Singleton (64 blok).
 - Kriteria selesai: tes dengan mock precompile; ukuran gas tambahan dicatat.
 
-**CON-11 · Provenance keamanan per fakta (AttestorStash)** · P1 (DEC-A) · agent · 2 jam · ⬜ · dep: CON-3
+**CON-11 · Provenance keamanan per fakta (AttestorStash)** · P1 (DEC-A) · agent · 2 jam · ✅ · dep: CON-3
 - Detail: saat fakta masuk, baca jumlah attestor ber-bond untuk chainKey itu dari `0x0FD4` dan simpan bersama fakta; ekspos `attestorsAt(factKey)` dan jumlah minimum per agent di `facts()` atau view terpisah. Tidak menolak apa pun (fakta, bukan vonis), kecuali konsumen memberi ambang.
 - Kriteria selesai: tes dengan mock; di testnet `attestorsAt` terbaca (DEP-5).
 
-**CON-12 · Interface `IAgentFacts`** · P1 · agent · 30 menit · ⬜ · dep: CON-7
+**CON-12 · Interface `IAgentFacts`** · P1 · agent · 30 menit · ✅ · dep: CON-7
 - Detail: `contracts/src/interfaces/IAgentFacts.sol` + contoh konsumen 10 baris di dokumen integrasi (cara kontrak lain membaca `facts()`).
 - Kriteria selesai: `AgentHireEscrow` memakai interface ini.
 
 **CON-13 · Batch proof (continuity bersama)** · P2 · agent · 3 jam · ⬜ · dep: CON-3
 - Detail: jalur `verify` batch (≤10 proof, rentang ≤1.000 blok) untuk riwayat rapat. Hanya bila CON-1…CON-12 selesai sebelum G1.
 
-**CON-14 · Review keamanan** · P0 · agent · 1 jam · ⬜ · dep: CON-8, CON-9
+**CON-14 · Review keamanan** · P0 · agent · 1 jam · 🔄 (self-review selesai 12 Sep dini hari, 0 temuan kritis; review skill `engineering:code-review` belum dijalankan) · dep: CON-8, CON-9
 - Detail: jalankan skill `engineering:code-review` pada kontrak; periksa reentrancy, cast overflow, gas loop, akses; perbaiki temuan kritis; simpan laporan di `docs/quality/code-review.md`.
 - Kriteria selesai: 0 temuan kritis terbuka; `forge test` hijau.
+
+
+**Catatan implementasi CON-1…CON-12 (12 Sep 2026 dini hari)** [Fakta, `contracts/`]
+- `forge test`: **38/38 lulus** (25 `GroundedFactsTest`, 13 `ConsumersTest`). Fixture asli: 4 proof dari prover API (`scripts/fetch-fixture.sh`): `NewFeedback` mainnet (agent 50286, indeks 24), aktivitas mainnet tertua pengulas `0x1030…` (blok 23.779.699), tx pendaftaran massal 52 KB (10 `Registered`, agent 41885…), `NewFeedback` Sepolia (agent 9865).
+- Precompile dicek live di CC3 testnet sebelum dipakai: `verify` proof mainnet segar = `true`, `calculateTxIndex` = 300 (sama dengan API); AttestorStash `0x0fd4` `getAttestorsCount` = 7 (chainKey 1) / 4 (chainKey 3), bond 100 CTC; ChainInfo `0x0fd3` `get_latest_attestation_height_and_hash` jalan (selector snake_case). ABI ChainInfo dari `@gluwa/usc-sdk` 0.18.0; AttestorStash tidak ada di docs/SDK (selector dari repo Singleton, lalu diverifikasi sendiri).
+- **CON-10 berubah desain** [Inferensi]: penjaga "jarak minimum dari tip" tidak dipakai karena prover hanya memberi proof untuk blok yang sudah teratestasi (margin tambahan hanya menambah jeda demo). Gantinya: `attestedTip(chainKey)` membaca ChainInfo, `facts()` mengembalikan `coveredThrough`, dan `AgentHireEscrow` bisa menolak fakta basi (`maxStaleness`, error `Stale`). Konsumen memutuskan, kontrak fakta tidak menilai.
+- **CON-11**: jumlah attestor ber-bond dibaca dari `0x0fd4` saat setiap proof masuk; `facts().minAttestors` = set attestor terlemah di balik fakta agent itu; eskrow bisa menolak (`minAttestors`, error `ThinQuorum`).
+- Registri ERC-8004 per chainKey diberikan lewat constructor (bukan hardcode), supaya kontrak yang sama bisa dideploy di CC3 mainnet (Ethereum = chainKey 1 di sana). Tetap tanpa admin.
+- Transfer kepemilikan: yang menang adalah transfer terbukti **terbaru** (urutan height, txIndex, logIndex), apa pun urutan proof diajukan.
+- Angka pricing sama dengan desain v2: 1 pengulas grounded dari k=3, 5 klon, c=5 → risk 8.334 bps, premi 1.683 bps (tes `test_quote_cloneDensityAndThinCoverage`).
+- `evm_version = paris` (paling konservatif untuk EVM CC3; belum diuji apakah versi lebih baru didukung).
 
 ### 5.3 PKG: Paket bersama `packages/core` (G2)
 
@@ -356,7 +367,7 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 - Detail: commit kecil per task (`feat:`, `fix:`, `docs:`, `chore:`), tanpa atribusi AI, tanpa `.env`. Periksa `git log --format='%an %(trailers)'` sebelum push.
 
 **GH-2 · Force-push ke `k3cs/TinjauAI`** · P0 · agent · 15 menit · ⏳ izin Dien · dep: WEB-9, DOC-2
-- Detail: minta izin eksplisit Dien di sesi itu; `git push --force origin main` (tanpa branch `gh-pages`; hosting di Vercel). Branch `gh-pages` lama (UI v2 di k3cs.github.io/TinjauAI) masih menampilkan angka v2: tanyakan ke Dien apakah dihapus saat GH-2. Riwayat v2 di GitHub hilang (salinan lokal ada di Trash). Setelah push: buka repo di browser, pastikan README, deck, dan tidak ada `.env`.
+- Detail: minta izin eksplisit Dien di sesi itu; `git push --force origin main` (tanpa branch `gh-pages`; hosting di Vercel). Branch `gh-pages` lama (UI v2 di k3cs.github.io/TinjauAI) masih menampilkan angka v2: **keputusan Dien 11 Sep: hapus saat GH-2** (`git push origin --delete gh-pages`). Riwayat v2 di GitHub hilang (salinan lokal ada di Trash). Setelah push: buka repo di browser, pastikan README, deck, dan tidak ada `.env`.
 - Kriteria selesai: repo publik menampilkan v3; commit hanya atas nama Dien.
 
 ### 5.11 SUB: Submission
@@ -396,6 +407,7 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 Log scout untuk web/server: scout menulis JSON (`services/scout/plans/`, lalu `scripts/export-demo.ts` menyalin ringkasannya ke `apps/web/public/demo/` dan `apps/server` membaca file statis yang ikut ter-deploy). Tidak ada penyimpanan tulis di Vercel.
 
 **VCL-1 · Akun, proyek, dan CLI Vercel** · P0 · Dien (login) + agent · 20 menit · ⏳ · dep: SET-2
+- Status 11 Sep: **ditunda oleh Dien** ("vercelnya nanti saja"). CLI `vercel` belum terpasang di mesin (`command not found`); pasang saat VCL-1 dimulai (`npm i -g vercel`), lalu Dien menjalankan `vercel login`.
 - Detail: Dien login `vercel` CLI (agent tidak memasukkan kredensial). Buat tiga proyek (web, server, mcp) dengan root directory monorepo masing-masing; pnpm workspace terdeteksi.
 - Kriteria selesai: `vercel link` untuk ketiganya.
 
@@ -451,6 +463,8 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 12 Sep 01:10 | CON-1…CON-12 | Kontrak v3 ditulis ulang dari nol, 38/38 tes; precompile dicek live; CON-14 self-review | Claude |
+| 11 Sep 22:50 | GH-2, VCL-1 | Dien: `gh-pages` dihapus saat force-push; Vercel ditunda | Claude |
 | 11 Sep 22:40 | SET-1…6 | node_modules sisa Sui/Luber dihapus; workspace pnpm (core, scout, server, mcp-server; `apps/web` sengaja kosong); `.gitignore` (`.env` terabaikan, dicek `git check-ignore`); `.env.example`; git init + remote `k3cs/TinjauAI` (belum push); `AGENTS.md` + `claude.md`; toolchain: forge 1.7.1, Node 24.10.0, pnpm 10.18.3, TypeScript 5.9 | Claude |
 | 11 Sep 22:25 | DEC-A…E | DEC-A/B/C/E disetujui; DEC-D direvisi: hosting serverless di Vercel (§5.12), scout lokal; frontend ditahan sampai aba-aba Dien | Claude |
 | 11 Sep 22:10 | - | Repo v2 diarsipkan ke Trash; `.env` (kunci deployer) disalin ke `Tinjau/.env`; dokumen v2 ke `docs/legacy/`; tracker dibuat | Claude |
