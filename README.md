@@ -37,7 +37,7 @@ flowchart LR
 
 | Agent | What the bureau proved | Result |
 |---|---|---|
-| 22771 | 3 reviewers active for years before reviewing, no holes, no clones | premium 1% (100 bps), hired by the scout |
+| 22771 | 3 reviewers active 97 days to 4 years before their first review, no holes, no clones | premium 1% (100 bps), hired by the scout |
 | 21548 | same, after the scout claimed an open bounty with the decisive proof batch | premium 1%, hired |
 | 50283 | one reviewer who owns agents, with review #97 proven and #1–96 not; owner holds 5 other agents | quote 20% (2,000 bps), `hire` reverts `Gated(1)` |
 
