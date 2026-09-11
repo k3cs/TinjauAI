@@ -6,6 +6,7 @@ import { Wallet, formatEther } from "ethers";
 import { ProverClient, Tinjau, cc3Provider, toContractProof } from "@tinjau/core";
 import { runScout } from "./scout.js";
 import { verifyAll } from "./verify.js";
+import { exportDemo } from "./export.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const pkgRoot = join(here, "..");
@@ -90,6 +91,13 @@ async function main() {
     return;
   }
 
+  if (cmd === "export") {
+    // SCT-7: demo data for the server (/scout/log) and the web demo mode
+    const agents = (rest.length ? rest : ["22771", "50283", "21548"]).map(BigInt);
+    await exportDemo(plansDir, [join(repoRoot, "apps/server/src/data/scout-summary.json"), join(repoRoot, "apps/web/public/demo/facts.json")], agents, log);
+    return;
+  }
+
   if (cmd === "balance") {
     const addr = new Wallet(process.env.PRIVATE_KEY!).address;
     log(`${addr} ${formatEther(await cc3Provider().getBalance(addr))} tCTC`);
@@ -101,6 +109,7 @@ async function main() {
           [--gasBudget=9000000] [--scan=20] [--helpShare=0.6] [--gapProofs=conflicted|all|none] [--hireWei=0] [--maxPremiumBps=500] [--fundWei=0] [--live] [--log=file]
   verify  [agentId ...] [--minAge=500000] [--minDepth=2]
   record-one <chainKey> <txHash>
+  export  [agentId ...]   (writes apps/server/src/data/scout-summary.json and apps/web/public/demo/facts.json)
   balance
 plans are read from and written to ${plansDir}; dry-run unless --live.`);
 }
