@@ -1,0 +1,11 @@
+{
+  "network": "creditcoin-cc3-testnet",
+  "chainId": 102031,
+  "deployedAt": "2026-09-11T15:52:45Z",
+  "deployer": "0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49",
+  "contracts": {
+    "GroundedFacts": { "address": "0xC045087Fd85Da4f2d981222b18E7e74c8040BC47", "tx": "0x6e42e11d243ae2bfa15e1449fecae3816f3e98ccf64b79591d49a4cf156a0dda" },
+    "AgentHireEscrow": { "address": "0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB", "tx": "0x64a8f850c00ba0cbef050fcdf5f97d876d803fd4599c61ec13011e3bfb01eace" },
+    "CoverageBounty": { "address": "0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b", "tx": "0x2035fa49ce33d171a12099c2000d782268e9c495fa02ab9277fd07604562abb8" }
+  }
+}

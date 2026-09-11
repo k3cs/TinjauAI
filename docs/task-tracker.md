@@ -178,7 +178,7 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 **CON-13 · Batch proof (continuity bersama)** · P2 · agent · 3 jam · ⬜ · dep: CON-3
 - Detail: jalur `verify` batch (≤10 proof, rentang ≤1.000 blok) untuk riwayat rapat. Hanya bila CON-1…CON-12 selesai sebelum G1.
 
-**CON-14 · Review keamanan** · P0 · agent · 1 jam · 🔄 (self-review selesai 11 Sep 22:40, 0 temuan kritis; review skill `engineering:code-review` belum dijalankan) · dep: CON-8, CON-9
+**CON-14 · Review keamanan** · P0 · agent · 1 jam · ✅ (review manual 11 Sep; skill `engineering:code-review` hanya berisi kerangka, review dikerjakan langsung; 3 temuan diperbaiki, lihat `docs/quality/code-review.md`) · dep: CON-8, CON-9
 - Detail: jalankan skill `engineering:code-review` pada kontrak; periksa reentrancy, cast overflow, gas loop, akses; perbaiki temuan kritis; simpan laporan di `docs/quality/code-review.md`.
 - Kriteria selesai: 0 temuan kritis terbuka; `forge test` hijau.
 
@@ -217,15 +217,15 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 
 ### 5.4 DEP: Deploy dan data on-chain (G2–G3)
 
-**DEP-1 · Cek saldo dan faucet** · P0 · agent (Dien bila perlu faucet) · 10 menit · ⬜
+**DEP-1 · Cek saldo dan faucet** · P0 · agent (Dien bila perlu faucet) · 10 menit · ✅ (9.999,93 tCTC, 11 Sep 22:50)
 - Detail: saldo tCTC deployer `0x3D36…0E49` (v2 memakai ±10.000 tCTC). Bila kurang: Dien meminta faucet di Discord (`/faucet address:…`).
 - Kriteria selesai: saldo tercatat.
 
-**DEP-2 · Deploy 3 kontrak ke CC3 Testnet** · P0 · agent · 30 menit · ⬜ · dep: CON-14, DEP-1
+**DEP-2 · Deploy 3 kontrak ke CC3 Testnet** · P0 · agent · 30 menit · ✅ (izin Dien "lanjut" 11 Sep; `scripts/deploy.sh`) · dep: CON-14, DEP-1
 - Detail: `scripts/deploy.sh` memakai `forge create --broadcast` (bukan `forge script`: simulasi forge menolak header blok Creditcoin, `prevrandao`). Tulis alamat ke `.env` dan `packages/core` config.
 - Kriteria selesai: tiga alamat + hash tx deploy tercatat di §8.
 
-**DEP-3 · Verifikasi Blockscout** · P0 · agent · 20 menit · ⬜ · dep: DEP-2
+**DEP-3 · Verifikasi Blockscout** · P0 · agent · 20 menit · ✅ (3/3 `is_verified = true`) · dep: DEP-2
 - Detail: `forge verify-contract --verifier blockscout --verifier-url https://creditcoin-testnet.blockscout.com/api/`.
 - Kriteria selesai: 3/3 terverifikasi.
 
@@ -446,10 +446,10 @@ Paralel yang aman: PKG-1…PKG-3 dan WEB-1…WEB-2 bisa dikerjakan saat kontrak 
 
 | Hal | Nilai | Sumber |
 |---|---|---|
-| `GroundedFacts` | ⬜ | DEP-2 |
-| `AgentHireEscrow` | ⬜ | DEP-2 |
-| `CoverageBounty` | ⬜ | DEP-2 |
-| Jumlah tes | ⬜ | CON-14 |
+| `GroundedFacts` | `0xC045087Fd85Da4f2d981222b18E7e74c8040BC47` (tx `0x6e42e11d…0dda`, blok 5.470.068, 3.020.137 gas) | DEP-2 |
+| `AgentHireEscrow` | `0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB` (tx `0x64a8f850…eace`, blok 5.470.069, 920.666 gas) | DEP-2 |
+| `CoverageBounty` | `0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b` (tx `0x2035fa49…abb8`, blok 5.470.070, 862.895 gas) | DEP-2 |
+| Jumlah tes | 41/41 (`forge test`) | CON-14 |
 | Jumlah proof / tx `record` | ⬜ | DEP-4 |
 | `facts(3, 22771)` / premi | ⬜ | DEP-5 |
 | `facts(3, 50283)` / quote / `Gated` | ⬜ | DEP-5 |
@@ -463,6 +463,7 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 11 Sep 22:55 | CON-14, DEP-1…3 | Review: 3 temuan diperbaiki (bounty free-ride, truncated, grounded butuh indeks lengkap), 41/41 tes; deploy + verifikasi 3 kontrak; `attestedTip(3)` on-chain = 25.955.150 (ChainInfo terbaca dari kontrak) | Claude |
 | 11 Sep 22:43 | CON-1…CON-12 | Kontrak v3 ditulis ulang dari nol, 38/38 tes; precompile dicek live; CON-14 self-review | Claude |
 | 11 Sep 22:50 | GH-2, VCL-1 | Dien: `gh-pages` dihapus saat force-push; Vercel ditunda | Claude |
 | 11 Sep 22:40 | SET-1…6 | node_modules sisa Sui/Luber dihapus; workspace pnpm (core, scout, server, mcp-server; `apps/web` sengaja kosong); `.gitignore` (`.env` terabaikan, dicek `git check-ignore`); `.env.example`; git init + remote `k3cs/TinjauAI` (belum push); `AGENTS.md` + `claude.md`; toolchain: forge 1.7.1, Node 24.10.0, pnpm 10.18.3, TypeScript 5.9 | Claude |
