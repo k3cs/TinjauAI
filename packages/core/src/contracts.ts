@@ -157,3 +157,20 @@ export class Tinjau {
     return this.escrow.release(jobId);
   }
 }
+
+const BLOCK_PROVER_ABI = [
+  "function verify(uint64 chainKey, uint64 height, bytes encodedTransaction, (bytes32 root, (bytes32 hash, bool isLeft)[] siblings) merkleProof, (bytes32 lowerEndpointDigest, bytes32[] roots) continuityProof) view returns (bool)",
+] as const;
+
+/**
+ * Ask the Attestcoin BlockProver precompile (0x…0FD2) on CC3 whether a proof is valid, with a free
+ * eth_call. This is the same check `GroundedFacts.record` runs, without writing anything.
+ */
+export async function verifyWithPrecompile(proof: ContractProof, runner: ContractRunner = cc3Provider()): Promise<boolean> {
+  const prover = new Contract("0x0000000000000000000000000000000000000FD2", BLOCK_PROVER_ABI, runner);
+  try {
+    return await prover.verify(proof.chainKey, proof.height, proof.encodedTx, proof.merkleProof, proof.continuityProof);
+  } catch {
+    return false;
+  }
+}

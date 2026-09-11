@@ -6,3 +6,4 @@ export * from "./contracts.js";
 export { groundedFactsAbi } from "./abi/GroundedFacts.js";
 export { agentHireEscrowAbi } from "./abi/AgentHireEscrow.js";
 export { coverageBountyAbi } from "./abi/CoverageBounty.js";
+export * from "./recompute.js";

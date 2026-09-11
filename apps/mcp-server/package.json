@@ -4,7 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "stdio": "tsx --conditions=development src/stdio.ts",
     "build": "tsc -p tsconfig.json",
-    "test": "echo \"no tests yet\""
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@tinjau/core": "workspace:*",
+    "ethers": "^6.17.0",
+    "zod": "^4.6.2"
+  },
+  "bin": {
+    "tinjau-mcp": "./src/stdio.ts"
   }
 }
