@@ -355,11 +355,13 @@ contract GroundedFacts is IAgentFacts {
             ++f.breadthRaw;
             if (_ownerCount[chainKey][client] == 0) ++f.breadthIndependent;
             Activity storage a = _activity[chainKey][client];
-            // Reviews sent through a relayer or smart account leave no activity for `client`
-            // before the review; such reviewers stay ungrounded (omission never helps).
+            // A reviewer is grounded only when every one of their review indices is proven (so
+            // firstHeight is their real first review) and their proven activity is old and spread
+            // enough before it. Reviews sent through a relayer or smart account leave no activity
+            // for `client`, so such reviewers stay ungrounded. Omission never helps.
             if (
-                a.oldest != 0 && a.oldest <= pair.firstHeight && pair.firstHeight - a.oldest >= minAge
-                    && a.buckets >= minDepth
+                pair.maxIndex == pair.known && a.oldest != 0 && a.oldest <= pair.firstHeight
+                    && pair.firstHeight - a.oldest >= minAge && a.buckets >= minDepth
             ) {
                 ++f.breadthGrounded;
             }

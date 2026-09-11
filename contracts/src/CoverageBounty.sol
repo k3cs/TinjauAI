@@ -71,9 +71,12 @@ contract CoverageBounty {
         Bounty storage b = _bounties[id];
         if (b.closed) revert Closed();
         if (block.timestamp > b.expiry) revert Expired();
+        // Pay only for a change caused by these proofs. Comparing with the snapshot taken at
+        // funding would let anyone claim with zero proofs after someone else moved the facts.
+        bytes32 before = decisionOf(b.chainKey, b.agentId, b.minAge, b.minDepth, b.k, b.c);
         FACTS.record(proofs);
         bytes32 d = decisionOf(b.chainKey, b.agentId, b.minAge, b.minDepth, b.k, b.c);
-        if (d == b.decision) revert NoChange();
+        if (d == before) revert NoChange();
         b.closed = true;
         emit Claimed(id, msg.sender, b.amount, d);
         _send(msg.sender, b.amount);

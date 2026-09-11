@@ -84,6 +84,15 @@ contract GroundedFactsTest is Base {
 
     // ------------------------------------------------------------ seniority
 
+    function test_groundedRequiresEveryIndexProven() public {
+        _activity(1_000, alice);
+        _activity(300_000, alice);
+        _review(900_000, 7, alice, 2, 80); // index 1 unproven
+        assertEq(facts.facts(MAIN, 7, 500_000, 2).breadthGrounded, 0);
+        _review(850_000, 7, alice, 1, 80);
+        assertEq(facts.facts(MAIN, 7, 500_000, 2).breadthGrounded, 1);
+    }
+
     function test_groundedNeedsAgeAndDepth() public {
         _activity(1_000, alice); // bucket 0
         _activity(300_000, alice); // bucket 1
@@ -244,9 +253,9 @@ contract GroundedFactsTest is Base {
         _record(_loadFixture("mainnet-activity-old"));
         address client = 0x103040545AC5031A11E8C03dd11324C7333a13C7;
         assertEq(facts.reviewerSeniority(MAIN, client).oldest, 23_779_699);
-        // 25,823,901 - 23,779,699 = 2,044,202 blocks between first proven activity and the review
-        assertEq(facts.facts(MAIN, 50286, 2_000_000, 2).breadthGrounded, 1);
-        assertEq(facts.facts(MAIN, 50286, 2_100_000, 2).breadthGrounded, 0);
+        // Only index 24 of this reviewer is proven (1..23 missing), so the reviewer is not grounded
+        // however old the wallet is: the proven review may not be their first.
+        assertEq(facts.facts(MAIN, 50286, 0, 0).breadthGrounded, 0);
     }
 
     function test_fixture_massRegistration() public {

@@ -41,6 +41,7 @@ contract AgentHireEscrow {
     error BadDeadline();
     error UnknownAgent();
     error Gated(uint64 gapCount);
+    error Truncated();
     error ThinQuorum(uint32 have, uint32 want);
     error Stale(uint64 lag, uint64 max);
     error NotHirer();
@@ -83,6 +84,8 @@ contract AgentHireEscrow {
         if (!FACTS.isRegistered(chainKey, agentId)) revert UnknownAgent();
         (, uint256 premiumBps, IAgentFacts.Facts memory f, uint64 staleness) = quote(chainKey, agentId, p);
         if (f.gapCount > 0) revert Gated(f.gapCount);
+        // Reviewers past the iteration cap were not examined, so hidden gaps could exist there.
+        if (f.truncated) revert Truncated();
         if (p.minAttestors > 0 && f.minAttestors < p.minAttestors) revert ThinQuorum(f.minAttestors, p.minAttestors);
         if (p.maxStaleness > 0 && staleness > p.maxStaleness) revert Stale(staleness, p.maxStaleness);
 

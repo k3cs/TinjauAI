@@ -185,6 +185,27 @@ contract ConsumersTest is Base {
         assertEq(scout.balance, 0.05 ether);
     }
 
+    function test_bounty_cannotFreeRideOnSomeoneElsesProof() public {
+        _seedWeak();
+        vm.prank(hirer);
+        uint256 id = bounty.fund{value: 0.05 ether}(MAIN, WEAK, 500_000, 2, 3, 5, uint64(block.timestamp + 7 days));
+        // someone admits the decisive proof directly, not through the bounty
+        _record(_proof(MAIN, 899_000, _encodeTx(makeAddr("farm"), 1, _logs1(_feedbackLog(REP_MAIN, WEAK, makeAddr("farm"), 1, 95)))));
+        GroundedFacts.Proof[] memory none;
+        vm.prank(scout);
+        vm.expectRevert(CoverageBounty.NoChange.selector);
+        bounty.proveAndClaim(id, none);
+    }
+
+    function test_hire_truncatedFactsAreRefused() public {
+        for (uint256 i; i < facts.MAX_REVIEWERS(); ++i) {
+            _review(950_000, GOOD, address(uint160(0x5000 + i)), 1, 90);
+        }
+        vm.prank(hirer);
+        vm.expectRevert(AgentHireEscrow.Truncated.selector);
+        escrow.hire{value: 1 ether}(MAIN, GOOD, _params(), uint64(block.timestamp + 1 days));
+    }
+
     function test_bounty_noChangeNoPay() public {
         vm.prank(hirer);
         uint256 id = bounty.fund{value: 0.05 ether}(MAIN, GOOD, 500_000, 2, 3, 5, uint64(block.timestamp + 7 days));

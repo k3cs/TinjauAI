@@ -9,7 +9,8 @@ interface IAgentFacts {
     struct Facts {
         /// Distinct reviewers with at least one proven review of this agent.
         uint64 breadthRaw;
-        /// Reviewers active for >= minAge blocks before their first review, in >= minDepth buckets.
+        /// Reviewers with all review indices proven, active for >= minAge blocks before their
+        /// first review, in >= minDepth distinct activity buckets.
         uint64 breadthGrounded;
         /// Reviewers that own no agent (as far as proven).
         uint64 breadthIndependent;
