@@ -28,10 +28,17 @@ importers:
   packages/core:
     dependencies:
       ethers:
-        specifier: ^6.17.0
+        specifier: ^6.16.0
         version: 6.17.0
 
-  services/scout: {}
+  services/scout:
+    dependencies:
+      '@tinjau/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      ethers:
+        specifier: ^6.17.0
+        version: 6.17.0
 
 packages:
 

@@ -5,6 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "echo \"no tests yet\""
+    "scout": "tsx --conditions=development src/cli.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tinjau/core": "workspace:*",
+    "ethers": "^6.17.0"
   }
 }
