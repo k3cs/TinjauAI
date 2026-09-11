@@ -454,7 +454,7 @@ Paralel yang aman: PKG-1…PKG-3 dan WEB-1…WEB-2 bisa dikerjakan saat kontrak 
 | `facts(3, 22771)` / premi | raw 3, grounded 3, independent 3, gaps 0, clones 0, attestors 4 → premi **100 bps**, disewa scout (tx `0x3c70c911…c8fe`) | DEP-5 |
 | `facts(3, 50283)` / quote / `Gated` | raw 1, grounded 0, gaps 1, clones 5, registrantSib 5 → quote **2.000 bps**, `hire` revert `Gated(1)` (`0x393108e5…01`) | DEP-5 |
 | Bounty diklaim / hire scout | bounty #0 0,05 tCTC (fund `0x8a4dc077…dc3f`) diklaim scout via `proveAndClaim` `0xfd342f65…cc79`; hire 21548 `0xe6ba85dd…077d` (100 bps) | DEP-7 |
-| Gas `verify` precompile | 62.292 (7 root) … 631.434 (984 root); tx tertua blok 14.306.215 (±Feb 2022) = 506.986 gas; gas ≈ 55k + ~580·roots, jumlah root tidak monoton terhadap umur | DEP-4 |
+| Gas `verify` precompile | 62.292 (7 root) … 631.434 (984 root); tx tertua blok 14.306.215 (2 Mar 2022) = 506.986 gas; gas ≈ 55k + ~580·roots, jumlah root tidak monoton terhadap umur | DEP-4 |
 | URL video | ⬜ | SUB-3 |
 
 Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/ATTESTCOIN_INTEGRATION.md`.
