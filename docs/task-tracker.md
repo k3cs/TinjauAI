@@ -178,12 +178,12 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 **CON-13 · Batch proof (continuity bersama)** · P2 · agent · 3 jam · ⬜ · dep: CON-3
 - Detail: jalur `verify` batch (≤10 proof, rentang ≤1.000 blok) untuk riwayat rapat. Hanya bila CON-1…CON-12 selesai sebelum G1.
 
-**CON-14 · Review keamanan** · P0 · agent · 1 jam · 🔄 (self-review selesai 12 Sep dini hari, 0 temuan kritis; review skill `engineering:code-review` belum dijalankan) · dep: CON-8, CON-9
+**CON-14 · Review keamanan** · P0 · agent · 1 jam · 🔄 (self-review selesai 11 Sep 22:40, 0 temuan kritis; review skill `engineering:code-review` belum dijalankan) · dep: CON-8, CON-9
 - Detail: jalankan skill `engineering:code-review` pada kontrak; periksa reentrancy, cast overflow, gas loop, akses; perbaiki temuan kritis; simpan laporan di `docs/quality/code-review.md`.
 - Kriteria selesai: 0 temuan kritis terbuka; `forge test` hijau.
 
 
-**Catatan implementasi CON-1…CON-12 (12 Sep 2026 dini hari)** [Fakta, `contracts/`]
+**Catatan implementasi CON-1…CON-12 (11 Sep 2026 malam)** [Fakta, `contracts/`]
 - `forge test`: **38/38 lulus** (25 `GroundedFactsTest`, 13 `ConsumersTest`). Fixture asli: 4 proof dari prover API (`scripts/fetch-fixture.sh`): `NewFeedback` mainnet (agent 50286, indeks 24), aktivitas mainnet tertua pengulas `0x1030…` (blok 23.779.699), tx pendaftaran massal 52 KB (10 `Registered`, agent 41885…), `NewFeedback` Sepolia (agent 9865).
 - Precompile dicek live di CC3 testnet sebelum dipakai: `verify` proof mainnet segar = `true`, `calculateTxIndex` = 300 (sama dengan API); AttestorStash `0x0fd4` `getAttestorsCount` = 7 (chainKey 1) / 4 (chainKey 3), bond 100 CTC; ChainInfo `0x0fd3` `get_latest_attestation_height_and_hash` jalan (selector snake_case). ABI ChainInfo dari `@gluwa/usc-sdk` 0.18.0; AttestorStash tidak ada di docs/SDK (selector dari repo Singleton, lalu diverifikasi sendiri).
 - **CON-10 berubah desain** [Inferensi]: penjaga "jarak minimum dari tip" tidak dipakai karena prover hanya memberi proof untuk blok yang sudah teratestasi (margin tambahan hanya menambah jeda demo). Gantinya: `attestedTip(chainKey)` membaca ChainInfo, `facts()` mengembalikan `coveredThrough`, dan `AgentHireEscrow` bisa menolak fakta basi (`maxStaleness`, error `Stale`). Konsumen memutuskan, kontrak fakta tidak menilai.
@@ -463,7 +463,7 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
-| 12 Sep 01:10 | CON-1…CON-12 | Kontrak v3 ditulis ulang dari nol, 38/38 tes; precompile dicek live; CON-14 self-review | Claude |
+| 11 Sep 22:43 | CON-1…CON-12 | Kontrak v3 ditulis ulang dari nol, 38/38 tes; precompile dicek live; CON-14 self-review | Claude |
 | 11 Sep 22:50 | GH-2, VCL-1 | Dien: `gh-pages` dihapus saat force-push; Vercel ditunda | Claude |
 | 11 Sep 22:40 | SET-1…6 | node_modules sisa Sui/Luber dihapus; workspace pnpm (core, scout, server, mcp-server; `apps/web` sengaja kosong); `.gitignore` (`.env` terabaikan, dicek `git check-ignore`); `.env.example`; git init + remote `k3cs/TinjauAI` (belum push); `AGENTS.md` + `claude.md`; toolchain: forge 1.7.1, Node 24.10.0, pnpm 10.18.3, TypeScript 5.9 | Claude |
 | 11 Sep 22:25 | DEC-A…E | DEC-A/B/C/E disetujui; DEC-D direvisi: hosting serverless di Vercel (§5.12), scout lokal; frontend ditahan sampai aba-aba Dien | Claude |
