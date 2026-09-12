@@ -9,8 +9,10 @@ cd "$ROOT"
 set -a; source .env; set +a
 RPC=${CC3_RPC:-https://rpc.cc3-testnet.creditcoin.network}
 VERIFIER_URL=https://creditcoin-testnet.blockscout.com/api/
-# ERC-8004 registries per Attestcoin chainKey on CC3 testnet: 1 = Sepolia, 3 = Ethereum mainnet
-REGS="[(1,0x8004A818BFB912233c491871b3d84c89A494BD9e,0x8004B663056A597Dffe9eCcC1965A193B7388713),(3,0x8004A169FB4a3325136EB29fA0ceB6D2e539a432,0x8004BAa17C55a88189AE136b182e5fdA19dE9b63)]"
+# ERC-8004 registries per Attestcoin chainKey on CC3 testnet. Ethereum mainnet (3) only: a Sepolia
+# registry entry costs nothing to mint, so admitting Sepolia (chainKey 1) would let anyone fabricate a
+# record for free. Decision 12 Sep 2026; chainKey 1 now reverts UnknownChain.
+REGS="[(3,0x8004A169FB4a3325136EB29fA0ceB6D2e539a432,0x8004BAa17C55a88189AE136b182e5fdA19dE9b63)]"
 
 cd contracts
 deploy() { forge create --rpc-url "$RPC" --private-key "$PRIVATE_KEY" --broadcast "$@" 2>&1 | tee /dev/stderr | awk '/Deployed to:/{a=$3} /Transaction hash:/{t=$3} END{print a" "t}'; }

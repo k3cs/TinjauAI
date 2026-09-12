@@ -24,6 +24,22 @@ contract MockBlockProver {
         return true;
     }
 
+    /// Batch overload. Mirrors the live precompile: one rejected member reverts the whole batch
+    /// (checked on CC3 testnet with a flipped byte, 12 Sep 2026) and member order is free.
+    function verify(
+        uint64,
+        uint64[] calldata heights,
+        bytes[] calldata encodedTxs,
+        INativeQueryVerifier.MerkleProof[] calldata merkleProofs,
+        INativeQueryVerifier.ContinuityProof calldata
+    ) external pure returns (bool) {
+        require(heights.length == encodedTxs.length && heights.length == merkleProofs.length, "length mismatch");
+        for (uint256 i; i < merkleProofs.length; ++i) {
+            if (merkleProofs[i].root == REJECT) revert("Merkle proof validation failed");
+        }
+        return true;
+    }
+
     function calculateTxIndex(INativeQueryVerifier.MerkleProof calldata merkleProof) external pure returns (uint64) {
         return uint64(uint32(uint256(merkleProof.root)));
     }
@@ -121,6 +137,23 @@ abstract contract Base is Test {
         p.height = height;
         p.encodedTx = encodedTx;
         p.merkleProof.root = bytes32(uint256(nextTxIndex++));
+    }
+
+    /// Batch of synthetic members sharing one (empty) continuity proof; each gets its own tx index.
+    function _batch(uint64 chainKey, uint64[] memory heights, bytes[] memory encs)
+        internal
+        returns (GroundedFacts.Batch memory b)
+    {
+        b.chainKey = chainKey;
+        b.heights = heights;
+        b.encodedTxs = encs;
+        b.merkleProofs = new INativeQueryVerifier.MerkleProof[](heights.length);
+        for (uint256 i; i < heights.length; ++i) b.merkleProofs[i].root = bytes32(uint256(nextTxIndex++));
+    }
+
+    function _loadBatchFixture(string memory name) internal view returns (GroundedFacts.Batch memory b) {
+        bytes memory raw = vm.parseBytes(vm.readFile(string.concat("test/fixtures/", name, ".hex")));
+        b = abi.decode(raw, (GroundedFacts.Batch));
     }
 
     function _record(GroundedFacts.Proof memory p) internal returns (uint256) {

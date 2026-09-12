@@ -3,8 +3,8 @@
 # capped by gas, appending to services/scout/plans/cron.log. Runs locally on Dien's machine: the scout
 # holds the deployer key, so it is never hosted.
 #
-# Install (every 3 hours):
-#   crontab -e  →  0 */3 * * * "/path/to/Tinjau/scripts/scout-cron.sh"
+# Install (hourly):
+#   crontab -e  →  0 * * * * "/path/to/Tinjau/scripts/scout-cron.sh"
 #
 # The cycle is a no-op once DEADLINE passes, so the entry can be left in place and removed later.
 set -euo pipefail
@@ -36,9 +36,10 @@ if [ "$(printf '%.0f' "${balance:-0}")" -lt 5 ]; then
 fi
 echo "balance ${balance} tCTC" >> "$LOG"
 
-# --maxTargets=2 and --gasBudget keep one cycle small; --hireWei=0 means the scout proves and claims
-# bounties but does not spend on hires unattended.
-if pnpm -s scout scout --maxTargets=2 --gasBudget=6000000 --hireWei=0 --live --log=cron.log >/dev/null 2>&1; then
+# --maxTargets=8 per hourly cycle (raised from 2 every 3 h on 12 Sep: one cycle costs ~0.003 tCTC
+# against a 9,999 tCTC balance); --hireWei=0 means the scout proves and claims bounties but does not
+# spend on hires unattended.
+if pnpm -s scout scout --maxTargets=8 --gasBudget=24000000 --hireWei=0 --live --log=cron.log >/dev/null 2>&1; then
   echo "cycle ok" >> "$LOG"
 else
   echo "cycle failed (exit $?)" >> "$LOG"

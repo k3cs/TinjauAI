@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { AbiCoder, keccak256, Wallet, formatEther } from "ethers";
 import {
-  CC3_TESTNET, DEPLOYMENT, ProverClient, Tinjau, cc3Provider, toContractProof,
+  CC3_TESTNET, DEPLOYMENT, ProverClient, Tinjau, cc3Provider, toContractBatch, toContractProof,
   type ContractProof, type Facts, type HireParams, type ProofResponse,
 } from "@tinjau/core";
 import { Discovery, type ReviewerData } from "./discovery.js";
@@ -27,7 +27,7 @@ export interface ScoutOptions {
 }
 
 export interface TxRecord {
-  kind: "record" | "proveAndClaim" | "hire" | "fund";
+  kind: "record" | "recordBatch" | "proveAndClaim" | "hire" | "fund";
   hash: string;
   block: number;
   gasUsed: string;
@@ -56,6 +56,9 @@ export interface Plan {
 
 const GAS_PRICE_WEI = 500_000_000n; // CC3 testnet gas price observed 11 Sep 2026 (cast gas-price)
 const BATCH = 4;
+/** The precompile shares one continuity proof across members no further apart than this. */
+const BATCH_SPAN = 999;
+const BATCH_MAX = 10;
 
 export async function runScout(o: ScoutOptions) {
   const provider = cc3Provider();
@@ -164,6 +167,27 @@ async function scoutAgent(
           /* this batch does not flip the decision on its own: plain record */
         }
       }
+      // R3 cost: members inside one attestation window share a continuity proof (CON-13). A bounty
+      // claim keeps the single-proof path, because the bounty contract compares decisions per call.
+      let batched = false;
+      if (kind === "record" && batch.length >= 2 && batch.length <= BATCH_MAX && batch.every((p) => p.chainKey === batch[0].chainKey)) {
+        const hs = batch.map((p) => p.headerNumber);
+        if (Math.max(...hs) - Math.min(...hs) <= BATCH_SPAN) {
+          try {
+            const cb = toContractBatch(await prover.proofBatch(o.chainKey, batch.map((p) => p.txHash)));
+            const tx = await tinjau.recordBatch(cb);
+            const rc = await tx.wait();
+            txs.push({ kind: "recordBatch", hash: tx.hash, block: rc!.blockNumber, gasUsed: rc!.gasUsed.toString(), proofs: cb.txHashes });
+            o.log(`[tx] recordBatch ${cb.txHashes.length} member(s), ${cb.continuityProof.roots.length} shared roots ${tx.hash} block ${rc!.blockNumber} gas ${rc!.gasUsed}`);
+            batched = true;
+          } catch (e) {
+            // The prover only builds batches for ranges its archiver still serves; older windows fall
+            // back to singles (seen live: "failed to get roots from archiver" on a 60k-block-old pair).
+            o.log(`[R3] batch not available (${String((e as Error).message).slice(0, 80)}); proving one by one`);
+          }
+        }
+      }
+      if (batched) continue;
       const tx = kind === "proveAndClaim" ? await tinjau.proveAndClaim(BigInt(t.bountyId!), cps) : await tinjau.record(cps);
       const rc = await tx.wait();
       txs.push({ kind, hash: tx.hash, block: rc!.blockNumber, gasUsed: rc!.gasUsed.toString(), proofs: batch.map((p) => p.txHash) });

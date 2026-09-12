@@ -479,6 +479,88 @@ export const groundedFactsAbi = [
   },
   {
     "type": "function",
+    "name": "recordBatch",
+    "inputs": [
+      {
+        "name": "b",
+        "type": "tuple",
+        "internalType": "struct GroundedFacts.Batch",
+        "components": [
+          {
+            "name": "chainKey",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "heights",
+            "type": "uint64[]",
+            "internalType": "uint64[]"
+          },
+          {
+            "name": "encodedTxs",
+            "type": "bytes[]",
+            "internalType": "bytes[]"
+          },
+          {
+            "name": "merkleProofs",
+            "type": "tuple[]",
+            "internalType": "struct INativeQueryVerifier.MerkleProof[]",
+            "components": [
+              {
+                "name": "root",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "siblings",
+                "type": "tuple[]",
+                "internalType": "struct INativeQueryVerifier.MerkleProofEntry[]",
+                "components": [
+                  {
+                    "name": "hash",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                  },
+                  {
+                    "name": "isLeft",
+                    "type": "bool",
+                    "internalType": "bool"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "continuityProof",
+            "type": "tuple",
+            "internalType": "struct INativeQueryVerifier.ContinuityProof",
+            "components": [
+              {
+                "name": "lowerEndpointDigest",
+                "type": "bytes32",
+                "internalType": "bytes32"
+              },
+              {
+                "name": "roots",
+                "type": "bytes32[]",
+                "internalType": "bytes32[]"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "admitted",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "registryOf",
     "inputs": [
       {
@@ -733,6 +815,11 @@ export const groundedFactsAbi = [
       }
     ],
     "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "BadBatch",
+    "inputs": []
   },
   {
     "type": "error",

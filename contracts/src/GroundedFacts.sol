@@ -19,6 +19,20 @@ contract GroundedFacts is IAgentFacts {
         INativeQueryVerifier.ContinuityProof continuityProof;
     }
 
+    /// @notice Several proofs sharing one continuity proof, as returned by `proof-batch-by-tx`.
+    /// The precompile checks the members together and rejects the whole batch if any one fails
+    /// (verified live: one flipped byte in one member reverts the batch), so a batch is admitted
+    /// as a unit. Members within the same attestation window share the continuity roots, which is
+    /// where the gas saving comes from: measured 167,344 gas for two members against 227,904 for
+    /// the same two proven one by one (27% at n = 2, more as n grows).
+    struct Batch {
+        uint64 chainKey;
+        uint64[] heights;
+        bytes[] encodedTxs;
+        INativeQueryVerifier.MerkleProof[] merkleProofs;
+        INativeQueryVerifier.ContinuityProof continuityProof;
+    }
+
     /// @notice ERC-8004 registry pair accepted for one Attestcoin source chain.
     struct Registry {
         uint64 chainKey;
@@ -104,6 +118,7 @@ contract GroundedFacts is IAgentFacts {
     error UnknownChain(uint64 chainKey);
     error ProofRejected(uint256 index);
     error BadRegistry();
+    error BadBatch();
 
     /// @param registries ERC-8004 registries per Attestcoin chainKey. Fixed forever: no admin.
     constructor(Registry[] memory registries) {
@@ -123,34 +138,64 @@ contract GroundedFacts is IAgentFacts {
     /// @return admitted Number of proofs that were new (duplicates are skipped, not reverted).
     function record(Proof[] calldata proofs) external returns (uint256 admitted) {
         for (uint256 i; i < proofs.length; ++i) {
-            if (_admit(proofs[i], i)) ++admitted;
+            Proof calldata p = proofs[i];
+            Registry memory reg = _registry(p.chainKey);
+            bool ok;
+            try VERIFIER.verify(p.chainKey, p.height, p.encodedTx, p.merkleProof, p.continuityProof) returns (bool v) {
+                ok = v;
+            } catch {}
+            if (!ok) revert ProofRejected(i);
+            if (_admitVerified(reg, p.chainKey, p.height, p.encodedTx, p.merkleProof)) ++admitted;
         }
     }
 
-    function _admit(Proof calldata p, uint256 i) internal returns (bool) {
-        Registry memory reg = _registries[p.chainKey];
-        if (reg.identity == address(0)) revert UnknownChain(p.chainKey);
+    /// @notice Admit proven transactions that share one continuity proof. One precompile call
+    /// checks every member; the batch is rejected whole if any member fails (`ProofRejected(0)`).
+    /// Duplicates inside the batch are skipped like anywhere else. Anyone may call.
+    /// @return admitted Number of members that were new.
+    function recordBatch(Batch calldata b) external returns (uint256 admitted) {
+        uint256 n = b.heights.length;
+        if (n == 0 || b.encodedTxs.length != n || b.merkleProofs.length != n) revert BadBatch();
+        Registry memory reg = _registry(b.chainKey);
 
         bool ok;
-        try VERIFIER.verify(p.chainKey, p.height, p.encodedTx, p.merkleProof, p.continuityProof) returns (bool v) {
+        try VERIFIER.verify(b.chainKey, b.heights, b.encodedTxs, b.merkleProofs, b.continuityProof) returns (bool v) {
             ok = v;
         } catch {}
-        if (!ok) revert ProofRejected(i);
+        if (!ok) revert ProofRejected(0);
 
-        uint64 txIndex = VERIFIER.calculateTxIndex(p.merkleProof);
-        bytes32 txKey = keccak256(abi.encode(p.chainKey, p.height, txIndex));
+        for (uint256 i; i < n; ++i) {
+            if (_admitVerified(reg, b.chainKey, b.heights[i], b.encodedTxs[i], b.merkleProofs[i])) ++admitted;
+        }
+    }
+
+    function _registry(uint64 chainKey) internal view returns (Registry memory reg) {
+        reg = _registries[chainKey];
+        if (reg.identity == address(0)) revert UnknownChain(chainKey);
+    }
+
+    /// @dev Everything after the precompile said yes: dedup, decode, facts. Shared by both paths.
+    function _admitVerified(
+        Registry memory reg,
+        uint64 chainKey,
+        uint64 height,
+        bytes calldata encodedTx,
+        INativeQueryVerifier.MerkleProof calldata merkleProof
+    ) internal returns (bool) {
+        uint64 txIndex = VERIFIER.calculateTxIndex(merkleProof);
+        bytes32 txKey = keccak256(abi.encode(chainKey, height, txIndex));
         if (admittedTx[txKey]) return false;
         admittedTx[txKey] = true;
 
-        bytes memory enc = p.encodedTx;
+        bytes memory enc = encodedTx;
         address from = EvmV1Decoder.decodeCommonTxFields(enc).from;
-        _recordActivity(p.chainKey, from, p.height);
+        _recordActivity(chainKey, from, height);
 
-        uint32 attestors = _attestorsNow(p.chainKey);
+        uint32 attestors = _attestorsNow(chainKey);
         EvmV1Decoder.ReceiptFields memory receipt = EvmV1Decoder.decodeReceiptFields(enc);
         // The precompile proves inclusion, not success: logs of a reverted tx are never used.
         if (receipt.receiptStatus == 1) {
-            Ctx memory ctx = Ctx(p.chainKey, p.height, txIndex, txKey, from, attestors);
+            Ctx memory ctx = Ctx(chainKey, height, txIndex, txKey, from, attestors);
             EvmV1Decoder.LogEntry[] memory logs = receipt.receiptLogs;
             for (uint256 j; j < logs.length; ++j) {
                 EvmV1Decoder.LogEntry memory lg = logs[j];
@@ -162,7 +207,7 @@ contract GroundedFacts is IAgentFacts {
                 }
             }
         }
-        emit TxAdmitted(p.chainKey, p.height, txIndex, from, attestors);
+        emit TxAdmitted(chainKey, height, txIndex, from, attestors);
         return true;
     }
 

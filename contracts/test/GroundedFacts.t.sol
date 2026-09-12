@@ -5,6 +5,7 @@ import {EvmV1Decoder} from "usc/EvmV1Decoder.sol";
 import {GroundedFacts} from "../src/GroundedFacts.sol";
 import {IAgentFacts} from "../src/interfaces/IAgentFacts.sol";
 import {Base, MockBlockProver} from "./utils/Base.sol";
+import {Precompiles} from "../src/interfaces/IPrecompiles.sol";
 
 contract GroundedFactsTest is Base {
     address internal alice = makeAddr("alice");
@@ -279,5 +280,102 @@ contract GroundedFactsTest is Base {
         assertEq(pair.maxIndex, 5);
         assertEq(facts.facts(SEP, 9865, 0, 0).minAttestors, 7);
         assertEq(facts.facts(MAIN, 9865, 0, 0).breadthRaw, 0, "chainKeys are separate namespaces");
+    }
+
+    // ------------------------------------------------------------ batch path (CON-13)
+
+    function _twoMembers() internal returns (uint64[] memory heights, bytes[] memory encs) {
+        heights = new uint64[](2);
+        encs = new bytes[](2);
+        heights[0] = 25_000_000;
+        heights[1] = 25_000_500;
+        encs[0] = _encodeTx(owner, 1, _logs1(_registeredLog(ID_MAIN, 777, "ipfs://a", owner)));
+        encs[1] = _encodeTx(alice, 1, _logs1(_feedbackLog(REP_MAIN, 777, alice, 1, 5)));
+    }
+
+    function test_batch_admitsMembersAsUnit() public {
+        (uint64[] memory heights, bytes[] memory encs) = _twoMembers();
+        GroundedFacts.Batch memory b = _batch(MAIN, heights, encs);
+        assertEq(facts.recordBatch(b), 2);
+        assertTrue(facts.isRegistered(MAIN, 777));
+        assertEq(facts.ownerOf(MAIN, 777), owner);
+        IAgentFacts.Facts memory f = facts.facts(MAIN, 777, 0, 0);
+        assertEq(f.breadthRaw, 1);
+        assertEq(f.firstRegisteredHeight, 25_000_000);
+        assertEq(f.coveredThrough, 25_000_500);
+        assertEq(facts.reviewerSeniority(MAIN, alice).oldest, 25_000_500, "member activity recorded");
+    }
+
+    function test_batch_oneBadMemberRejectsWhole() public {
+        (uint64[] memory heights, bytes[] memory encs) = _twoMembers();
+        GroundedFacts.Batch memory b = _batch(MAIN, heights, encs);
+        bytes32 goodRoot = b.merkleProofs[0].root;
+        b.merkleProofs[1].root = MockBlockProver(Precompiles.BLOCK_PROVER).REJECT();
+        vm.expectRevert(abi.encodeWithSelector(GroundedFacts.ProofRejected.selector, uint256(0)));
+        facts.recordBatch(b);
+        // Nothing from the batch leaked in: the good member is still unknown.
+        uint64 idx = uint64(uint32(uint256(goodRoot)));
+        assertFalse(facts.admittedTx(keccak256(abi.encode(MAIN, heights[0], idx))));
+        assertFalse(facts.isRegistered(MAIN, 777));
+    }
+
+    function test_batch_duplicateInsideBatchSkipped() public {
+        (uint64[] memory heights, bytes[] memory encs) = _twoMembers();
+        GroundedFacts.Batch memory b = _batch(MAIN, heights, encs);
+        b.heights[1] = b.heights[0];
+        b.encodedTxs[1] = b.encodedTxs[0];
+        b.merkleProofs[1].root = b.merkleProofs[0].root;
+        assertEq(facts.recordBatch(b), 1, "same tx twice counts once");
+    }
+
+    function test_batch_thenSingleIsDuplicate() public {
+        (uint64[] memory heights, bytes[] memory encs) = _twoMembers();
+        GroundedFacts.Batch memory b = _batch(MAIN, heights, encs);
+        assertEq(facts.recordBatch(b), 2);
+        GroundedFacts.Proof memory p = _proof(MAIN, heights[0], encs[0]);
+        p.merkleProof.root = b.merkleProofs[0].root;
+        assertEq(_record(p), 0, "dedup key is shared by both paths");
+    }
+
+    function test_batch_lengthMismatchReverts() public {
+        (uint64[] memory heights, bytes[] memory encs) = _twoMembers();
+        GroundedFacts.Batch memory b = _batch(MAIN, heights, encs);
+        bytes[] memory one = new bytes[](1);
+        one[0] = encs[0];
+        b.encodedTxs = one;
+        vm.expectRevert(GroundedFacts.BadBatch.selector);
+        facts.recordBatch(b);
+    }
+
+    function test_batch_emptyReverts() public {
+        GroundedFacts.Batch memory b = _batch(MAIN, new uint64[](0), new bytes[](0));
+        vm.expectRevert(GroundedFacts.BadBatch.selector);
+        facts.recordBatch(b);
+    }
+
+    function test_batch_unknownChainReverts() public {
+        (uint64[] memory heights, bytes[] memory encs) = _twoMembers();
+        GroundedFacts.Batch memory b = _batch(9, heights, encs);
+        vm.expectRevert(abi.encodeWithSelector(GroundedFacts.UnknownChain.selector, uint64(9)));
+        facts.recordBatch(b);
+    }
+
+    /// Real batch from the CC3 prover (`proof-batch-by-tx/3`, 12 Sep 2026), two mainnet reputation
+    /// txs sharing 87 continuity roots. The live precompile returned true for exactly these bytes.
+    function test_fixture_batchMainnet2() public {
+        GroundedFacts.Batch memory b = _loadBatchFixture("batch-mainnet-2");
+        assertEq(b.chainKey, 3);
+        assertEq(b.heights.length, 2);
+        assertEq(b.heights[0], 25_949_114);
+        assertEq(b.heights[1], 25_949_118);
+        assertEq(b.continuityProof.roots.length, 87);
+        assertEq(facts.recordBatch(b), 2);
+        for (uint256 i; i < 2; ++i) {
+            uint64 idx = uint64(uint32(uint256(b.merkleProofs[i].root)));
+            assertTrue(facts.admittedTx(keccak256(abi.encode(uint64(3), b.heights[i], idx))), "member admitted");
+        }
+        // Both members are NewFeedback txs, so the bureau now knows at least one reviewer each.
+        address from0 = EvmV1Decoder.decodeCommonTxFields(b.encodedTxs[0]).from;
+        assertEq(facts.reviewerSeniority(MAIN, from0).oldest, 25_949_114, "sender activity from member 0");
     }
 }

@@ -4,7 +4,7 @@ import { agentHireEscrowAbi } from "./abi/AgentHireEscrow.js";
 import { coverageBountyAbi } from "./abi/CoverageBounty.js";
 import { CC3_TESTNET, DEPLOYMENT } from "./config.js";
 import type { Facts } from "./facts-model.js";
-import type { ContractProof } from "./prover.js";
+import type { ContractBatch, ContractProof } from "./prover.js";
 
 export interface HireParams {
   minAge: bigint;
@@ -141,6 +141,10 @@ export class Tinjau {
     return this.facts.record(proofs);
   }
 
+  async recordBatch(b: ContractBatch) {
+    return this.facts.recordBatch({ chainKey: b.chainKey, heights: b.heights, encodedTxs: b.encodedTxs, merkleProofs: b.merkleProofs, continuityProof: b.continuityProof });
+  }
+
   async proveAndClaim(bountyId: bigint, proofs: ContractProof[]) {
     return this.bounty.proveAndClaim(bountyId, proofs);
   }
@@ -160,6 +164,7 @@ export class Tinjau {
 
 const BLOCK_PROVER_ABI = [
   "function verify(uint64 chainKey, uint64 height, bytes encodedTransaction, (bytes32 root, (bytes32 hash, bool isLeft)[] siblings) merkleProof, (bytes32 lowerEndpointDigest, bytes32[] roots) continuityProof) view returns (bool)",
+  "function verify(uint64 chainKey, uint64[] heights, bytes[] encodedTransactions, (bytes32 root, (bytes32 hash, bool isLeft)[] siblings)[] merkleProofs, (bytes32 lowerEndpointDigest, bytes32[] roots) sharedContinuityProof) view returns (bool)",
 ] as const;
 
 /**
@@ -169,7 +174,17 @@ const BLOCK_PROVER_ABI = [
 export async function verifyWithPrecompile(proof: ContractProof, runner: ContractRunner = cc3Provider()): Promise<boolean> {
   const prover = new Contract("0x0000000000000000000000000000000000000FD2", BLOCK_PROVER_ABI, runner);
   try {
-    return await prover.verify(proof.chainKey, proof.height, proof.encodedTx, proof.merkleProof, proof.continuityProof);
+    return await prover["verify(uint64,uint64,bytes,(bytes32,(bytes32,bool)[]),(bytes32,bytes32[]))"](proof.chainKey, proof.height, proof.encodedTx, proof.merkleProof, proof.continuityProof);
+  } catch {
+    return false;
+  }
+}
+
+/** Same free check for a batch: the whole batch is one answer, exactly as `recordBatch` sees it. */
+export async function verifyBatchWithPrecompile(b: ContractBatch, runner: ContractRunner = cc3Provider()): Promise<boolean> {
+  const prover = new Contract("0x0000000000000000000000000000000000000FD2", BLOCK_PROVER_ABI, runner);
+  try {
+    return await prover["verify(uint64,uint64[],bytes[],(bytes32,(bytes32,bool)[])[],(bytes32,bytes32[]))"](b.chainKey, b.heights, b.encodedTxs, b.merkleProofs, b.continuityProof);
   } catch {
     return false;
   }
