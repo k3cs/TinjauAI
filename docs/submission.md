@@ -15,7 +15,7 @@ Tinjau is the bureau. Its Creditcoin contract, GroundedFacts, admits data only t
 
 AgentHireEscrow prices a hire from those facts (the premium is the agent's cost of credit) and refuses agents whose record has holes. CoverageBounty pays for evidence that changes a decision, in either direction. GroundedScout, the autonomous agent, picks targets, proves evidence both ways, skips work other scouts did, claims bounties and hires on its own thresholds. An MCP server lets any agent query the bureau, and a Gemini-based reader checks payment claims in review documents against the Attestcoin prover: on one agent, 6 claimed payments, 0 found on the chain they name.
 
-Live on CC3 testnet: 23 Ethereum transactions admitted back to 2022; two agents hired at 1%; one refused as gated; a bounty claimed by the scout; the same proof verified on CC3 mainnet.
+Live on CC3 testnet: 25 Ethereum transactions admitted back to 2022 and still growing (the scout runs unattended until the deadline); two agents hired at 1%; one refused as gated; a bounty claimed by the scout; the same proof verified on CC3 mainnet.
 
 Limits: Ethereum-side registries only; unsubmitted reviews are invisible; no consumer contract on Creditcoin yet.
 

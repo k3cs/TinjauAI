@@ -1,6 +1,6 @@
 # Tinjau: evaluation dossier (BUIDL CTC 2026 Fall)
 
-Version 3.0 · 11 Sep 2026 · Status: **v3 deployed and verified on Creditcoin CC3 Testnet**; 41 contract tests; 23 source transactions admitted; every number recomputed from the chain alone.
+Version 3.1 · 12 Sep 2026 · Status: **v3 deployed and verified on Creditcoin CC3 Testnet**; 41 contract tests; 25 source transactions admitted as of 12 Sep 2026; every number recomputed from the chain alone. The scout keeps running on a schedule until the submission deadline, so the admitted-transaction count only grows; every number here is a floor, not a ceiling.
 
 This dossier is written so a judge (human or AI agent) can check every claim independently. Each substantive claim is labelled **[Fact]** (a source or command you can rerun) or **[Inference]** (our reasoning). Section 9 lists commands.
 
@@ -83,7 +83,7 @@ Four decisions, all logged with the alternatives it rejected:
 | Role | Decision | Seen live, 11 Sep |
 |---|---|---|
 | R1 targeting | open bounties first, then requested or most-reviewed agents | picked bounty #0 (agent 21548) before the two requested agents |
-| R2 two-way evidence | helps: complete review records + old, spread activity for reviewers who can be grounded; hurts: negatives, revocations, reviewers who own agents, owner's other agents, highest index of conflicted reviewers | 22771 (35 reviewers): 10 rejected as too new, 15 left unscanned (scan cap 20), 3 grounded chosen, 7 more skipped once k = 3 was covered; 50283: 5 clone siblings, reviewer owns agents, review #97 |
+| R2 two-way evidence | helps: complete review records + old, spread activity for reviewers who can be grounded; hurts: negatives, revocations, reviewers who own agents, owner's other agents, highest index of conflicted reviewers | 22771 (35 reviewers): 10 rejected as too new, 15 left unscanned (scan cap 20), 3 grounded chosen, 7 more skipped once k = 3 was covered; 50283: 6 clone siblings, reviewer owns agents, review #97 |
 | R3 timing | skip what is already admitted; prove now only if the bounty covers gas | bounty 0.05 tCTC vs cost ≈ 0.0017 tCTC → prove now; second cycle on 50283: 7/7 already admitted, 0 gas |
 | R4 consumer | hire if the facts pass its own thresholds, otherwise fund a bounty | hired 21548 and 22771 at 100 bps; refused 50283 (gated) |
 
@@ -99,7 +99,7 @@ Review documents (`feedbackURI`) carry free-form claims such as `proof_of_paymen
 
 | # | Use | Evidence [Fact] |
 |---|---|---|
-| 1 | BlockProver `verify` on every proof inside the contract | 23 admitted source txs; `ProofRejected` on a bad proof (test) |
+| 1 | BlockProver `verify` on every proof inside the contract | 25 admitted source txs; `ProofRejected` on a bad proof (test) |
 | 2 | `calculateTxIndex` for dedup and exact transfer ordering | second scout cycle: 0 gas; test `test_newestTransferWinsWhateverTheProofOrder` |
 | 3 | AttestorStash `0x0FD4` read per proof, exposed as `minAttestors`, enforceable by the hirer | live: 4 attestors (Ethereum), 7 (Sepolia); `facts(3,22771).minAttestors = 4` |
 | 4 | ChainInfo `0x0FD3` read in-contract (`attestedTip`) for staleness | `attestedTip(3)` = 25,955,150 at deploy |
@@ -108,7 +108,7 @@ Review documents (`feedbackURI`) carry free-form claims such as `proof_of_paymen
 | 7 | Receipt decoding with `EvmV1Decoder`: status, sender, logs, emitter binding | 52 KB tx with 10 `Registered` logs admitted (2,997,204 gas) |
 | 8 | Source-protocol counter as a completeness signal (`feedbackIndex`) | 50283: review #97 proven, #1–96 not → `Gated(1)` |
 | 9 | Mainnet-ready | same proof verifies on CC3 **mainnet** precompile, 127,746 gas |
-| 10 | Independent recomputation from chain data | `recomputeFromChain()`: 23/23 replayed, identical facts for 3 agents |
+| 10 | Independent recomputation from chain data | `recomputeFromChain()`: 25/25 replayed, identical facts for 4 agents |
 
 [Fact] Other entries: of 87 BUIDLs in the DoraHacks gallery (read 11 Sep), at least 7 use Ethereum mainnet and one (Singleton) also uses AttestorStash. [Inference] What is specific to Tinjau is the subject (AI agents and their reviewers; 0 of 87 BUIDLs touch ERC-8004), years-old history as a fact input, completeness from the source protocol's counter, and the chain-only recomputation.
 

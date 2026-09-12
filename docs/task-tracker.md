@@ -450,9 +450,9 @@ Paralel yang aman: PKG-1…PKG-3 dan WEB-1…WEB-2 bisa dikerjakan saat kontrak 
 | `AgentHireEscrow` | `0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB` (tx `0x64a8f850…eace`, blok 5.470.069, 920.666 gas) | DEP-2 |
 | `CoverageBounty` | `0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b` (tx `0x2035fa49…abb8`, blok 5.470.070, 862.895 gas) | DEP-2 |
 | Jumlah tes | 41/41 (`forge test`) | CON-14 |
-| Jumlah tx sumber teradmit | 23 (22 mainnet chainKey 3, 1 Sepolia chainKey 1); `recomputeFromChain` = 23 | DEP-4 |
+| Jumlah tx sumber teradmit | 25 per 12 Sep 2026 (24 mainnet chainKey 3, 1 Sepolia chainKey 1); `recomputeFromChain` = 25. Naik terus selama cron SCT-8 jalan | DEP-4 |
 | `facts(3, 22771)` / premi | raw 3, grounded 3, independent 3, gaps 0, clones 0, attestors 4 → premi **100 bps**, disewa scout (tx `0x3c70c911…c8fe`) | DEP-5 |
-| `facts(3, 50283)` / quote / `Gated` | raw 1, grounded 0, gaps 1, clones 5, registrantSib 5 → quote **2.000 bps**, `hire` revert `Gated(1)` (`0x393108e5…01`) | DEP-5 |
+| `facts(3, 50283)` / quote / `Gated` | raw 1, grounded 0, gaps 1, clones 6, registrantSib 6 (12 Sep) → quote **2.000 bps**, `hire` revert `Gated(1)` (`0x393108e5…01`) | DEP-5 |
 | Bounty diklaim / hire scout | bounty #0 0,05 tCTC (fund `0x8a4dc077…dc3f`) diklaim scout via `proveAndClaim` `0xfd342f65…cc79`; hire 21548 `0xe6ba85dd…077d` (100 bps) | DEP-7 |
 | Gas `verify` precompile | 62.292 (7 root) … 631.434 (984 root); tx tertua blok 14.306.215 (2 Mar 2022) = 506.986 gas; gas ≈ 55k + ~580·roots, jumlah root tidak monoton terhadap umur | DEP-4 |
 | URL video | ⬜ | SUB-3 |

@@ -39,9 +39,9 @@ flowchart LR
 |---|---|---|
 | 22771 | 3 reviewers active 97 days to 4 years before their first review, no holes, no clones | premium 1% (100 bps), hired by the scout |
 | 21548 | same, after the scout claimed an open bounty with the decisive proof batch | premium 1%, hired |
-| 50283 | one reviewer who owns agents, with review #97 proven and #1–96 not; owner holds 5 other agents | quote 20% (2,000 bps), `hire` reverts `Gated(1)` |
+| 50283 | one reviewer who owns agents, with review #97 proven and #1–96 not; owner holds 6 other agents | quote 20% (2,000 bps), `hire` reverts `Gated(1)` |
 
-23 source transactions admitted (22 Ethereum mainnet back to 2022, 1 Sepolia), every one recomputed off-chain from the chain alone with identical results. The same proof verifies on CC3 **mainnet**. Transactions, gas and precompile details: [`ATTESTCOIN_INTEGRATION.md`](ATTESTCOIN_INTEGRATION.md).
+25 source transactions admitted as of 12 Sep 2026 (24 Ethereum mainnet back to 2022, 1 Sepolia), every one recomputed off-chain from the chain alone with identical results. The scout keeps running on a schedule until the submission deadline, so the admitted-transaction count only grows; every number here is a floor, not a ceiling. The same proof verifies on CC3 **mainnet**. Transactions, gas and precompile details: [`ATTESTCOIN_INTEGRATION.md`](ATTESTCOIN_INTEGRATION.md).
 
 ## Contract addresses (Creditcoin CC3 Testnet, chainId 102031, verified)
 

@@ -39,7 +39,7 @@ BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet + Attestcoin
 ## Attestcoin depth (all measured on-chain)
 | Surface | Use |
 |---|---|
-| BlockProver `0x0FD2` `verify` | every proof, inside the contract; 23 source txs admitted |
+| BlockProver `0x0FD2` `verify` | every proof, inside the contract; 25 source txs admitted |
 | `calculateTxIndex` | dedup across scouts (2nd cycle: 0 gas) + exact transfer ordering |
 | AttestorStash `0x0FD4` | attestor count per fact; hirer can refuse thin quorums |
 | ChainInfo `0x0FD3` | attested tip in-contract; hirer can refuse stale facts |
@@ -67,8 +67,8 @@ BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet + Attestcoin
 ## Demo (mainnet data, Creditcoin txs)
 - Agent **22771**: 3 reviewers active 97 days to 4 years before their first review → premium **1%**, hired
 - Agent **21548**: bounty claimed by the scout, then hired at **1%**
-- Agent **50283**: one reviewer who owns agents, review #97 proven and #1–96 not, 5 clone siblings → quote **20%**, `hire` reverts `Gated(1)`
-- `tinjau_verify` replays all 23 admitted txs from chain data: identical
+- Agent **50283**: one reviewer who owns agents, review #97 proven and #1–96 not, 6 clone siblings → quote **20%**, `hire` reverts `Gated(1)`
+- `tinjau_verify` replays all 25 admitted txs from chain data: identical (the scout keeps adding more until the deadline)
 
 ---
 

@@ -110,10 +110,10 @@ Tinjau adalah **biro kredit untuk agent AI**: mencatat fakta terbukti (biro), bu
 
 ### 4.3 Hasil live 11 Sep 2026
 
-- 23 tx sumber teradmit (22 Ethereum mainnet sejak blok 14.306.215 / 2 Mar 2022, 1 Sepolia).
+- 25 tx sumber teradmit per 12 Sep 2026 (24 Ethereum mainnet sejak blok 14.306.215 / 2 Mar 2022, 1 Sepolia). **Angka ini naik terus**: cron scout (SCT-8) jalan tiap 3 jam sampai deadline, jadi tulis sebagai "minimal N per <tanggal>", jangan sebagai angka tetap. Cek ulang sebelum rekam video dan submit: `pnpm -s scout verify 22771 50283 21548 50286`.
 - 22771: grounded 3, gaps 0, clones 0, attestors 4 → premi 100 bps, disewa scout.
 - 21548: sama; bounty #0 (0,05 tCTC) diklaim scout lewat `proveAndClaim`, lalu disewa 100 bps.
-- 50283: raw 1, grounded 0, gaps 1, clones 5 → quote 2.000 bps, `hire` revert `Gated(1)`.
+- 50283: raw 1, grounded 0, gaps 1, clones 6 → quote 2.000 bps, `hire` revert `Gated(1)`. (Klon 5 → 6 setelah siklus cron 12 Sep; premi tetap di batas maksimum.)
 - Siklus kedua scout: 7/7 sudah teradmit, 0 gas.
 - `recomputeFromChain()` dan `scout verify`: identik untuk ketiga agent.
 - CC3 mainnet: proof pendaftaran 22771 `verify = true`, 127.746 gas; AttestorStash mainnet 7 attestor, bond minimal 0.

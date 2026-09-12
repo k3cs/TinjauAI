@@ -71,7 +71,11 @@ Gas tracks the number of continuity roots (≈ 55k + ~580 per root), which depen
 | 15 | 5,470,233 | release | [`0xe797621d…eb7a`](https://creditcoin-testnet.blockscout.com/tx/0xe797621d5bb1c2ddfa8f514ea0b58d5bcd8226fce0686b59ea8c01c0dc02eb7a) | 78,988 | release job 1 (22771) |
 | - | - | hire 50283 | `eth_call` | - | reverts `Gated(1)` (`0x393108e5…01`): one reviewer has unproven review indices |
 
+| 16 | 5,472,870 | record | [`0xd000ab70…9964`](https://creditcoin-testnet.blockscout.com/tx/0xd000ab70bda332c836177ccb06328258ec56df0c1c95e3d24b2c499f377f9964) | 594,349 | unattended cron cycle, agent 50286, 2 proofs |
+
 A second scout cycle on agent 50283 found all 7 of its proofs already admitted and spent 0 gas.
+
+The scout also runs unattended every three hours until the submission deadline (`scripts/scout-cron.sh`), so rows keep being added below #16 and the admitted-transaction count in this document is a floor. The full list is on-chain: every `record` emits `TxAdmitted`.
 
 ## 7. On-chain facts (thresholds minAge 500,000 blocks, minDepth 2, k 3, c 5)
 
@@ -79,11 +83,12 @@ A second scout cycle on agent 50283 found all 7 of its proofs already admitted a
 |---|---|---|
 | 22771 | 3 reviewers, 3 grounded, 3 independent, 0 gaps, 0 clones, attestors 4 | risk 0, premium 100 bps, hired |
 | 21548 | 3 reviewers, 3 grounded, 0 gaps, 0 clones, attestors 4 | risk 0, premium 100 bps, hired after the scout claimed the bounty |
-| 50283 | 1 reviewer (who owns agents), 0 grounded, 1 gap, 5 clone siblings, 5 registrant siblings | risk 10,000, premium 2,000 bps, `hire` reverts `Gated(1)` |
+| 50283 | 1 reviewer (who owns agents), 0 grounded, 1 gap, 6 clone siblings, 6 registrant siblings | risk 10,000, premium 2,000 bps, `hire` reverts `Gated(1)` |
+| 50286 | found by the unattended cron cycle: 1 reviewer (who owns agents), 0 grounded, 1 gap, 6 clone siblings | risk 10,000, premium 2,000 bps, gated |
 
 ## 8. Anyone can recompute every number
 
-`recomputeFromChain()` (`packages/core/src/recompute.ts`) reads every `TxAdmitted` event from `GroundedFacts`, finds each source transaction on Ethereum by (block, index), fetches its proof again from the Attestcoin prover, and replays it through an off-chain copy of the contract logic. On 11 Sep 2026 it replayed all 23 admitted transactions and produced facts identical to `facts()` for agents 22771, 50283 and 21548. The MCP tool `tinjau_verify` exposes the same check to any agent.
+`recomputeFromChain()` (`packages/core/src/recompute.ts`) reads every `TxAdmitted` event from `GroundedFacts`, finds each source transaction on Ethereum by (block, index), fetches its proof again from the Attestcoin prover, and replays it through an off-chain copy of the contract logic. On 12 Sep 2026 it replayed all 25 admitted transactions and produced facts identical to `facts()` for agents 22771, 50283, 21548 and 50286. The scout keeps running on a schedule until the submission deadline, so the admitted-transaction count only grows; every number here is a floor, not a ceiling. The MCP tool `tinjau_verify` exposes the same check to any agent.
 
 ## 9. What this does not claim
 
