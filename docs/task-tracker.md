@@ -274,7 +274,7 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §
 **SCT-7 · Ekspor data demo** · P0 · agent · 30 menit · ✅ (`scout export`) · dep: SCT-6
 - Detail: `scripts/export-demo.ts` menulis `apps/web/public/demo/facts.json` dari plan + proof (mode demo web).
 
-**SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · 🔄 (`scripts/scout-cron.sh` siap; belum dipasang ke cron, butuh izin Dien karena mengubah konfigurasi mesin) · dep: DEP-7
+**SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · ✅ (izin Dien 12 Sep; `scripts/scout-cron.sh` terpasang di crontab, jalan berkala sampai deadline) · dep: DEP-7
 - Detail: jadwal berkala **lokal** (launchd/cron di mesin Dien, bukan Vercel; alasan di §5.12) dengan batas anggaran; laporan N proof, N agent, N pengulas, gas total; dipakai di dosier dan video.
 
 ### 5.6 SRV: `apps/server` (P1, DEC-B)
@@ -282,7 +282,7 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §
 **SRV-1 · Kerangka Hono** · P1 · agent · 30 menit · ✅ (diuji lokal) · dep: PKG-5
 - Detail: `GET /health`, `GET /facts/:chainKey/:agentId?minAge&minDepth`, `GET /quote/...`, `GET /scout/log`; semua angka dibaca dari chain via `packages/core`, tanpa database.
 
-**SRV-2 · LLM pembaca klaim** · P1 (DEC-C) · agent · 3 jam · 🔄 (kode selesai: Anthropic SDK `claude-opus-5`, structured output Zod; uji LLM live ⏳ butuh `ANTHROPIC_API_KEY` dari Dien) · dep: SRV-1, PKG-3
+**SRV-2 · LLM pembaca klaim** · P1 (DEC-C) · agent · 3 jam · ✅ (Gemini REST, ladder 6 model dengan fallback saat kuota habis; 7/7 tes live; laporan 50283: 6 klaim, 0 terbukti) · dep: SRV-1, PKG-3
 - Detail: baca `feedbackURI`, ekstrak `proof_of_payment {network, txHash}` dengan AI SDK (skema terstruktur), coba ambil proof via prover API; hasil: "terbukti", "chain salah", "tidak ditemukan". **Tidak menulis fakta on-chain.** Wajib ada contoh kasus LLM salah → precompile/prover menolak.
 - Kriteria selesai: laporan untuk agent demo; angka dibandingkan dengan temuan v2 (0 dari 12 klaim benar chain-nya).
 
@@ -463,6 +463,7 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 12 Sep 10:30 | SRV-2, SCT-8, GH-2 | Pembaca klaim pindah dari Claude ke Gemini (ladder `3.8-flash`→…→`3.1-flash-lite`, fallback saat 429/503/404); `@anthropic-ai/sdk` dibuang; 7/7 tes live; laporan live 50283 = 6 klaim pembayaran, 0 ada di chain yang diklaim; cron scout dipasang; force-push ke `k3cs/TinjauAI` atas izin Dien | Dien |
 | 11 Sep 23:55 | DOC-1…5/7/8, SUB-5, SCT-8 | README, integration summary, dosier v3, deck, submission, panduan v3; klaim "active for years" untuk 22771 dikoreksi (97 hari sampai 4 tahun); scan angka v2: bersih | Claude |
 | 11 Sep 23:40 | PKG, SCT, DEP-4…8, SRV-1/3, MCP-1 | core + scout + server + MCP; urutan live: bounty diklaim, 2 hire (100 bps), 50283 Gated, siklus kedua 0 gas; verify identik (plan lokal dan data chain saja); CC3 mainnet verify = true; mainnet AttestorStash: 7 attestor, bond minimal 0 | Claude |
 | 11 Sep 22:55 | CON-14, DEP-1…3 | Review: 3 temuan diperbaiki (bounty free-ride, truncated, grounded butuh indeks lengkap), 41/41 tes; deploy + verifikasi 3 kontrak; `attestedTip(3)` on-chain = 25.955.150 (ChainInfo terbaca dari kontrak) | Claude |

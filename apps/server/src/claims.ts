@@ -1,6 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { z } from "zod";
 import { AbiCoder } from "ethers";
 import { ProverClient, ProverError, TOPICS, sourceOf, toContractProof, verifyWithPrecompile } from "@tinjau/core";
 
@@ -11,19 +8,46 @@ import { ProverClient, ProverError, TOPICS, sourceOf, toContractProof, verifyWit
  * appear verbatim in the document, and only the Attestcoin prover and the BlockProver precompile
  * decide whether the claimed transaction exists on the claimed chain. Results are a report, never
  * facts on-chain.
+ *
+ * The reader runs on Gemini (Google AI Studio REST API, no SDK dependency). Free-tier quotas are
+ * per model, so `MODELS` is a ladder: on a quota or availability error the reader falls to the next
+ * model and keeps going. The model that actually answered is reported per review.
  */
 
-const MODEL = process.env.TINJAU_CLAIMS_MODEL ?? "claude-opus-5";
+// Checked against the live API on 12 Sep 2026: every model here answers `generateContent`.
+// The 2.5 family returns 404 ("no longer available to new users") and is deliberately absent.
+const DEFAULT_MODELS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
 
-const ClaimsSchema = z.object({
-  claims: z.array(
-    z.object({
-      network: z.string().describe("Network or chain the document says the payment happened on, as written (e.g. 'ethereum', 'base', 'eip155:1')."),
-      txHash: z.string().describe("Transaction hash exactly as it appears in the document."),
-      quote: z.string().describe("Short verbatim excerpt of the document that states this claim."),
-    }),
-  ),
-});
+const MODELS = (process.env.TINJAU_CLAIMS_MODELS ?? process.env.TINJAU_CLAIMS_MODEL ?? DEFAULT_MODELS.join(","))
+  .split(",")
+  .map((m) => m.trim())
+  .filter(Boolean);
+
+const GEMINI_BASE = process.env.GEMINI_API_BASE ?? "https://generativelanguage.googleapis.com/v1beta";
+
+/** Response schema for the extraction step (Gemini structured output; a subset of OpenAPI schema). */
+const CLAIMS_SCHEMA = {
+  type: "object",
+  properties: {
+    claims: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          network: { type: "string", description: "Network or chain the document says the payment happened on, as written (e.g. 'ethereum', 'base', 'eip155:1')." },
+          txHash: { type: "string", description: "Transaction hash exactly as it appears in the document." },
+          quote: { type: "string", description: "Short verbatim excerpt of the document that states this claim." },
+        },
+        required: ["network", "txHash", "quote"],
+        propertyOrdering: ["network", "txHash", "quote"],
+      },
+    },
+  },
+  required: ["claims"],
+} as const;
+
+const SYSTEM =
+  "You read ERC-8004 feedback documents written by AI-agent marketplaces. List every claim that a payment or on-chain transaction happened, with the network and transaction hash exactly as written. If the document makes no such claim, return an empty list. Do not infer or normalise hashes.";
 
 export type Verdict =
   | "proven" // prover returned a proof on the claimed chain and the precompile verified it
@@ -50,13 +74,17 @@ export interface ReviewClaims {
   feedbackURI: string;
   fetched: boolean;
   claims: ClaimResult[];
+  /** Which model in the ladder actually read this document. */
+  model?: string;
   note?: string;
 }
 
 export interface ClaimsReport {
   chainKey: number;
   agentId: string;
-  model: string;
+  /** The configured ladder, tried in order when a model runs out of quota. */
+  models: string[];
+  modelsUsed: string[];
   generatedAt: string;
   reviewsScanned: number;
   withUri: number;
@@ -90,17 +118,73 @@ async function fetchDoc(uri: string): Promise<string | undefined> {
   }
 }
 
-async function extract(client: Anthropic, doc: string) {
-  const response = await client.messages.parse({
-    model: MODEL,
-    max_tokens: 4_000,
-    output_config: { effort: "low", format: zodOutputFormat(ClaimsSchema) },
-    system:
-      "You read ERC-8004 feedback documents written by AI-agent marketplaces. List every claim that a payment or on-chain transaction happened, with the network and transaction hash exactly as written. If the document makes no such claim, return an empty list. Do not infer or normalise hashes.",
-    messages: [{ role: "user", content: `Feedback document:\n\n${doc}` }],
-  });
-  if (response.stop_reason === "refusal") return { claims: [], refused: true };
-  return { claims: response.parsed_output?.claims ?? [], refused: false };
+export interface ExtractedClaim {
+  network: string;
+  txHash: string;
+  quote: string;
+}
+
+export interface ExtractResult {
+  claims: ExtractedClaim[];
+  model?: string;
+  /** Set when no model in the ladder could answer, or the one that did declined/returned nothing usable. */
+  note?: string;
+}
+
+/** True for errors where trying the next model in the ladder is the right move (quota, overload, model gone). */
+function shouldFallOver(status: number): boolean {
+  return status === 429 || status === 503 || status === 500 || status === 404;
+}
+
+async function callGemini(model: string, apiKey: string, doc: string): Promise<{ ok: true; text: string } | { ok: false; status: number; detail: string }> {
+  let res: Response;
+  try {
+    res = await fetch(`${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent`, {
+      method: "POST",
+      signal: AbortSignal.timeout(60_000),
+      headers: { "content-type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM }] },
+        contents: [{ role: "user", parts: [{ text: `Feedback document:\n\n${doc}` }] }],
+        generationConfig: { temperature: 0, maxOutputTokens: 4_000, responseMimeType: "application/json", responseSchema: CLAIMS_SCHEMA },
+      }),
+    });
+  } catch (e) {
+    return { ok: false, status: 503, detail: String((e as Error).message).slice(0, 160) };
+  }
+  if (!res.ok) return { ok: false, status: res.status, detail: (await res.text()).slice(0, 200) };
+  const body = (await res.json()) as { candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[] };
+  const cand = body.candidates?.[0];
+  if (!cand || (cand.finishReason && !["STOP", "MAX_TOKENS"].includes(cand.finishReason))) {
+    return { ok: false, status: 422, detail: `finishReason ${cand?.finishReason ?? "none"}` };
+  }
+  return { ok: true, text: (cand.content?.parts ?? []).map((p) => p.text ?? "").join("") };
+}
+
+/**
+ * Ask each model in the ladder in turn until one answers. A quota or availability error moves to the
+ * next model; a refusal or unparsable answer is reported for that document and does not retry, since
+ * another model would read the same text.
+ */
+export async function extract(doc: string, apiKey = process.env.GEMINI_API_KEY, models = MODELS): Promise<ExtractResult> {
+  if (!apiKey) return { claims: [], note: "GEMINI_API_KEY is not set" };
+  const failures: string[] = [];
+  for (const model of models) {
+    const r = await callGemini(model, apiKey, doc);
+    if (!r.ok) {
+      failures.push(`${model}: ${r.status}`);
+      if (shouldFallOver(r.status)) continue;
+      return { claims: [], model, note: `model declined to read this document (${r.detail})` };
+    }
+    try {
+      const parsed = JSON.parse(r.text) as { claims?: ExtractedClaim[] };
+      const claims = (parsed.claims ?? []).filter((c) => typeof c?.network === "string" && typeof c?.txHash === "string");
+      return { claims, model, ...(claims.length !== (parsed.claims ?? []).length ? { note: "some entries were dropped: wrong shape" } : {}) };
+    } catch {
+      return { claims: [], model, note: "model returned text that is not the requested JSON" };
+    }
+  }
+  return { claims: [], note: `no model in the ladder answered (${failures.join(", ")})` };
 }
 
 export async function checkClaim(prover: ProverClient, doc: string, c: { network: string; txHash: string; quote: string }): Promise<ClaimResult> {
@@ -158,8 +242,7 @@ async function feedbackLogs(chainKey: number, agentId: bigint, maxPages = 4): Pr
   return out;
 }
 
-export async function claimsReport(chainKey: number, agentId: bigint, opts: { maxReviews?: number; anthropic?: Anthropic } = {}): Promise<ClaimsReport> {
-  const client = opts.anthropic ?? new Anthropic();
+export async function claimsReport(chainKey: number, agentId: bigint, opts: { maxReviews?: number; apiKey?: string } = {}): Promise<ClaimsReport> {
   const prover = new ProverClient({ retries: 1, retryDelayMs: 1_000 });
   const logs = await feedbackLogs(chainKey, agentId);
   const withUri = logs.filter((l) => l.uri.length > 0);
@@ -172,8 +255,9 @@ export async function claimsReport(chainKey: number, agentId: bigint, opts: { ma
       reviews.push(r);
       continue;
     }
-    const { claims, refused } = await extract(client, doc);
-    if (refused) r.note = "model declined to read this document";
+    const { claims, model, note } = await extract(doc, opts.apiKey);
+    r.model = model;
+    if (note) r.note = note;
     for (const c of claims) r.claims.push(await checkClaim(prover, doc, c));
     reviews.push(r);
   }
@@ -183,7 +267,8 @@ export async function claimsReport(chainKey: number, agentId: bigint, opts: { ma
   return {
     chainKey,
     agentId: agentId.toString(),
-    model: MODEL,
+    models: MODELS,
+    modelsUsed: [...new Set(reviews.map((r) => r.model).filter((m): m is string => !!m))],
     generatedAt: new Date().toISOString(),
     reviewsScanned: logs.length,
     withUri: withUri.length,

@@ -18,7 +18,7 @@ The ERC-8004 reputation registry on Ethereum mainnet is live, and nobody can rea
 - **`AgentHireEscrow`** turns facts into a premium (the agent's cost of credit, paid to the agent's owner) and refuses hires when a reviewer's record has holes, when facts are stale, or when too few attestors stood behind them.
 - **`CoverageBounty`** pays whoever submits proofs that change a consumer's decision, in either direction.
 - **`GroundedScout`** (autonomous agent) picks targets (open bounties first), gathers evidence that helps and evidence that hurts, skips proofs other scouts already admitted, proves only when a bounty covers gas, and hires on its own thresholds.
-- **MCP server** (`tinjau_facts`, `tinjau_quote`, `tinjau_verify`) and a **read API** let any agent query the bureau; a Claude-based **claim reader** checks payment claims inside review documents against the Attestcoin prover and precompile (a report, never a fact).
+- **MCP server** (`tinjau_facts`, `tinjau_quote`, `tinjau_verify`) and a **read API** let any agent query the bureau; a Gemini-based **claim reader** checks payment claims inside review documents against the Attestcoin prover and precompile (a report, never a fact). Run live on agent 50283: 6 payment claims, 6 of them on no chain Attestcoin can find them.
 
 ## How it works
 

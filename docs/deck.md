@@ -74,8 +74,9 @@ BUIDL CTC 2026 Fall · Track: AI · Creditcoin CC3 Testnet + Attestcoin
 
 ## AI where rules cannot keep up
 - Review documents claim payments in marketplace-specific formats
-- Claude reads them and proposes (network, txHash) pairs
+- Gemini reads them and proposes (network, txHash) pairs (model ladder: falls to the next model on a quota error)
 - Deterministic checks decide: hash must be in the document, chain must be Attestcoin-readable, prover + precompile confirm inclusion
+- Live on agent 50283: **6 claimed payment transactions, 0 found on the chain they name**
 - A report, never a fact on-chain; MCP tools let any agent ask the bureau before hiring
 
 ---

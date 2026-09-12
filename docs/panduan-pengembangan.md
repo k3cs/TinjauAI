@@ -80,7 +80,7 @@ Tinjau adalah **biro kredit untuk agent AI**: mencatat fakta terbukti (biro), bu
 | "Reviewer 50283 owns 43 agents" | angka on-chain dari `reviewerOwnsAgents` |
 | "Works on Base / multi-chain" | "Ethereum-side registries only" |
 | "Removes trust" | "moves trust to Creditcoin's bonded attestors" (mainnet min bond 0) |
-| "AI scores agents" | "autonomous scout with four logged decisions; Claude reads claims, precompile decides" |
+| "AI scores agents" | "autonomous scout with four logged decisions; Gemini reads claims, precompile decides" |
 | Hasil pembaca klaim LLM sebagai fakta | "report, not a fact" |
 
 ---
@@ -106,7 +106,7 @@ Tinjau adalah **biro kredit untuk agent AI**: mencatat fakta terbukti (biro), bu
 | RPC CC3 testnet / mainnet | `rpc.cc3-testnet.creditcoin.network` / `mainnet3.creditcoin.network` (chainId 102030) |
 | Precompile | BlockProver `0x…0FD2`, ChainInfo `0x…0fd3` (selector snake_case), AttestorStash `0x…0fd4` (camelCase, tidak ada di docs) |
 | Discovery Ethereum | Blockscout **REST v2** (`/api/v2/...`); `/api` v1 kena rate limit 429 pada 11 Sep |
-| Toolchain | forge 1.7.1, Node 24.10, pnpm 10.18.3, TypeScript 5.9, `@anthropic-ai/sdk` 0.125, MCP SDK 1.30 |
+| Toolchain | forge 1.7.1, Node 24.10, pnpm 10.18.3, TypeScript 5.9, Gemini REST (tanpa SDK), MCP SDK 1.30 |
 
 ### 4.3 Hasil live 11 Sep 2026
 
@@ -128,7 +128,7 @@ Tinjau adalah **biro kredit untuk agent AI**: mencatat fakta terbukti (biro), bu
 | `contracts/` | kontrak, tes, fixture, vendor | `pnpm test:contracts` |
 | `packages/core` | config, prover client, decoder, `FactsModel`, klien kontrak, `recomputeFromChain`, `verifyWithPrecompile` | `pnpm --filter @tinjau/core test` (`LIVE=1` untuk uji ke prover) |
 | `services/scout` | GroundedScout CLI: `scout`, `verify`, `record-one`, `export`, `balance`; plan di `plans/` (gitignored) | `cd services/scout && pnpm scout <cmd>` |
-| `apps/server` | Hono API + pembaca klaim Claude; entry Vercel `api/index.ts` | `pnpm dev` (port 8787) |
+| `apps/server` | Hono API + pembaca klaim Gemini; entry Vercel `api/index.ts` | `pnpm dev` (port 8787) |
 | `apps/mcp-server` | tools `tinjau_facts`, `tinjau_quote`, `tinjau_verify`; stdio + HTTP stateless (`api/mcp.ts`) | `pnpm stdio`; uji `npx tsx test/client.ts` |
 | `apps/web` | kosong kecuali `public/demo/facts.json` (hasil `scout export`) | tunggu aba-aba |
 | `scripts/` | `deploy.sh`, `live-sequence.sh`, `fetch-fixture.sh`, `export-abi.mjs` | |
@@ -152,8 +152,11 @@ R1 bounty → agent diminta → paling ramai 7 hari. R2 bundel pengulas (semua i
 ## 8. Server, MCP, pembaca klaim
 
 - Server: `GET /health`, `/facts/:ck/:id`, `/quote/:ck/:id`, `/agents/:ck/:id/reviewers`, `/scout/log`, `/claims/:ck/:id`.
-- Pembaca klaim: Anthropic SDK `claude-opus-5`, `messages.parse` + `zodOutputFormat`, effort `low`. Verdict: `proven`, `not-on-claimed-chain`, `unsupported-chain`, `hash-not-in-document`, `malformed-hash`, `not-yet-attested`, `prover-error`. Fallback server-side untuk refusal **tidak diaktifkan** (helper `parse` ada di jalur non-beta); refusal dilaporkan sebagai catatan.
-- **Belum diuji dengan LLM live**: butuh `ANTHROPIC_API_KEY` dari Dien. Bagian deterministik lulus 4/4 (`LIVE=1 npx vitest run` di `apps/server`).
+- Pembaca klaim: **Gemini** lewat REST Google AI Studio (`generativelanguage.googleapis.com/v1beta`, tanpa SDK), structured output `responseSchema`, `temperature 0`. Butuh `GEMINI_API_KEY`.
+- **Ladder model** (`DEFAULT_MODELS` di `apps/server/src/claims.ts`, bisa ditimpa lewat `TINJAU_CLAIMS_MODELS`): `gemini-3.8-flash` → `3.7-flash` → `3.6-flash` → `3.5-flash` → `3.5-flash-lite` → `3.1-flash-lite`. Error 429 (kuota habis), 503, 500, dan 404 → turun ke model berikutnya; jawaban yang tidak bisa di-parse tidak diulang ke model lain (teksnya sama). Model yang menjawab dicatat per ulasan (`review.model`, `report.modelsUsed`).
+- [Fakta] Keluarga `gemini-2.5-*` mengembalikan 404 "no longer available to new users" (dicek 12 Sep 2026), jadi sengaja tidak ada di ladder.
+- Verdict: `proven`, `not-on-claimed-chain`, `unsupported-chain`, `hash-not-in-document`, `malformed-hash`, `not-yet-attested`, `prover-error`.
+- **Sudah diuji live** (12 Sep 2026): 7/7 tes lulus (`GEMINI_API_KEY=… LIVE=1 npx vitest run` di `apps/server`), termasuk uji fallback model. Laporan agent 50283: 6 klaim pembayaran, 6-6nya tidak ada di chain yang diklaim.
 
 ## 9. Hosting
 

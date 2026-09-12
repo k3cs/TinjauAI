@@ -91,7 +91,7 @@ app.get("/agents/:chainKey/:agentId/reviewers", async (c) => {
 app.get("/scout/log", (c) => c.json(scoutSummary));
 
 app.get("/claims/:chainKey/:agentId", async (c) => {
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) throw new HttpError(400, "claims reader needs ANTHROPIC_API_KEY on the server");
+  if (!process.env.GEMINI_API_KEY) throw new HttpError(400, "claims reader needs GEMINI_API_KEY on the server");
   const ck = key(c.req.param("chainKey"));
   const id = BigInt(c.req.param("agentId"));
   const report = await claimsReport(ck, id, { maxReviews: Number(c.req.query("max") ?? 8) });
