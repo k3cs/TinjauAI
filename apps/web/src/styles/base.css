@@ -1,0 +1,160 @@
+@import "./tokens.css";
+@import "./layout.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Browser surfaces belong to the design system, not to the browser. */
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+:root {
+  caret-color: var(--ink);
+  scrollbar-color: var(--rule-35) var(--fill-soft);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--fill-soft);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rule-35);
+  border: 3px solid var(--fill-soft);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-70);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+a:hover {
+  opacity: 0.62;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* Any figure that can change is tabular, so columns do not jitter as the chain moves. */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.mono {
+  font-family: "SFMono-Regular", ui-monospace, "Menlo", "Consolas", monospace;
+  font-size: 0.8125rem;
+}
+
+.display {
+  font-weight: 300;
+  font-size: clamp(2rem, 8vw, 4.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.section-title {
+  font-weight: 400;
+  font-size: clamp(1.375rem, 3.4vw, 1.75rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: var(--measure);
+  color: var(--ink-70);
+}
+
+.small {
+  font-size: 0.8125rem;
+  color: var(--ink-62);
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.shell {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .display {
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

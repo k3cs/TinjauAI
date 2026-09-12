@@ -94,7 +94,7 @@ async function main() {
   if (cmd === "export") {
     // SCT-7: demo data for the server (/scout/log) and the web demo mode
     const agents = (rest.length ? rest : ["22771", "50283", "21548"]).map(BigInt);
-    await exportDemo(plansDir, [join(repoRoot, "apps/server/src/data/scout-summary.json"), join(repoRoot, "apps/web/public/demo/facts.json")], agents, log);
+    await exportDemo(plansDir, [join(repoRoot, "apps/server/src/data/scout-summary.json"), join(repoRoot, "apps/web/src/data/facts.json")], agents, log);
     return;
   }
 

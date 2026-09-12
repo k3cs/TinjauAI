@@ -10,3 +10,4 @@ contracts/broadcast/*/dry-run/
 services/scout/plans/
 services/scout/cache/
 .DS_Store
+apps/web/dist/
