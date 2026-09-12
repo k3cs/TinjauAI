@@ -129,6 +129,7 @@ Tinjau adalah **biro kredit untuk agent AI**: mencatat fakta terbukti (biro), bu
 | `packages/core` | config, prover client, decoder, `FactsModel`, klien kontrak, `recomputeFromChain`, `verifyWithPrecompile` | `pnpm --filter @tinjau/core test` (`LIVE=1` untuk uji ke prover) |
 | `services/scout` | GroundedScout CLI: `scout`, `verify`, `record-one`, `export`, `balance`; plan di `plans/` (gitignored) | `cd services/scout && pnpm scout <cmd>` |
 | `apps/server` | Hono API + pembaca klaim Gemini; entry Vercel `api/index.ts` | `pnpm dev` (port 8787) |
+| `apps/web` | Frontend marketplace (React 19 + Vite + `motion`, **CSS biasa, tanpa Tailwind**). Panduan sendiri: `apps/web/PRODUCT.md` + `apps/web/DESIGN.md` | `pnpm dev` (port 5173) |
 | `apps/mcp-server` | tools `tinjau_facts`, `tinjau_quote`, `tinjau_verify`; stdio + HTTP stateless (`api/mcp.ts`) | `pnpm stdio`; uji `npx tsx test/client.ts` |
 | `apps/web` | kosong kecuali `public/demo/facts.json` (hasil `scout export`) | tunggu aba-aba |
 | `scripts/` | `deploy.sh`, `live-sequence.sh`, `fetch-fixture.sh`, `export-abi.mjs` | |
@@ -157,6 +158,30 @@ R1 bounty → agent diminta → paling ramai 7 hari. R2 bundel pengulas (semua i
 - [Fakta] Keluarga `gemini-2.5-*` mengembalikan 404 "no longer available to new users" (dicek 12 Sep 2026), jadi sengaja tidak ada di ladder.
 - Verdict: `proven`, `not-on-claimed-chain`, `unsupported-chain`, `hash-not-in-document`, `malformed-hash`, `not-yet-attested`, `prover-error`.
 - **Sudah diuji live** (12 Sep 2026): 7/7 tes lulus (`GEMINI_API_KEY=… LIVE=1 npx vitest run` di `apps/server`), termasuk uji fallback model. Laporan agent 50283: 6 klaim pembayaran, 6-6nya tidak ada di chain yang diklaim.
+
+## 8b. Frontend: aturan yang tidak boleh dilanggar
+
+Sumber lengkap: `apps/web/PRODUCT.md` (untuk siapa) dan `apps/web/DESIGN.md` (bahasa visual). Ringkas:
+
+| Aturan | Alasan |
+|---|---|
+| **Tanpa jargon di lapisan pertama.** Tidak ada `breadthGrounded`, `gapCount`, `cloneDensityLB`, `bps`, `chainKey`, `precompile`, atau hash telanjang di layar utama | Pembaca utama adalah orang yang belum tahu apa-apa (keputusan Dien 12 Sep) |
+| **Semua kalimat tentang agent dibangkitkan di `src/lib/plain.ts`** dari jawaban kontrak | Halaman tidak boleh bisa berbeda pendapat dengan chain |
+| **Tidak pernah menampilkan skor.** Vonis selalu "menurut setelanmu" | Invariant produk: Tinjau menyimpan fakta, konsumen yang menilai |
+| **Angka basi tidak pernah tampil seolah live.** Kalau RPC gagal, halaman mengatakannya di tempat angkanya | Kejujuran adalah produknya |
+| **Status dibedakan bentuk, bukan warna** (lolos = garis tipis, ditahan = blok tinta + kunci) | Palet hitam-putih yang dipilih Dien; juga lolos untuk buta warna |
+| **Teks ≤13px memakai `--ink-62`**, bukan 55% | Hitam 55% pada 13px = 4,48:1, gagal WCAG AA |
+| **Tanpa kunci privat di frontend.** Sewa ditandatangani wallet pengunjung | Keamanan; scout tetap satu-satunya pemegang kunci, dan ia lokal |
+| **Snapshot scout di-import dari `src/data/facts.json`**, bukan dari `public/` | Meng-import dari `public/` adalah error Vite dan menggandakan file di build |
+
+Verifikasi wajib sebelum menyatakan frontend selesai:
+
+```bash
+cd apps/web && pnpm dev                       # port 5173
+node scripts/screenshot.mjs http://localhost:5173/   # audit 1440 + 375
+```
+
+Harus keluar `contrast 0, targets 0, overflow False, problems []` di kedua lebar.
 
 ## 9. Hosting
 
@@ -193,4 +218,5 @@ On-chain → kode → dokumen ini → tracker → `ATTESTCOIN_INTEGRATION.md` �
 
 | Tanggal | Perubahan | Oleh |
 |---|---|---|
+| 2026-09-12 | v3.2: bagian 8b (aturan frontend) ditambahkan setelah `apps/web` dibangun; `apps/web` masuk peta monorepo | Dien |
 | 2026-09-11 | v3.0 dibuat untuk monorepo `Tinjau/` setelah build ulang, deploy, dan urutan live | Claude |

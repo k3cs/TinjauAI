@@ -302,38 +302,59 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §
 
 ### 5.8 WEB: `apps/web` (G4)
 
-**⏳ Menunggu aba-aba Dien (keputusan 11 Sep).** Agent tidak memulai task WEB-* apa pun (termasuk kerangka WEB-1) sebelum Dien memberi aba-aba eksplisit. Yang boleh dikerjakan sebelumnya: `packages/core` (dipakai web nanti) dan SCT-7 (data demo).
+**✅ Aba-aba diberikan Dien 12 Sep.** Arah ditetapkan Dien dalam sesi itu:
+
+| Keputusan Dien (12 Sep) | Akibat |
+|---|---|
+| Pembaca utama = **orang non-teknis yang belum tahu apa-apa**, dengan porsi penjelasan dan porsi alat seimbang, dibungkus use case nyata (marketplace agent AI) | Jargon kontrak (`breadthGrounded`, `gapCount`, `bps`, `chainKey`, hash) dilarang di lapisan pertama. Semua kalimat dibangkitkan di `apps/web/src/lib/plain.ts` dari jawaban kontrak |
+| Aksi utama = **benar-benar menyewa** dengan wallet sendiri, plus jalur **pratinjau** tanpa wallet | `HirePanel` punya dua jalur; `hire()` payable ditandatangani wallet pengunjung. Tanpa wallet, split biaya tetap dihitung dari `quote()` dan diberi label pratinjau |
+| Bukti transaksi **sembunyi di balik satu klik** | Disclosure "How do we know?" per agent; di dalamnya pasangan tx Ethereum ↔ Creditcoin |
+| Bahasa visual mengikuti `prompt-ui-tech-forward.md` **untuk seluruh halaman** | React 19 + Vite + `motion` + `lucide-react`, **CSS biasa tanpa Tailwind** (menggantikan catatan WEB-1 lama), Inter 300–600, hitam-putih, easing `[0.16, 1, 0.3, 1]` |
+| Latar hero **buatan sendiri**, bukan video di file itu | `Backdrop.tsx` (canvas): bukti berjalan Ethereum → Creditcoin, menumpuk sebagai tanda di ledger. Video CloudFront di file itu milik proyek lain, tidak dipakai |
+| Bahaya dibedakan **bentuk, bukan warna** | Lolos = garis tipis; ditahan = blok tinta penuh + ikon kunci. Tanpa hijau/merah/amber |
+
+[Fakta] Dokumen desain: `apps/web/PRODUCT.md` (untuk siapa, apa yang wajib benar) dan `apps/web/DESIGN.md` (palet, tipografi, komponen, gerak, penyimpangan yang disengaja).
+[Fakta] Penyimpangan sengaja dari file panduan: teks 13px memakai hitam **62%**, bukan 55%. Hitam 55% pada 13px = **4,48:1**, gagal WCAG AA.
 
 Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kredit untuk agent AI** (`docs/legacy/00-panduan-pengembangan.md` §3).
 
-**WEB-1 · Kerangka** · P0 · agent · 45 menit · ⬜ · dep: SET-2, PKG-1
-- Detail: Vite + React + TypeScript + Tailwind + TanStack Query; token desain dan font; mode demo (`public/demo/facts.json`) dan live (`VITE_FACTS`, `VITE_ESCROW`, `VITE_CC3_RPC`).
+**WEB-1 · Kerangka** · P0 · agent · 45 menit · ✅ · dep: SET-2, PKG-1
+- Detail (direvisi 12 Sep): Vite + React 19 + TypeScript + **CSS biasa** + `motion` + `lucide-react`; **tanpa Tailwind, tanpa TanStack Query** (keputusan Dien: ikuti `prompt-ui-tech-forward.md`). Token di `src/styles/tokens.css`. Baca chain langsung lewat `ethers` + `@tinjau/core/contracts`; `VITE_CC3_RPC` opsional. Snapshot scout pindah dari `public/demo/` ke `src/data/facts.json` (meng-import dari `public/` adalah error Vite dan menggandakan file).
 
-**WEB-2 · Header dan framing** · P0 · agent · 30 menit · ⬜ · dep: WEB-1
+**WEB-2 · Header dan framing** · P0 · agent · 30 menit · ✅ · dep: WEB-1
 - Detail: kalimat pembuka menyebut AI agent, reviewer, dan credit bureau; tanpa kata "score" untuk keluaran Tinjau.
 
-**WEB-3 · Ambang konsumen + dua agent** · P0 · agent · 1 jam · ⬜ · dep: WEB-1, PKG-5
-- Detail: input `minAge`, `minDepth`, `k`, `c`; dua agentId (default 22771 vs 50283); angka dari `facts()` (live) atau demo.
+**WEB-3 · Ambang konsumen + daftar agent** · P0 · agent · 1 jam · ✅ · dep: WEB-1, PKG-5
+- Detail (direvisi): ambang mentah tidak ditampilkan sebagai input. Satu pertanyaan ("How careful do you want to be?") dengan tiga preset (Careful / Normal / Relaxed) di `src/lib/params.ts`; angka aslinya tetap bisa dibuka di "the exact settings". Empat agent: 22771, 21548, 50283, 50286.
+- [Fakta] Preset Careful awalnya memakai `minDepth 3`, yang **tidak bisa dipenuhi data nyata** (tak ada pengulas dengan >2 bucket), sehingga semua biaya jatuh ke plafon 20% dan preset itu tidak mengajarkan apa pun. Diubah ke `minDepth 2`, `minAge 1.000.000`, `k 4`, `c 3`, `minAttestors 4` → 22771 jadi **10,5%**, 21548 jadi **5,75%**.
+- [Fakta] Relaxed sama dengan Normal (1%) karena kedua agent bersih sudah di lantai biaya, dan `gapCount` adalah gerbang, bukan harga. Ini dijelaskan eksplisit di halaman, bukan disembunyikan.
 
-**WEB-4 · Kuitansi fakta** · P0 · agent · 2 jam · ⬜ · dep: WEB-3
+**WEB-4 · Kuitansi fakta** · P0 · agent · 2 jam · ✅ (`Evidence.tsx`: tiap fakta menampilkan tx Ethereum berdampingan dengan tx `record` Creditcoin, jumlah root, gas batch, tanggal perkiraan yang dikalibrasi dari `attestedTip`) · dep: WEB-3
 - Detail: tiap fakta bisa diklik → rantai bukti: tx Ethereum (Etherscan/Blockscout) **berdampingan** dengan tx `record` di Creditcoin (Blockscout CC3), jumlah root, gas.
 
-**WEB-5 · Meter premi = biaya kredit** · P0 · agent · 45 menit · ⬜ · dep: WEB-3
+**WEB-5 · Premi = biaya kredit** · P0 · agent · 45 menit · ✅ (biaya ditulis sebagai persen **dan** sebagai uang: "0,0005 tCTC ke pemilik sekarang, 0,0495 ditahan") · dep: WEB-3
 - Detail: `quote()` → premi (bps dan %) dan status `Gated` dengan alasannya.
 
-**WEB-6 · Narasi "kenapa" dengan sitasi** · P1 · agent · 1,5 jam · ⬜ · dep: WEB-4, WEB-5
+**WEB-6 · Narasi "kenapa" dengan sitasi** · P1 · agent · 1,5 jam · ✅ (`plain.ts`, deterministik dari fakta; `gapCount` dijelaskan dengan indeks ulasan sebenarnya, mis. "#97 terbukti, 96 sebelumnya tidak") · dep: WEB-4, WEB-5
 - Detail: satu kalimat per keputusan ("gated karena ulasan #N dari pengulas X hilang", "premi 1% karena 3 pengulas senior"), setiap kalimat mengutip hash tx. Dibangkitkan deterministik dari fakta, bukan LLM.
 
-**WEB-7 · Tabel pengulas, log scout, blok "Verify it yourself"** · P0 · agent · 1,5 jam · ⬜ · dep: WEB-3, SCT-7
+**WEB-7 · Tabel pengulas, log scout, blok "Verify it yourself"** · P0 · agent · 1,5 jam · ✅ (pengulas + alasan **tidak dihitung**; log scout jadi narasi 4 langkah bertautan tx; perintah `cast call` dan `scout verify` di "Show the exact mechanism") · dep: WEB-3, SCT-7
 - Detail: pengulas (senioritas, bucket, memiliki agent?), log keputusan scout (dipilih vs ditolak dengan alasan), perintah `cast call` dan hitung-ulang yang bisa dijalankan juri.
 
-**WEB-8 · Kualitas** · P0 · agent · 1 jam · ⬜ · dep: WEB-2…WEB-7
-- Detail: kontras ≥4,5:1 terang dan gelap, reduced-motion, fokus keyboard, lebar ~400 px; Playwright smoke test (halaman memuat, angka live terisi); cek visual di Chrome.
+**WEB-8 · Kualitas** · P0 · agent · 1 jam · ✅ · dep: WEB-2…WEB-7
+- Alat: `scripts/screenshot.mjs` (playwright-core + Chrome for Testing) memotret setiap bagian di 1440 dan 375, lalu mengukur kontras terhadap latar yang benar-benar terkomposisi, ukuran target sentuh, dan overflow horizontal.
+- [Fakta] Hasil 12 Sep: **0 kegagalan kontras, 0 target <44px, 0 overflow, 0 error konsol** di kedua lebar; 4 agent termuat; cap sesuai kontrak.
+- [Fakta] Alat ukur pertamaku salah: mengabaikan kanal alpha dan menolak `rgb(0,0,0)` sebagai transparan, jadi melaporkan kegagalan palsu. Versi sekarang mengkomposisi rgba di atas latar sebenarnya.
 
-**WEB-9 · Freeze + publish Vercel** · P0 · agent (deploy produksi: izin Dien) · 30 menit · ⬜ · dep: WEB-8, DEP-6, VCL-2
+**WEB-9 · Freeze + publish Vercel** · P0 · agent (deploy produksi: izin Dien) · 30 menit · ⏳ menunggu Vercel (VCL-1) · dep: WEB-8, DEP-6, VCL-2
 - Detail: build dengan alamat v3; deploy produksi ke Vercel (VCL-2); screenshot baru `docs/screenshot-live.jpg`. Setelah freeze, perubahan UI hanya perbaikan bug.
 
-**WEB-10 · Tampilan laporan klaim dan attestor** · P1 · agent · 1 jam · ⬜ · dep: SRV-3 dan/atau CON-11
+**WEB-10 · Tampilan laporan klaim dan attestor** · P1 · agent · 1 jam · 🔄 (jumlah attestor sudah tampil per agent; hasil pembaca klaim baru disebut sebagai angka di bagian scout, belum jadi tampilan sendiri) · dep: SRV-3 dan/atau CON-11
+
+**WEB-11 · Alur sewa dengan wallet pengunjung** · P0 (baru, keputusan Dien 12 Sep) · agent · ✅ · dep: WEB-5
+- Detail: `src/lib/wallet.ts` + `HirePanel.tsx`. Connect wallet, tambah/ganti ke CC3 testnet (`wallet_addEthereumChain`), `hire()` payable dengan nilai yang diisi pengunjung, `staticCall` lebih dulu supaya penolakan bureau muncul sebagai kalimat bukan transaksi gagal, dan error wallet diterjemahkan ke bahasa manusia.
+- Tanpa wallet atau tanpa saldo: jalur **pratinjau**, split biaya dihitung dari `quote()`, tidak ada yang dibelanjakan. Kunci privat tidak pernah ada di frontend.
+- [Belum diuji] Transaksi `hire` sungguhan dari browser belum pernah dijalankan (butuh wallet Dien dan tCTC). Jalur pratinjau dan `quote()` sudah diuji live.
 
 ### 5.9 DOC: Dokumen (G4)
 
@@ -463,6 +484,7 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 12 Sep 13:10 | WEB-1…WEB-8, WEB-11 | Frontend dibangun: marketplace bahasa manusia, preset kehati-hatian, disclosure bukti, alur sewa wallet + pratinjau, latar hero sendiri, navbar yang membalik di band gelap. Audit browser bersih (kontras/target/overflow/konsol) di 1440 dan 375. Koreksi: kalimat `gapCount` yang salah arti, preset Careful yang mustahil dipenuhi, klaim "somebody funded the bounty" (kami sendiri yang danai) | Dien |
 | 12 Sep 10:30 | SRV-2, SCT-8, GH-2 | Pembaca klaim pindah dari Claude ke Gemini (ladder `3.8-flash`→…→`3.1-flash-lite`, fallback saat 429/503/404); `@anthropic-ai/sdk` dibuang; 7/7 tes live; laporan live 50283 = 6 klaim pembayaran, 0 ada di chain yang diklaim; cron scout dipasang; force-push ke `k3cs/TinjauAI` atas izin Dien | Dien |
 | 11 Sep 23:55 | DOC-1…5/7/8, SUB-5, SCT-8 | README, integration summary, dosier v3, deck, submission, panduan v3; klaim "active for years" untuk 22771 dikoreksi (97 hari sampai 4 tahun); scan angka v2: bersih | Claude |
 | 11 Sep 23:40 | PKG, SCT, DEP-4…8, SRV-1/3, MCP-1 | core + scout + server + MCP; urutan live: bounty diklaim, 2 hire (100 bps), 50283 Gated, siklus kedua 0 gas; verify identik (plan lokal dan data chain saja); CC3 mainnet verify = true; mainnet AttestorStash: 7 attestor, bond minimal 0 | Claude |
