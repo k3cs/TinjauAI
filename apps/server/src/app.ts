@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { DEPLOYMENT, SOURCES, Tinjau, type Facts, type HireParams } from "@tinjau/core";
 import { claimsReport } from "./claims.js";
+import { readCardDoc } from "./card.js";
 import scoutSummary from "./data/scout-summary.json" with { type: "json" };
 
 /**
@@ -31,13 +32,14 @@ app.onError((e, c) => c.json({ error: e.message }, e instanceof HttpError ? e.st
 
 app.get("/", (c) =>
   c.json({
-    name: "Tinjau: a credit bureau for AI agents",
+    name: "Tinjau: verified background checks for AI agents",
     contracts: DEPLOYMENT,
     routes: [
       "GET /health",
       "GET /facts/:chainKey/:agentId?minAge=500000&minDepth=2",
       "GET /quote/:chainKey/:agentId?minAge&minDepth&k&c&baseBps&maxBps&minAttestors&maxStaleness",
       "GET /agents/:chainKey/:agentId/reviewers",
+      "GET /card/:agentId (the agent's own ERC-8004 registration, fetched verbatim)",
       "GET /scout/log",
       "GET /claims/:chainKey/:agentId (LLM-read report, not a fact)",
     ],
@@ -86,6 +88,14 @@ app.get("/agents/:chainKey/:agentId/reviewers", async (c) => {
     }),
   );
   return c.json(json({ chainKey: ck, agentId: id, reviewers: rows, total: clients.length }));
+});
+
+app.get("/card/:agentId", async (c) => {
+  const doc = await readCardDoc(BigInt(c.req.param("agentId")));
+  // Browsers cache this for a minute: the page asks for it only when it could not read the document
+  // itself, and a registration does not change between two visitors.
+  c.header("cache-control", "public, max-age=60");
+  return c.json(doc);
 });
 
 app.get("/scout/log", (c) => c.json(scoutSummary));
