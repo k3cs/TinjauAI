@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from "ethers";
 import { CC3_TESTNET, DEPLOYMENT } from "@tinjau/core/config";
-import { Tinjau, type HireParams, type Quote } from "@tinjau/core/contracts";
+import { Tinjau, type Bounty, type HireParams, type Quote } from "@tinjau/core/contracts";
 
 /**
  * All chain access for the page. Reads only: the page never holds a key, and a hire is signed by the
@@ -11,7 +11,7 @@ import { Tinjau, type HireParams, type Quote } from "@tinjau/core/contracts";
 export const CHAIN_KEY = 3; // Ethereum mainnet, as Attestcoin numbers it on CC3 testnet
 
 /** CC3 block that carried DEPLOYMENT.txs.facts; the TxAdmitted log cannot start earlier. */
-const DEPLOY_BLOCK = 5_470_068;
+const DEPLOY_BLOCK = 5_475_585;
 
 let bureau: Tinjau | undefined;
 
@@ -47,6 +47,41 @@ export async function readNetwork(): Promise<NetworkStatus> {
 
 export const readQuote = (agentId: bigint, p: HireParams): Promise<Quote> =>
   readonlyBureau().readQuote(CHAIN_KEY, agentId, p);
+
+export interface AgentRow {
+  agentId: bigint;
+  /** Proven reviews seen for this agent, used only to order the list. */
+  reviews: number;
+  /** Creditcoin block that first proved this agent, so the newest entries can be found. */
+  firstSeen: number;
+}
+
+/**
+ * The agent list, read from the bureau itself rather than written by hand: every agent the contract
+ * has ever proved emits AgentProven, and every proven review emits ReviewProven. An agent whose
+ * reviews were proved before its registration still belongs on the list, so both are unioned.
+ */
+export async function readAgents(limit = 40): Promise<AgentRow[]> {
+  const t = readonlyBureau();
+  const [registered, reviewed] = await Promise.all([
+    t.facts.queryFilter(t.facts.filters.AgentProven(CHAIN_KEY), DEPLOY_BLOCK),
+    t.facts.queryFilter(t.facts.filters.ReviewProven(CHAIN_KEY), DEPLOY_BLOCK),
+  ]);
+
+  const rows = new Map<string, AgentRow>();
+  const touch = (id: bigint, block: number) => {
+    const key = id.toString();
+    const row = rows.get(key) ?? { agentId: id, reviews: 0, firstSeen: block };
+    row.firstSeen = Math.min(row.firstSeen, block);
+    rows.set(key, row);
+    return row;
+  };
+  for (const e of registered) touch((e as unknown as { args: [bigint, bigint] }).args[1], e.blockNumber);
+  for (const e of reviewed) touch((e as unknown as { args: [bigint, bigint] }).args[1], e.blockNumber).reviews += 1;
+
+  // Most-reviewed first: the record with the most proven evidence is the one worth reading.
+  return [...rows.values()].sort((a, b) => b.reviews - a.reviews || a.firstSeen - b.firstSeen).slice(0, limit);
+}
 
 export interface AgentIdentity {
   agentId: bigint;
@@ -99,6 +134,20 @@ export async function readReviewers(agentId: bigint): Promise<ReviewerRow[]> {
     }),
   );
 }
+
+/** Open bounties on the bounty contract, grouped by agent. Anyone may claim one with decision-changing proofs. */
+export async function readOpenBounties(): Promise<Map<string, Bounty[]>> {
+  const all = await readonlyBureau().openBounties();
+  const by = new Map<string, Bounty[]>();
+  for (const b of all) {
+    if (b.chainKey !== CHAIN_KEY) continue;
+    const k = b.agentId.toString();
+    by.set(k, [...(by.get(k) ?? []), b]);
+  }
+  return by;
+}
+
+export type { Bounty };
 
 export { CC3_TESTNET, DEPLOYMENT };
 export const EXPLORER_CC3 = "https://creditcoin-testnet.blockscout.com";

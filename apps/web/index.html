@@ -1,22 +1,52 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tinjau — hire an AI agent, checked before you pay</title>
+    <title>Tinjau — verified background checks for AI agents</title>
     <meta
       name="description"
-      content="A marketplace for hiring AI agents that runs a credit check first. Every fact is proven from Ethereum into Creditcoin; nothing is scored."
+      content="Check an AI agent before you pay it. Every fact is proven from Ethereum into a Creditcoin contract through the Attestcoin Protocol; nothing is scored."
     />
     <link rel="icon" href="/mark.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
     />
+    <script>
+      // Theme before first paint: the visitor's stored choice, else dark (the committed default).
+      try {
+        var t = localStorage.getItem("tinjau-theme");
+        document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+      } catch (e) {}
+    </script>
   </head>
   <body>
+    <!--
+      DIRECTION CONTRACT (impeccable, 13 Sep 2026; brief-pinned world: Veritas-UHI9 DESIGN.md)
+      THESIS: a background check is a reading, not a scoreboard. The page refuses the SaaS card grid and
+        the hero-metric template; it shows two real agents receiving opposite verdicts under the same rule.
+      OWN-WORLD (revised 13 Sep 21:00, Dien: "not only black"): light, faintly teal-tinted neutrals with one
+        deep teal FIELD that owns the hero, the scout passage and the closing call; the same teal as the action
+        accent; green/amber/red only for verdict state and always paired with icon+label; a composed dark theme
+        (tinted ink, not pure black) behind the toggle. No pill-with-pulsing-dot elements anywhere.
+        Fraunces display, Hanken Grotesk body, IBM Plex Mono for every changing figure. Radius 14/10,
+        hairline borders, surface lift instead of shadow, ease-out-expo. Motion: the hero stagger, figures that
+        count up once, rows that enter in sequence, disclosures that slide, a slow drift in the field, and the
+        verdict card crossfading on every change the reader causes.
+      STORY: the visitor sees an agent marketplace, understands that reviews on the registry prove nothing
+        by themselves, watches the verdict change with their own care level, and hires or funds a bounty.
+      FIRST VIEWPORT: sticky nav (Overview / Agents / Compare, theme, live block). Left: headline, one
+        paragraph, primary "Check the agents", secondary "Compare two". Right: the live Verdict card,
+        three real agents as toggles, fee and state read from the contract on Creditcoin.
+      FORM: the Veritas product register (landing + /agents table + /compare), position 1 of 1. Pinned by the
+        brief: Dien, 13 Sep 2026 19:00 WIB, recorded in docs/task-tracker.md §5.8 WEB-14 ("ikuti aturan dan
+        layout frontend Veritas-UHI9"); the concept roll is exempted by that pin, so no seed key exists.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the
+        verdict, DESIGN.md, and every shipping raster carrying its provenance.
+    -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

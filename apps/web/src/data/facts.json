@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-09-11T16:36:14.669Z",
+  "generatedAt": "2026-09-13T11:18:12.123Z",
   "network": "Creditcoin CC3 testnet",
   "contracts": {
     "network": "creditcoin-cc3-testnet",
     "chainId": 102031,
     "deployer": "0x3D3645529277091Fc12ee3eA9c8E2cA6F3390E49",
-    "facts": "0xC045087Fd85Da4f2d981222b18E7e74c8040BC47",
-    "escrow": "0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB",
-    "bounty": "0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b",
+    "facts": "0x67394eC13E911ab0D3A26132BECa404F26e17a98",
+    "escrow": "0xF801a8a01E018f3Bf9a648F4C095a53979282EEA",
+    "bounty": "0xa27f14CD50BF334E7Fb09601cEf203745aADF569",
     "txs": {
-      "facts": "0x6e42e11d243ae2bfa15e1449fecae3816f3e98ccf64b79591d49a4cf156a0dda",
-      "escrow": "0x64a8f850c00ba0cbef050fcdf5f97d876d803fd4599c61ec13011e3bfb01eace",
-      "bounty": "0x2035fa49ce33d171a12099c2000d782268e9c495fa02ab9277fd07604562abb8"
+      "facts": "0x9cb61f2888af36b4ccab38064c82c0a1e4b44a84e149706f349abacf59c98ba6",
+      "escrow": "0xad10ca1d257dcfc80535795be811fd8a1e71a17a159be1cea669ba13c728feab",
+      "bounty": "0x6c663e7c0d68cc810e742ca4e71dd49f72c6fd8c5d2c80ee54d7f0b8edd6b940"
     }
   },
   "params": {
@@ -25,8 +25,8 @@
     "maxStaleness": "0"
   },
   "attestedTip": {
-    "1": "11683080",
-    "3": "25955360"
+    "1": "11695520",
+    "3": "25968120"
   },
   "agents": [
     {
@@ -51,7 +51,7 @@
       "quote": {
         "riskBps": "0",
         "premiumBps": "100",
-        "staleness": "1015112",
+        "staleness": "1027872",
         "gated": false
       },
       "reviewers": [
@@ -110,9 +110,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x4c38e7681a07506a2eda9dcdcc2a8990807737f8f8e12580e85f80fdea48495c",
           "height": 24365879,
           "roots": 122,
-          "creditcoinTx": "0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "batchGas": "2231542"
+          "creditcoinTx": "0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "batchGas": "2229802"
         },
         {
           "role": "review",
@@ -122,9 +122,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x143ee25bad71ad0a9dcd42223aa22b6d4529571ca0e465df9ad97f128a67c9e2",
           "height": 24702191,
           "roots": 810,
-          "creditcoinTx": "0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "batchGas": "2231542"
+          "creditcoinTx": "0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "batchGas": "2229802"
         },
         {
           "role": "activity",
@@ -134,9 +134,9 @@
           "sourceUrl": "https://etherscan.io/tx/0xc483aff7f75170af3808474f28b5106b2b48fa4207be8988fa9e7c6d9517649e",
           "height": 24004619,
           "roots": 382,
-          "creditcoinTx": "0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "batchGas": "2231542"
+          "creditcoinTx": "0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "batchGas": "2229802"
         },
         {
           "role": "review",
@@ -146,9 +146,9 @@
           "sourceUrl": "https://etherscan.io/tx/0xb2ba04221df5c7ec56a94f6984dcffa698f1048d0e2b265713de3c3595108757",
           "height": 24939182,
           "roots": 819,
-          "creditcoinTx": "0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "batchGas": "2231542"
+          "creditcoinTx": "0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "batchGas": "2229802"
         },
         {
           "role": "activity",
@@ -158,9 +158,9 @@
           "sourceUrl": "https://etherscan.io/tx/0xfcdd4e82ff8c30aef6c59200bf93b5718ab7f1504c49797ec938cadaa8e22999",
           "height": 17071874,
           "roots": 127,
-          "creditcoinTx": "0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "batchGas": "1440598"
+          "creditcoinTx": "0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "batchGas": "1439328"
         },
         {
           "role": "review",
@@ -170,9 +170,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x0466b9449d2c00dfb30415509cb0c28c2d3fe32e5bb0d61858bf30a98c64bb20",
           "height": 24940248,
           "roots": 753,
-          "creditcoinTx": "0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "batchGas": "1440598"
+          "creditcoinTx": "0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "batchGas": "1439328"
         },
         {
           "role": "activity",
@@ -182,9 +182,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x011ad1928f3c0b33365ad54a08bc763fa72aa6c41cb7e8529e96781d72d9fff6",
           "height": 14306215,
           "roots": 786,
-          "creditcoinTx": "0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "batchGas": "1440598"
+          "creditcoinTx": "0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "batchGas": "1439328"
         }
       ],
       "rejected": [
@@ -351,147 +351,6 @@
       ]
     },
     {
-      "agentId": "50283",
-      "registered": true,
-      "owner": "0x103040545AC5031A11E8C03dd11324C7333a13C7",
-      "facts": {
-        "breadthRaw": "1",
-        "breadthGrounded": "0",
-        "breadthIndependent": "0",
-        "gapCount": "1",
-        "negatives": "0",
-        "cloneDensityLB": "5",
-        "registrantSiblings": "5",
-        "uriSiblings": "0",
-        "sameTxSiblings": "0",
-        "firstRegisteredHeight": "25792031",
-        "coveredThrough": "25942404",
-        "minAttestors": 4,
-        "truncated": false
-      },
-      "quote": {
-        "riskBps": "10000",
-        "premiumBps": "2000",
-        "staleness": "12956",
-        "gated": true
-      },
-      "reviewers": [
-        {
-          "client": "0x103040545AC5031A11E8C03dd11324C7333a13C7",
-          "pair": {
-            "maxIndex": "97",
-            "known": "1",
-            "active": "1",
-            "firstHeight": "25942404",
-            "listed": true
-          },
-          "seniority": {
-            "oldest": "25792031",
-            "buckets": 2
-          },
-          "ownsAgents": "6"
-        }
-      ],
-      "evidence": [
-        {
-          "role": "registration",
-          "dir": "base",
-          "reason": "agent 50283 registration (owner 0x1030…13C7)",
-          "sourceTx": "0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
-          "sourceUrl": "https://etherscan.io/tx/0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
-          "height": 25792031,
-          "roots": 70,
-          "creditcoinTx": "0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "batchGas": "1491984"
-        },
-        {
-          "role": "reviewerOwnsAgent",
-          "dir": "hurt",
-          "reason": "reviewer 0x1030…13c7 owns 3 agent(s); registration of agent 50773",
-          "sourceTx": "0x0cbd29d4ad2cdca249ba8062a5592034e5d8677db826cb51ed426d5cc16a227e",
-          "sourceUrl": "https://etherscan.io/tx/0x0cbd29d4ad2cdca249ba8062a5592034e5d8677db826cb51ed426d5cc16a227e",
-          "height": 25949112,
-          "roots": 89,
-          "creditcoinTx": "0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "batchGas": "1491984"
-        },
-        {
-          "role": "cloneSibling",
-          "dir": "hurt",
-          "reason": "owner also registered agent 50759",
-          "sourceTx": "0x4312ddb149d3dc9ae9831b3e7443352b7f85cbbe6ae017000e8b85575c7b621c",
-          "sourceUrl": "https://etherscan.io/tx/0x4312ddb149d3dc9ae9831b3e7443352b7f85cbbe6ae017000e8b85575c7b621c",
-          "height": 25937706,
-          "roots": 95,
-          "creditcoinTx": "0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "batchGas": "1491984"
-        },
-        {
-          "role": "cloneSibling",
-          "dir": "hurt",
-          "reason": "owner also registered agent 50692",
-          "sourceTx": "0x53c34482b8c5bea99ceeac255f2e33a54660722bb1032e5b3383416fa8f2d95c",
-          "sourceUrl": "https://etherscan.io/tx/0x53c34482b8c5bea99ceeac255f2e33a54660722bb1032e5b3383416fa8f2d95c",
-          "height": 25899617,
-          "roots": 84,
-          "creditcoinTx": "0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "batchGas": "1491984"
-        },
-        {
-          "role": "cloneSibling",
-          "dir": "hurt",
-          "reason": "owner also registered agent 50691",
-          "sourceTx": "0x5bf8670fea502b61a0f5d6104074cf46d116d650b2263ed04463b6ebc294b864",
-          "sourceUrl": "https://etherscan.io/tx/0x5bf8670fea502b61a0f5d6104074cf46d116d650b2263ed04463b6ebc294b864",
-          "height": 25898687,
-          "roots": 14,
-          "creditcoinTx": "0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "batchGas": "936650"
-        },
-        {
-          "role": "cloneSibling",
-          "dir": "hurt",
-          "reason": "owner also registered agent 50670",
-          "sourceTx": "0x9042dc581b12c2e142f05d97965b5546b213ccd6aea04f8a7e307b3caae5dce3",
-          "sourceUrl": "https://etherscan.io/tx/0x9042dc581b12c2e142f05d97965b5546b213ccd6aea04f8a7e307b3caae5dce3",
-          "height": 25886246,
-          "roots": 55,
-          "creditcoinTx": "0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "batchGas": "936650"
-        },
-        {
-          "role": "higherIndex",
-          "dir": "hurt",
-          "reason": "highest review #97 of 0x1030…13C7 (97 reviews, reviewer owns agents)",
-          "sourceTx": "0x148bba77ccf30358d463a2603233a2ecf1520749f8466fdb6c5d17b6d46b3255",
-          "sourceUrl": "https://etherscan.io/tx/0x148bba77ccf30358d463a2603233a2ecf1520749f8466fdb6c5d17b6d46b3255",
-          "height": 25942404,
-          "roots": 97,
-          "creditcoinTx": "0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "batchGas": "936650"
-        }
-      ],
-      "rejected": [
-        {
-          "role": "review",
-          "reason": "reviewer 0x1030…13C7",
-          "why": "no sent tx ≥ 500000 blocks before first review (oldest seen 25872793, older history not scanned)"
-        },
-        {
-          "role": "cloneSibling",
-          "reason": "owner also registered agent 50773",
-          "why": "same tx already in plan (serves several roles)"
-        }
-      ]
-    },
-    {
       "agentId": "21548",
       "registered": true,
       "owner": "0x11ce532845cE0eAcdA41f72FDc1C88c335981442",
@@ -513,7 +372,7 @@
       "quote": {
         "riskBps": "0",
         "premiumBps": "100",
-        "staleness": "350359",
+        "staleness": "363129",
         "gated": false
       },
       "reviewers": [
@@ -572,9 +431,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x0f10f7731ac521436755e5f991ecc0b6d07dfa1a21e2fec0abe9dd52b5b4143a",
           "height": 24351136,
           "roots": 865,
-          "creditcoinTx": "0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "batchGas": "1737834"
+          "creditcoinTx": "0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "batchGas": "1736223"
         },
         {
           "role": "review",
@@ -584,9 +443,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x0e48b58c83a19e5940c0e56f7c40be0fd1a398673e3dbb50d3e09680b65297a3",
           "height": 25553979,
           "roots": 22,
-          "creditcoinTx": "0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "batchGas": "1737834"
+          "creditcoinTx": "0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "batchGas": "1736223"
         },
         {
           "role": "activity",
@@ -596,9 +455,9 @@
           "sourceUrl": "https://etherscan.io/tx/0xb546ae627627a1be32a823cd0216efd9e4f6ab17fbd03a477fe3aa72bb4e673b",
           "height": 24041782,
           "roots": 219,
-          "creditcoinTx": "0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "batchGas": "1737834"
+          "creditcoinTx": "0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "batchGas": "1736223"
         },
         {
           "role": "review",
@@ -608,9 +467,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x1d1b22bcc2b8b1802588407e06349e5acd733ebdbcd9c64fc205065d215b4638",
           "height": 25489494,
           "roots": 7,
-          "creditcoinTx": "0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "batchGas": "1737834"
+          "creditcoinTx": "0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "batchGas": "1736223"
         },
         {
           "role": "activity",
@@ -620,9 +479,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x4c210bd8a42a312ca2da827de32ee5ac86061df2e1f44ace8dc6d6294f760284",
           "height": 22841017,
           "roots": 984,
-          "creditcoinTx": "0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "batchGas": "1294303"
+          "creditcoinTx": "0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "batchGas": "1292891"
         },
         {
           "role": "review",
@@ -632,9 +491,9 @@
           "sourceUrl": "https://etherscan.io/tx/0xa52cd105f89c42bb3615806c640898ed707c29f993fd0874db0a05bbea347e7b",
           "height": 25605001,
           "roots": 100,
-          "creditcoinTx": "0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "batchGas": "1294303"
+          "creditcoinTx": "0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "batchGas": "1292891"
         },
         {
           "role": "activity",
@@ -644,9 +503,9 @@
           "sourceUrl": "https://etherscan.io/tx/0x669be68f7aa5d647dd0b2a30f3271d50f0ab7877ad9ced0173496052e31a31f3",
           "height": 18292822,
           "roots": 179,
-          "creditcoinTx": "0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "batchGas": "1294303"
+          "creditcoinTx": "0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "batchGas": "1292891"
         }
       ],
       "rejected": [
@@ -686,140 +545,326 @@
           "why": "k=3 grounded reviewers already covered"
         }
       ]
+    },
+    {
+      "agentId": "50283",
+      "registered": true,
+      "owner": "0x103040545AC5031A11E8C03dd11324C7333a13C7",
+      "facts": {
+        "breadthRaw": "1",
+        "breadthGrounded": "0",
+        "breadthIndependent": "0",
+        "gapCount": "1",
+        "negatives": "0",
+        "cloneDensityLB": "9",
+        "registrantSiblings": "9",
+        "uriSiblings": "0",
+        "sameTxSiblings": "0",
+        "firstRegisteredHeight": "25792031",
+        "coveredThrough": "25942404",
+        "minAttestors": 4,
+        "truncated": false
+      },
+      "quote": {
+        "riskBps": "10000",
+        "premiumBps": "2000",
+        "staleness": "25726",
+        "gated": true
+      },
+      "reviewers": [
+        {
+          "client": "0x103040545AC5031A11E8C03dd11324C7333a13C7",
+          "pair": {
+            "maxIndex": "97",
+            "known": "1",
+            "active": "1",
+            "firstHeight": "25942404",
+            "listed": true
+          },
+          "seniority": {
+            "oldest": "25683422",
+            "buckets": 3
+          },
+          "ownsAgents": "10"
+        }
+      ],
+      "evidence": [
+        {
+          "role": "registration",
+          "dir": "base",
+          "reason": "agent 50283 registration (owner 0x1030…13C7)",
+          "sourceTx": "0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
+          "sourceUrl": "https://etherscan.io/tx/0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
+          "height": 25792031,
+          "roots": 70,
+          "creditcoinTx": "0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "batchGas": "1490402"
+        },
+        {
+          "role": "reviewerOwnsAgent",
+          "dir": "hurt",
+          "reason": "reviewer 0x1030…13c7 owns 3 agent(s); registration of agent 50773",
+          "sourceTx": "0x0cbd29d4ad2cdca249ba8062a5592034e5d8677db826cb51ed426d5cc16a227e",
+          "sourceUrl": "https://etherscan.io/tx/0x0cbd29d4ad2cdca249ba8062a5592034e5d8677db826cb51ed426d5cc16a227e",
+          "height": 25949112,
+          "roots": 89,
+          "creditcoinTx": "0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "batchGas": "1490402"
+        },
+        {
+          "role": "cloneSibling",
+          "dir": "hurt",
+          "reason": "owner also registered agent 50759",
+          "sourceTx": "0x4312ddb149d3dc9ae9831b3e7443352b7f85cbbe6ae017000e8b85575c7b621c",
+          "sourceUrl": "https://etherscan.io/tx/0x4312ddb149d3dc9ae9831b3e7443352b7f85cbbe6ae017000e8b85575c7b621c",
+          "height": 25937706,
+          "roots": 95,
+          "creditcoinTx": "0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "batchGas": "1490402"
+        },
+        {
+          "role": "cloneSibling",
+          "dir": "hurt",
+          "reason": "owner also registered agent 50692",
+          "sourceTx": "0x53c34482b8c5bea99ceeac255f2e33a54660722bb1032e5b3383416fa8f2d95c",
+          "sourceUrl": "https://etherscan.io/tx/0x53c34482b8c5bea99ceeac255f2e33a54660722bb1032e5b3383416fa8f2d95c",
+          "height": 25899617,
+          "roots": 84,
+          "creditcoinTx": "0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "batchGas": "1490402"
+        },
+        {
+          "role": "cloneSibling",
+          "dir": "hurt",
+          "reason": "owner also registered agent 50691",
+          "sourceTx": "0x5bf8670fea502b61a0f5d6104074cf46d116d650b2263ed04463b6ebc294b864",
+          "sourceUrl": "https://etherscan.io/tx/0x5bf8670fea502b61a0f5d6104074cf46d116d650b2263ed04463b6ebc294b864",
+          "height": 25898687,
+          "roots": 14,
+          "creditcoinTx": "0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "batchGas": "935394"
+        },
+        {
+          "role": "cloneSibling",
+          "dir": "hurt",
+          "reason": "owner also registered agent 50670",
+          "sourceTx": "0x9042dc581b12c2e142f05d97965b5546b213ccd6aea04f8a7e307b3caae5dce3",
+          "sourceUrl": "https://etherscan.io/tx/0x9042dc581b12c2e142f05d97965b5546b213ccd6aea04f8a7e307b3caae5dce3",
+          "height": 25886246,
+          "roots": 55,
+          "creditcoinTx": "0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "batchGas": "935394"
+        },
+        {
+          "role": "higherIndex",
+          "dir": "hurt",
+          "reason": "highest review #97 of 0x1030…13C7 (97 reviews, reviewer owns agents)",
+          "sourceTx": "0x148bba77ccf30358d463a2603233a2ecf1520749f8466fdb6c5d17b6d46b3255",
+          "sourceUrl": "https://etherscan.io/tx/0x148bba77ccf30358d463a2603233a2ecf1520749f8466fdb6c5d17b6d46b3255",
+          "height": 25942404,
+          "roots": 97,
+          "creditcoinTx": "0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "creditcoinUrl": "https://creditcoin-testnet.blockscout.com/tx/0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "batchGas": "935394"
+        }
+      ],
+      "rejected": [
+        {
+          "role": "review",
+          "reason": "reviewer 0x1030…13C7",
+          "why": "no sent tx ≥ 500000 blocks before first review (oldest seen 25872793, older history not scanned)"
+        },
+        {
+          "role": "cloneSibling",
+          "reason": "owner also registered agent 50773",
+          "why": "same tx already in plan (serves several roles)"
+        }
+      ]
+    },
+    {
+      "agentId": "50286",
+      "registered": true,
+      "owner": "0x103040545AC5031A11E8C03dd11324C7333a13C7",
+      "facts": {
+        "breadthRaw": "1",
+        "breadthGrounded": "0",
+        "breadthIndependent": "0",
+        "gapCount": "1",
+        "negatives": "0",
+        "cloneDensityLB": "9",
+        "registrantSiblings": "9",
+        "uriSiblings": "0",
+        "sameTxSiblings": "0",
+        "firstRegisteredHeight": "25792672",
+        "coveredThrough": "25942364",
+        "minAttestors": 4,
+        "truncated": false
+      },
+      "quote": {
+        "riskBps": "10000",
+        "premiumBps": "2000",
+        "staleness": "25766",
+        "gated": true
+      },
+      "reviewers": [
+        {
+          "client": "0x103040545AC5031A11E8C03dd11324C7333a13C7",
+          "pair": {
+            "maxIndex": "85",
+            "known": "1",
+            "active": "1",
+            "firstHeight": "25942364",
+            "listed": true
+          },
+          "seniority": {
+            "oldest": "25683422",
+            "buckets": 3
+          },
+          "ownsAgents": "10"
+        }
+      ],
+      "evidence": [],
+      "rejected": []
     }
   ],
   "runs": [
     {
       "agentId": "21548",
-      "startedAt": "2026-09-11T16:30:34.879Z",
+      "startedAt": "2026-09-13T11:07:47.942Z",
       "target": {
         "source": "bounty",
         "bountyAmount": "50000000000000000",
-        "reason": "open bounty #0 (0.05 tCTC, expires 2026-09-18T16:29:01.000Z)"
+        "reason": "open bounty #0 (0.05 tCTC, expires 2026-09-20T11:05:30.000Z)"
       },
-      "r3": "7 proofs ≈ 3473939 gas ≈ 0.0017369695 tCTC vs bounty 0.05 tCTC → prove now",
+      "r3": "7 proofs ≈ 3478055 gas ≈ 0.0017390275 tCTC vs bounty 0.05 tCTC → prove now",
       "r4": "HIRE: premium 100 bps (risk 0 bps), grounded 3/3, clones 0",
       "txs": [
         {
           "kind": "record",
-          "hash": "0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51",
-          "block": 5470218,
-          "gasUsed": "1737834",
+          "hash": "0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b",
+          "block": 5480426,
+          "gasUsed": "1736223",
           "proofs": [
             "0x0f10f7731ac521436755e5f991ecc0b6d07dfa1a21e2fec0abe9dd52b5b4143a",
             "0x0e48b58c83a19e5940c0e56f7c40be0fd1a398673e3dbb50d3e09680b65297a3",
             "0xb546ae627627a1be32a823cd0216efd9e4f6ab17fbd03a477fe3aa72bb4e673b",
             "0x1d1b22bcc2b8b1802588407e06349e5acd733ebdbcd9c64fc205065d215b4638"
           ],
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0x94de7b8ee4c796c5ea02ac37a2daf951d8f321717ff557dfbdddf1190c6c7d51"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x36781b79351ef730cb7307c68131fcc299d0e12639aa95b2f74cfb57cb3bff7b"
         },
         {
           "kind": "proveAndClaim",
-          "hash": "0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79",
-          "block": 5470219,
-          "gasUsed": "1294303",
+          "hash": "0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d",
+          "block": 5480427,
+          "gasUsed": "1292891",
           "proofs": [
             "0x4c210bd8a42a312ca2da827de32ee5ac86061df2e1f44ace8dc6d6294f760284",
             "0xa52cd105f89c42bb3615806c640898ed707c29f993fd0874db0a05bbea347e7b",
             "0x669be68f7aa5d647dd0b2a30f3271d50f0ab7877ad9ced0173496052e31a31f3"
           ],
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0xfd342f65a29c02b2ba3cd9e6aebbb9192a9910e1a47872782e7d0e4ada6ecc79"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x8a32b4704d6c336ad72d626f55339c3f065d2e21caf6dc8a097d3a73b5bcd68d"
         },
         {
           "kind": "hire",
-          "hash": "0xe6ba85dd9a70fe0ab0255150c044ff9b9b7eacaee70896f5c219f0ac40ff077d",
-          "block": 5470220,
-          "gasUsed": "319312",
+          "hash": "0x02933cb3b2d287e6a0d0b62f9e84cdcb5363cb9789240b742246b4ca712348d0",
+          "block": 5480428,
+          "gasUsed": "333522",
           "note": "0.01 tCTC, premium 100 bps",
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0xe6ba85dd9a70fe0ab0255150c044ff9b9b7eacaee70896f5c219f0ac40ff077d"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x02933cb3b2d287e6a0d0b62f9e84cdcb5363cb9789240b742246b4ca712348d0"
         }
       ]
     },
     {
       "agentId": "22771",
-      "startedAt": "2026-09-11T16:32:19.117Z",
+      "startedAt": "2026-09-13T11:12:16.809Z",
       "target": {
         "source": "cli",
         "reason": "requested with --agents"
       },
-      "r3": "7 proofs ≈ 4020635 gas ≈ 0.0020103175 tCTC; 0 skipped as already admitted",
+      "r3": "7 proofs ≈ 4024751 gas ≈ 0.0020123755 tCTC; 0 skipped as already admitted",
       "r4": "HIRE: premium 100 bps (risk 0 bps), grounded 3/3, clones 0",
       "txs": [
         {
           "kind": "record",
-          "hash": "0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9",
-          "block": 5470225,
-          "gasUsed": "2231542",
+          "hash": "0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620",
+          "block": 5480444,
+          "gasUsed": "2229802",
           "proofs": [
             "0x4c38e7681a07506a2eda9dcdcc2a8990807737f8f8e12580e85f80fdea48495c",
             "0x143ee25bad71ad0a9dcd42223aa22b6d4529571ca0e465df9ad97f128a67c9e2",
             "0xc483aff7f75170af3808474f28b5106b2b48fa4207be8988fa9e7c6d9517649e",
             "0xb2ba04221df5c7ec56a94f6984dcffa698f1048d0e2b265713de3c3595108757"
           ],
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0xfdc228f86eeac92fa2049f764033e3395adccf680ba035d95b80fb38a16863f9"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x4c3283ad7ef3bdf9ce2086a663fe7a0d156d76900d841f8f540aa3ee9087a620"
         },
         {
           "kind": "record",
-          "hash": "0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4",
-          "block": 5470226,
-          "gasUsed": "1440598",
+          "hash": "0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d",
+          "block": 5480445,
+          "gasUsed": "1439328",
           "proofs": [
             "0xfcdd4e82ff8c30aef6c59200bf93b5718ab7f1504c49797ec938cadaa8e22999",
             "0x0466b9449d2c00dfb30415509cb0c28c2d3fe32e5bb0d61858bf30a98c64bb20",
             "0x011ad1928f3c0b33365ad54a08bc763fa72aa6c41cb7e8529e96781d72d9fff6"
           ],
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0x00f1a2f76b7187a4e5de7a8475b82cd05397c06aecd9e71bf8827c5344b7f9e4"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x6e94b12b4968aef68b79d185013a745043e9d0fd07ea9c4cb1ca90ba1f88800d"
         },
         {
           "kind": "hire",
-          "hash": "0x3c70c911bcf2b31440094d19b6ecf6562197d8f9cdec464d5e62beb82115c8fe",
-          "block": 5470227,
-          "gasUsed": "319312",
+          "hash": "0x3a8d2c53ef4d8f59f9f2d77c5f55f8d2fb15ec110cbc540860c266d19616b8c4",
+          "block": 5480446,
+          "gasUsed": "333522",
           "note": "0.01 tCTC, premium 100 bps",
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0x3c70c911bcf2b31440094d19b6ecf6562197d8f9cdec464d5e62beb82115c8fe"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x3a8d2c53ef4d8f59f9f2d77c5f55f8d2fb15ec110cbc540860c266d19616b8c4"
         }
       ]
     },
     {
       "agentId": "50283",
-      "startedAt": "2026-09-11T16:33:03.371Z",
+      "startedAt": "2026-09-13T11:13:19.483Z",
       "target": {
         "source": "cli",
         "reason": "requested with --agents"
       },
-      "r3": "7 proofs ≈ 4065611 gas ≈ 0.0020328055 tCTC; 0 skipped as already admitted",
+      "r3": "7 proofs ≈ 4069730 gas ≈ 0.002034865 tCTC; 0 skipped as already admitted",
       "r4": "no hire: gated (1 reviewer(s) with unproven review indices)",
       "txs": [
         {
           "kind": "record",
-          "hash": "0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353",
-          "block": 5470229,
-          "gasUsed": "1491984",
+          "hash": "0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8",
+          "block": 5480449,
+          "gasUsed": "1490402",
           "proofs": [
             "0x6d9ca08d36e697a06cb5a27ed749a0774274fdd38cf941ec667b12fe5ff5a815",
             "0x0cbd29d4ad2cdca249ba8062a5592034e5d8677db826cb51ed426d5cc16a227e",
             "0x4312ddb149d3dc9ae9831b3e7443352b7f85cbbe6ae017000e8b85575c7b621c",
             "0x53c34482b8c5bea99ceeac255f2e33a54660722bb1032e5b3383416fa8f2d95c"
           ],
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0x82a8bf66c24cd967cd936d38af243455b8798d5b44c1f0d8e9146b84705d2353"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0x53315fa06dd4b3d57db9d697ff2e863819f4005cdd81ca21e5ca63904531c6b8"
         },
         {
           "kind": "record",
-          "hash": "0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6",
-          "block": 5470230,
-          "gasUsed": "936650",
+          "hash": "0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c",
+          "block": 5480450,
+          "gasUsed": "935394",
           "proofs": [
             "0x5bf8670fea502b61a0f5d6104074cf46d116d650b2263ed04463b6ebc294b864",
             "0x9042dc581b12c2e142f05d97965b5546b213ccd6aea04f8a7e307b3caae5dce3",
             "0x148bba77ccf30358d463a2603233a2ecf1520749f8466fdb6c5d17b6d46b3255"
           ],
-          "url": "https://creditcoin-testnet.blockscout.com/tx/0xe120eccdedd326b0e43d8fb0a496855eb0b2dbf0899983ceb0d80140232f55a6"
+          "url": "https://creditcoin-testnet.blockscout.com/tx/0xda7d926313d1f0f499318c33665642be308cf8f697c3b1cfa99ce7adb2bc1b1c"
         }
       ]
     },
     {
       "agentId": "50283",
-      "startedAt": "2026-09-11T16:33:52.839Z",
+      "startedAt": "2026-09-13T11:15:08.004Z",
       "target": {
         "source": "cli",
         "reason": "requested with --agents"

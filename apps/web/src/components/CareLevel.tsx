@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { PRESETS, THRESHOLD_COPY, presetOf, type Care } from "../lib/params";
+import { Disclose } from "./ui";
 
 /**
- * The one question the visitor answers. Behind each answer sit the eight thresholds the contract
- * prices on; they stay reachable under "the exact settings", because a bureau that hides the bar it
- * judges by is the thing Tinjau was built against.
+ * The one question the visitor answers. Behind each answer sit the thresholds the contract prices
+ * on; they stay reachable under "the exact settings", because a bureau that hides the bar it judges
+ * by is the thing Tinjau was built against.
  */
-export default function CareLevel({ care, onChange }: { care: Care; onChange: (c: Care) => void }) {
+export default function CareLevel({ care, onChange, compact = false }: { care: Care; onChange: (c: Care) => void; compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const preset = presetOf(care);
   const p = preset.params;
@@ -22,15 +22,13 @@ export default function CareLevel({ care, onChange }: { care: Care; onChange: (c
   ];
 
   return (
-    <section className="band band-tight" id="settings">
-      <div className="shell">
-        <h2 className="section-title">How careful do you want to be?</h2>
-        <p className="lede band-lede">
-          This is your decision, not ours. Tinjau holds the facts; where you draw the line decides which agents pass
-          and what they cost. Move it and watch the answers below change.
-        </p>
-
-        <div className="care" role="radiogroup" aria-label="How careful do you want to be?">
+    <div className={`care${compact ? " care-compact" : ""}`}>
+      <div className="care-row">
+        <div className="care-ask">
+          <span className="care-label">How careful do you want to be?</span>
+          {!compact && <span className="small muted">Your bar, not ours. Move it and every verdict below is re-read from the contract.</span>}
+        </div>
+        <div className="segmented" role="radiogroup" aria-label="How careful do you want to be?">
           {PRESETS.map((option) => {
             const active = option.id === care;
             return (
@@ -39,30 +37,31 @@ export default function CareLevel({ care, onChange }: { care: Care; onChange: (c
                 type="button"
                 role="radio"
                 aria-checked={active}
-                className={`care-option${active ? " is-active" : ""}`}
+                className={`segment${active ? " is-active" : ""}`}
                 onClick={() => onChange(option.id)}
               >
-                <span className="care-name">{option.name}</span>
-                <span className="small care-meaning">{option.meaning}</span>
+                {option.name}
               </button>
             );
           })}
         </div>
+      </div>
 
-        <p className="small care-note">
-          Two things your choice cannot do. It cannot let through an agent whose review record has holes: that is a
-          gate, not a price, and no setting opens it. And it cannot push a fee below 1%, so an agent with a clean
-          record already sits at the floor and a looser setting leaves it exactly there.
-        </p>
+      <p className="small muted care-meaning">
+        {preset.meaning} A record with holes is a gate, not a price: no setting opens it, and no setting takes a clean
+        record below 1%.
+      </p>
 
-        <div className="advanced">
-          <button type="button" className="disclose" aria-expanded={open} onClick={() => setOpen(!open)}>
-            <ChevronDown size={14} strokeWidth={2} className={`disclose-caret${open ? " is-open" : ""}`} />
-            {open ? "Hide the exact settings" : "See the exact settings this sends to the contract"}
-          </button>
-
+      {!compact && (
+        <>
+          <Disclose
+            open={open}
+            onToggle={() => setOpen(!open)}
+            closed="See the exact settings this sends to the contract"
+            opened="Hide the exact settings"
+          />
           {open && (
-            <dl className="thresholds">
+            <dl className="thresholds expand">
               {rows.map(([key, value]) => (
                 <div className="threshold" key={key}>
                   <dt>
@@ -70,15 +69,19 @@ export default function CareLevel({ care, onChange }: { care: Care; onChange: (c
                     <span className="mono threshold-key">{key}</span>
                   </dt>
                   <dd>
-                    <span className="num threshold-value">{value}</span>
-                    <span className="small">{THRESHOLD_COPY[key].plain}</span>
+                    <span className="mono threshold-value">{value}</span>
+                    <span className="small muted">{THRESHOLD_COPY[key].plain}</span>
                   </dd>
                 </div>
               ))}
             </dl>
           )}
-        </div>
-      </div>
-    </section>
+          <p className="small muted care-note">
+            Two things your choice cannot do. It cannot let through an agent whose review record has holes: that is a
+            gate, not a price. And it cannot push a fee below 1%, so a clean record already sits at the floor.
+          </p>
+        </>
+      )}
+    </div>
   );
 }

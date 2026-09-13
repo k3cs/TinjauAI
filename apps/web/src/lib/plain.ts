@@ -61,6 +61,12 @@ export function feeExample(premiumBps: bigint, jobAmount: number): string {
   return `Of ${jobAmount} tCTC, ${fee.toFixed(4)} tCTC goes to the agent's owner now and ${held.toFixed(4)} tCTC is held until you confirm the work.`;
 }
 
+/** The same fee as money, in one short clause for a table cell or a card. */
+export function feeExampleShort(premiumBps: bigint, jobAmount = 0.1): string {
+  const fee = (jobAmount * Number(premiumBps)) / 10_000;
+  return `on a ${jobAmount} tCTC job, ${fee.toFixed(4)} tCTC goes to the owner now, the rest is held`;
+}
+
 function reviewerReasons(f: Facts, p: HireParams): Reason[] {
   const out: Reason[] = [];
   const raw = f.breadthRaw;
@@ -144,8 +150,8 @@ function provenanceReasons(f: Facts, p: HireParams): Reason[] {
   if (f.minAttestors > 0) {
     out.push({
       tone: "plain",
-      text: `${f.minAttestors} independent Creditcoin ${plural(f.minAttestors, "checker")} put money at stake behind the weakest fact here.`,
-      because: "If they had signed off on an Ethereum transaction that never happened, they would lose that stake.",
+      text: `At least ${f.minAttestors} bonded Creditcoin ${plural(f.minAttestors, "checker")} ${f.minAttestors === 1 ? "was" : "were"} registered for Ethereum whenever a fact here was admitted.`,
+      because: "Checkers put a stake behind Ethereum's state; this is how many were registered when the evidence came in, not who signed each proof.",
       technical: `facts.minAttestors = ${f.minAttestors} (AttestorStash 0x0FD4)`,
     });
   }
@@ -188,7 +194,7 @@ export function explain(quote: Quote, p: HireParams, holes?: Hole[]): Verdict {
   } else if (p.minAttestors > 0 && f.minAttestors < p.minAttestors) {
     block = {
       title: "Too few independent checkers behind these facts",
-      explanation: `You asked for at least ${p.minAttestors} Creditcoin checkers behind every fact; the weakest fact here has ${f.minAttestors}.`,
+      explanation: `You asked for at least ${p.minAttestors} Creditcoin checkers registered whenever a fact is admitted; one fact here came in with only ${f.minAttestors}.`,
       technical: `ThinQuorum(${f.minAttestors}, ${p.minAttestors})`,
     };
   } else if (p.maxStaleness > 0n && quote.staleness > p.maxStaleness) {
@@ -217,7 +223,7 @@ export function explain(quote: Quote, p: HireParams, holes?: Hole[]): Verdict {
   };
 }
 
-/** "read at block 25,942,404 (about 4 minutes ago)" — a number with no age is a number you cannot trust. */
+/** "read at block 25,942,404 (about 4 minutes ago)": the age of the newest proven fact, not a promise that every block up to it was examined. */
 export function asOf(coveredThrough: bigint, attestedTip?: bigint): string {
   const at = `read at Ethereum block ${Number(coveredThrough).toLocaleString("en-US")}`;
   if (!attestedTip || attestedTip <= coveredThrough) return at;

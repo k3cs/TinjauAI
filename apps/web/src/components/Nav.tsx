@@ -1,60 +1,61 @@
-import { motion } from "motion/react";
-import { Plus } from "lucide-react";
-import Mark from "./Mark";
-import { useOverDark } from "../lib/useOverDark";
+import { Moon, Sun } from "lucide-react";
+import Logo from "./Logo";
+import { useTheme } from "../lib/theme";
+import { href, type Route } from "../lib/router";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+/**
+ * Comparison is deliberately absent. It is not a place you go, it is something you do to agents you
+ * picked in the marketplace, and a navbar entry that lands on an empty table taught the wrong thing.
+ * The marketplace carries the entry point instead.
+ */
+const LINKS: { to: string; label: string; name: Route["name"] }[] = [
+  { to: href.home, label: "Overview", name: "home" },
+  { to: href.agents, label: "Marketplace", name: "agents" },
+  { to: href.how, label: "How it works", name: "how" },
+  { to: href.dev, label: "Developers", name: "dev" },
+  { to: href.faq, label: "FAQ", name: "faq" },
+];
 
-export default function Nav({ block }: { block?: number }) {
-  const overDark = useOverDark();
+export default function Nav({ route, block }: { route: Route; block?: number }) {
+  const { theme, toggle } = useTheme();
+  const Icon = theme === "dark" ? Sun : Moon;
 
   return (
-    <motion.nav
-      className={`nav${overDark ? " is-over-dark" : ""}`}
-      initial={{ y: -16, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: EASE }}
-    >
-      <div className="nav-side">
-        <a className="brand" href="#top">
-          <Mark />
-          <span className="brand-text">Tinjau</span>
+    <header className="nav">
+      <div className="shell nav-inner">
+        <a className="nav-brand" href={href.home} aria-label="Tinjau home">
+          <Logo />
         </a>
 
-        <a className="pill pill-ink" href="#agents">
-          <span className="pill-dot" aria-hidden="true">
-            <Plus size={12} strokeWidth={3} />
-          </span>
-          <span className="label">Check an agent</span>
-        </a>
+        <nav className="nav-links" aria-label="Sections">
+          {LINKS.map((l) => (
+            <a key={l.to} href={l.to} className={`nav-link${route.name === l.name ? " is-active" : ""}`}>
+              {l.label}
+            </a>
+          ))}
+        </nav>
 
-        <div className="pill pill-soft nav-hide-mobile">
-          <span className="label">Public agent registry</span>
-          <span className="pill-sep" aria-hidden="true" />
-          <span className="label">Creditcoin</span>
+        <div className="nav-side">
+          <span className="nav-live mono num" title="Read live from Creditcoin CC3 testnet">
+            {block ? `block ${block.toLocaleString("en-US")}` : "connecting"}
+          </span>
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={toggle}
+            aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+          >
+            <Icon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
         </div>
       </div>
-
-      <div className="nav-side">
-        <div className="pill pill-soft">
-          <span className="pill-dot pill-dot-ink" aria-hidden="true">
-            <Dots />
-          </span>
-          <span className="label num nav-hide-mobile">
-            {block ? `Live · Creditcoin block ${block.toLocaleString("en-US")}` : "Connecting to Creditcoin"}
-          </span>
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
-
-function Dots() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-      {[2.5, 9.5].map((y) =>
-        [2.5, 9.5].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.6" fill="var(--paper)" />),
-      )}
-    </svg>
+      <nav className="nav-links-mobile" aria-label="Sections">
+        {LINKS.map((l) => (
+          <a key={l.to} href={l.to} className={`nav-link${route.name === l.name ? " is-active" : ""}`}>
+            {l.label}
+          </a>
+        ))}
+      </nav>
+    </header>
   );
 }

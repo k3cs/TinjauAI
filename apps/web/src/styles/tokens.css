@@ -1,40 +1,78 @@
-/* Design tokens. Every value here is fixed by apps/web/DESIGN.md; components never invent colours,
-   type sizes or easing of their own. */
-:root {
-  --ink: #000000;
-  --paper: #ffffff;
-  --fill-soft: #f4f4f6;
-
-  /* Black at alpha. --ink-62 is the floor for 13px text: 55% measures 4.48:1 and fails AA. */
-  --ink-70: rgba(0, 0, 0, 0.7);
-  --ink-62: rgba(0, 0, 0, 0.62);
-  --ink-55: rgba(0, 0, 0, 0.55);
-  --rule-12: rgba(0, 0, 0, 0.12);
-  --rule-35: rgba(0, 0, 0, 0.35);
-
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-fast: 180ms;
-  --dur: 300ms;
-
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 72px;
-  --space-9: 112px;
-
-  --gutter: var(--space-4);
-  --measure: 68ch;
-  --radius-pill: 999px;
-
+/* Tinjau design tokens. Rules inherited from Veritas-UHI9/DESIGN.md (pinned by Dien, 13 Sep 2026):
+   one accent for interaction and identity, green/amber/red reserved for verdict state and never used
+   alone. Colour strategy (Dien, 13 Sep 21:00): Committed. Light by default, with one teal that owns
+   whole regions (hero, scout, closing call) as a deep "field", the accent for actions, and faintly
+   teal-tinted neutrals so the page reads as one material. Dark is a composed second theme, not an
+   inversion: a tinted ink field instead of pure black. */
+:root,
+[data-theme="light"] {
   color-scheme: light;
+
+  /* canvas and surfaces: near-white with a trace of the brand hue */
+  --bg: oklch(0.985 0.006 210);
+  --surface: oklch(0.965 0.01 210);
+  --surface-2: oklch(0.94 0.014 210);
+  --border: oklch(0.89 0.014 210);
+  --border-strong: oklch(0.8 0.02 210);
+  --ink: oklch(0.2 0.02 230);
+  --muted: oklch(0.44 0.02 225);
+  --faint: oklch(0.53 0.02 225);
+
+
+  /* accent: Tinjau teal, actions and identity only */
+  --primary: oklch(0.47 0.12 208);
+  --primary-hover: oklch(0.42 0.12 208);
+  --primary-ink: oklch(0.4 0.12 208);
+  --on-primary: oklch(0.995 0 0);
+  --ring: oklch(0.55 0.12 208);
+
+  /* verdict state, always with icon + label */
+  --state-clear: oklch(0.5 0.15 152);
+  --state-weak: oklch(0.55 0.12 70);
+  --state-held: oklch(0.54 0.2 25);
+
+  --radius: 14px;
+  --radius-control: 10px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --dur-fast: 150ms;
+  --dur: 320ms;
+
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --shell: 72rem;
+  --gutter: 1.25rem;
+  --measure: 66ch;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: oklch(0.17 0.018 225);
+  --surface: oklch(0.21 0.02 225);
+  --surface-2: oklch(0.25 0.022 225);
+  --border: oklch(0.3 0.022 225);
+  --border-strong: oklch(0.37 0.024 225);
+  --ink: oklch(0.975 0.005 210);
+  --muted: oklch(0.75 0.015 215);
+  --faint: oklch(0.63 0.015 215);
+
+
+  --primary: oklch(0.515 0.12 208);
+  --primary-hover: oklch(0.565 0.12 208);
+  --primary-ink: oklch(0.8 0.11 208);
+  --on-primary: oklch(0.99 0 0);
+  --ring: oklch(0.7 0.11 208);
+
+  --state-clear: oklch(0.72 0.17 152);
+  --state-weak: oklch(0.8 0.15 85);
+  --state-held: oklch(0.66 0.2 25);
 }
 
 @media (min-width: 768px) {
   :root {
-    --gutter: var(--space-6);
+    --gutter: 2rem;
   }
 }

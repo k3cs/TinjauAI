@@ -1,7 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <rect width="24" height="24" fill="#fff"/>
-  <g transform="rotate(-35 12 12)">
-    <rect x="4.5" y="2.5" width="5" height="19" rx="2.5" fill="#000"/>
-    <rect x="13" y="6.5" width="5" height="15" rx="2.5" fill="#000" opacity="0.45"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!--
+    The same magnifier as the navbar mark, drawn for a 16px tab: thicker strokes, more air around it,
+    and a rounded ground so it reads as one shape against any browser chrome. Teal is the brand
+    accent; the ground stays light in both themes because tab bars are not ours to theme.
+  -->
+  <rect width="32" height="32" rx="7" fill="#F4F8F9"/>
+  <g fill="none" stroke="#1F6F80" stroke-width="3">
+    <circle cx="13.5" cy="13.5" r="7.5"/>
+    <path d="M19.5 19.5 25.5 25.5" stroke-width="3.4" stroke-linecap="round"/>
   </g>
+  <circle cx="13.5" cy="13.5" r="2.6" fill="#1F6F80"/>
 </svg>
