@@ -73,7 +73,10 @@ export class ProverClient {
     this.baseUrl = (opts.baseUrl ?? CC3_TESTNET.prover).replace(/\/$/, "");
     this.retries = opts.retries ?? 3;
     this.retryDelayMs = opts.retryDelayMs ?? 5_000;
-    this.fetchImpl = opts.fetchImpl ?? fetch;
+    // Bound to the global object on purpose. Stored unbound, `this.fetchImpl(...)` is invoked with
+    // the client as its receiver, which Node tolerates and every browser rejects outright with
+    // "Illegal invocation" — so the browser claim path failed before it ever reached the contract.
+    this.fetchImpl = opts.fetchImpl ?? globalThis.fetch.bind(globalThis);
   }
 
   async attestedHeight(chainKey: number): Promise<number> {
