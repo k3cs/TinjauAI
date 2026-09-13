@@ -11,3 +11,7 @@ services/scout/plans/
 services/scout/cache/
 .DS_Store
 apps/web/dist/
+# local tool output, never part of the source
+.vitest/
+.impeccable/
+*.tmp.*
