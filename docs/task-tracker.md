@@ -17,6 +17,32 @@ Dokumen ini menjabarkan **semua** pekerjaan untuk membangun ulang Tinjau dari no
 
 ---
 
+## 0b. Verifikasi independen 13 Sep 2026 18:10 WIB (sumber: git, filesystem, RPC CC3, Blockscout, crontab)
+
+Dilakukan karena status tracker diragukan. Setiap baris = fakta yang dicek langsung, bukan dari tracker.
+
+| Hal | Tracker sebelumnya | Kenyataan 13 Sep 18:10 | Akibat |
+|---|---|---|---|
+| **Kontrak yang dipakai kode** | v3 = `0xC045…BC47` / `0x82C6…16cB` / `0x6AbF…9A0b` (deploy 11 Sep) | **Ada deploy kedua 12 Sep 21:54 WIB** (blok 5.475.585, tx `0x9cb61f28…8ba6`): GroundedFacts `0x67394eC13E911ab0D3A26132BECa404F26e17a98`, AgentHireEscrow `0xF801a8a01E018f3Bf9a648F4C095a53979282EEA`, CoverageBounty `0xa27f14CD50BF334E7Fb09601cEf203745aADF569`; ketiganya terverifikasi Blockscout; escrow dan bounty baru menunjuk facts baru. `.env` dan `packages/core/src/deployments.json` sudah diarahkan ke alamat baru (**belum di-commit**). **Facts baru kosong: 0 `TxAdmitted`, `bountyCount` = 0.** Tidak ada catatan di tracker, panduan, log, maupun keputusan Dien | Semua materi publik, `facts.json`, `scout-summary.json` masih memakai alamat 11 Sep; web dan scout (lewat `deployments.json`/`.env`) membaca kontrak baru yang kosong. **Butuh keputusan Dien (DEC-F)** |
+| Kenapa deploy kedua ada | - | [Inferensi] CON-13 (`recordBatch`) di-commit 12 Sep 19:17; ABI kontrak 11 Sep di Blockscout hanya punya `record`, jadi `recordBatch` memang butuh kontrak baru. Deploy 21:54 kemungkinan untuk itu | Kalau tetap di kontrak 11 Sep, jalur `recordBatch` scout gagal (fungsi tidak ada) |
+| Data on-chain (kontrak 11 Sep) | 25 tx teradmit per 12 Sep | **34 `TxAdmitted` dalam 14 tx `record`**, terakhir blok 5.475.383 = 12 Sep 21:03 WIB | Angka publik "25" masih benar sebagai floor; angka segar = 34 |
+| Tes kontrak | 41/41 | **49/49** (`forge test`, 13 Sep) | §8 diperbarui |
+| CON-13 | ⬜ P2 | **✅ selesai** di commit `3add60e` (12 Sep 19:17), tapi hanya hidup di kontrak deploy kedua | status diubah |
+| SCT-8 cron | ✅ terpasang, tiap 3 jam | `crontab -l` **kosong**, tidak ada launchd job. `cron.log`: 4 siklus jalan (12 Sep 05:00, 08:00, 11:00, 14:00 UTC), siklus terakhir 12 Sep 21:00 WIB, **tidak ada siklus sejak itu** | Klaim "scout keeps running until the deadline" di README, integration summary, dosier, submission **tidak lagi benar** sejak 12 Sep 21:00 WIB |
+| GH-2 push | ⏳ izin Dien | Sudah pernah force-push (origin/main = `ef692d2`, `gh-pages` sudah tidak ada). Lokal **3 commit di depan** (`8461f12` web, `472ed07` docs, `3add60e` CON-13) + **12 file belum di-commit** (sinkronisasi 13 Sep + `deployments.json` alamat baru) | Repo publik belum memuat frontend, CON-13, dan koreksi 13 Sep |
+| WEB-9 / VCL-1…5 | ⏳ / ⬜ | `vercel` tidak terpasang, tidak ada `.vercel/`, `docs/screenshot-live.jpg` tidak ada | benar, belum |
+| DOC-6, SUB-1…4, SUB-6 | ⬜ | `docs/demo-script.md` tidak ada; `<VIDEO_URL>`/`<APP_URL>` masih placeholder | benar, belum |
+| Commit author | - | 20 commit, semua `Scientivan <dienmuhammad030406@gmail.com>`, tanpa trailer | aturan atribusi terpenuhi |
+
+**DEC-F: ✅ Dien memilih (b) pada 13 Sep 18:00 WIB; dikerjakan 18:05–18:20** (fund → scout cycle 1 → 2 hire → mass registration → Gated → release → cycle 2 → migrasi 11 proof dari kontrak lama via `services/scout/src/migrate.ts`; 33 `TxAdmitted`; Sepolia sengaja tidak dimigrasi). Opsi yang ditawarkan:
+- (a) **Tetap kontrak 11 Sep** (`0xC045…`): kembalikan `.env` + `deployments.json` ke alamat lama, matikan jalur `recordBatch` di scout (fallback single proof sudah ada), semua dokumen tetap benar. Biaya ±15 menit. `recordBatch` hanya diklaim sebagai kode + tes + pengukuran gas, bukan sebagai kontrak live.
+- (b) **Pindah ke kontrak 12 Sep** (`0x6739…`): admit ulang semua bukti (34 tx sumber, ±3–4 jt gas per batch, menunggu prover), ulang urutan live (fund → proveAndClaim → hire ×2 → Gated), ganti alamat dan semua hash di README, integration summary, deck, dosier, submission, panduan §4, `facts.json`, `scout-summary.json`. Biaya ±3–4 jam. Untung: `recordBatch` live dan gas batch bisa ditunjukkan.
+- [Inferensi] Dengan deadline 14 Sep 10:59 WIB dan video belum direkam, (a) lebih aman; (b) hanya kalau Dien menganggap `recordBatch` live wajib untuk skor depth.
+
+**DEC-G: ✅ dipasang 13 Sep 18:10 sebagai launchd `com.tinjau.scout` (StartInterval 10800); `crontab -` menggantung di macOS.** Opsi awal: pasang ulang (`crontab -e` → `0 */3 * * * "…/scripts/scout-cron.sh"`, memakai kontrak sesuai DEC-F) atau ubah kalimat "keeps running until the deadline" menjadi "ran unattended on 12 Sep (4 cycles)" di semua dokumen.
+
+---
+
 ## 1. Konteks keputusan (11 Sep 2026)
 
 | Keputusan Dien | Akibat |
@@ -175,7 +201,7 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 - Detail: `contracts/src/interfaces/IAgentFacts.sol` + contoh konsumen 10 baris di dokumen integrasi (cara kontrak lain membaca `facts()`).
 - Kriteria selesai: `AgentHireEscrow` memakai interface ini.
 
-**CON-13 · Batch proof (continuity bersama)** · P2 · agent · 3 jam · ⬜ · dep: CON-3
+**CON-13 · Batch proof (continuity bersama)** · P2 · agent · 3 jam · ✅ kode + 49 tes (commit `3add60e`, 12 Sep 19:17; `recordBatch`, gas 167.344 vs 227.904 untuk 2 proof) · ⚠️ **live hanya di kontrak deploy kedua 12 Sep 21:54 (lihat §0b, DEC-F)**; kontrak 11 Sep tidak punya fungsi ini · dep: CON-3
 - Detail: jalur `verify` batch (≤10 proof, rentang ≤1.000 blok) untuk riwayat rapat. Hanya bila CON-1…CON-12 selesai sebelum G1.
 
 **CON-14 · Review keamanan** · P0 · agent · 1 jam · ✅ (review manual 11 Sep; skill `engineering:code-review` hanya berisi kerangka, review dikerjakan langsung; 3 temuan diperbaiki, lihat `docs/quality/code-review.md`) · dep: CON-8, CON-9
@@ -187,7 +213,7 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §3 dan `docs/legacy/evaluation-do
 - `forge test`: **38/38 lulus** (25 `GroundedFactsTest`, 13 `ConsumersTest`). Fixture asli: 4 proof dari prover API (`scripts/fetch-fixture.sh`): `NewFeedback` mainnet (agent 50286, indeks 24), aktivitas mainnet tertua pengulas `0x1030…` (blok 23.779.699), tx pendaftaran massal 52 KB (10 `Registered`, agent 41885…), `NewFeedback` Sepolia (agent 9865).
 - Precompile dicek live di CC3 testnet sebelum dipakai: `verify` proof mainnet segar = `true`, `calculateTxIndex` = 300 (sama dengan API); AttestorStash `0x0fd4` `getAttestorsCount` = 7 (chainKey 1) / 4 (chainKey 3), bond 100 CTC; ChainInfo `0x0fd3` `get_latest_attestation_height_and_hash` jalan (selector snake_case). ABI ChainInfo dari `@gluwa/usc-sdk` 0.18.0; AttestorStash tidak ada di docs/SDK (selector dari repo Singleton, lalu diverifikasi sendiri).
 - **CON-10 berubah desain** [Inferensi]: penjaga "jarak minimum dari tip" tidak dipakai karena prover hanya memberi proof untuk blok yang sudah teratestasi (margin tambahan hanya menambah jeda demo). Gantinya: `attestedTip(chainKey)` membaca ChainInfo, `facts()` mengembalikan `coveredThrough`, dan `AgentHireEscrow` bisa menolak fakta basi (`maxStaleness`, error `Stale`). Konsumen memutuskan, kontrak fakta tidak menilai.
-- **CON-11**: jumlah attestor ber-bond dibaca dari `0x0fd4` saat setiap proof masuk; `facts().minAttestors` = set attestor terlemah di balik fakta agent itu; eskrow bisa menolak (`minAttestors`, error `ThinQuorum`).
+- **CON-11**: jumlah attestor ber-bond dibaca dari `0x0fd4` saat setiap proof masuk; `facts().minAttestors` = jumlah attestor terdaftar saat proof masuk, terendah di antara fakta agent itu (konteks jaringan saat admisi, **bukan** penandatangan proof tertentu; koreksi 13 Sep); eskrow bisa menolak (`minAttestors`, error `ThinQuorum`).
 - Registri ERC-8004 per chainKey diberikan lewat constructor (bukan hardcode), supaya kontrak yang sama bisa dideploy di CC3 mainnet (Ethereum = chainKey 1 di sana). Tetap tanpa admin.
 - Transfer kepemilikan: yang menang adalah transfer terbukti **terbaru** (urutan height, txIndex, logIndex), apa pun urutan proof diajukan.
 - Angka pricing sama dengan desain v2: 1 pengulas grounded dari k=3, 5 klon, c=5 → risk 8.334 bps, premi 1.683 bps (tes `test_quote_cloneDensityAndThinCoverage`).
@@ -274,13 +300,13 @@ Spesifikasi acuan: `docs/legacy/02-teknis.md` §4, `docs/legacy/01-produk.md` §
 **SCT-7 · Ekspor data demo** · P0 · agent · 30 menit · ✅ (`scout export`) · dep: SCT-6
 - Detail: `scripts/export-demo.ts` menulis `apps/web/public/demo/facts.json` dari plan + proof (mode demo web).
 
-**SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · ✅ (izin Dien 12 Sep; `scripts/scout-cron.sh` terpasang di crontab, jalan berkala sampai deadline) · dep: DEP-7
+**SCT-8 · Scout tanpa pengawasan sampai deadline** · P1 · agent · 1 jam setup · ⚠️ **cron tidak lagi terpasang** (dicek 13 Sep 18:10: `crontab -l` kosong; 4 siklus jalan 12 Sep 05:00–14:00 UTC, terakhir 12 Sep 21:00 WIB; siklus terakhir menambah 9 `TxAdmitted`). Skrip `scripts/scout-cron.sh` ada. Keputusan DEC-G (§0b) · dep: DEP-7
 - Detail: jadwal berkala **lokal** (launchd/cron di mesin Dien, bukan Vercel; alasan di §5.12) dengan batas anggaran; laporan N proof, N agent, N pengulas, gas total; dipakai di dosier dan video.
 
 ### 5.6 SRV: `apps/server` (P1, DEC-B)
 
 **SRV-1 · Kerangka Hono** · P1 · agent · 30 menit · ✅ (diuji lokal) · dep: PKG-5
-- Detail: `GET /health`, `GET /facts/:chainKey/:agentId?minAge&minDepth`, `GET /quote/...`, `GET /scout/log`; semua angka dibaca dari chain via `packages/core`, tanpa database.
+- Detail: `GET /health`, `GET /facts/:chainKey/:agentId?minAge&minDepth`, `GET /quote/...`, `GET /scout/log`, `GET /card/:agentId` (WEB-21); semua angka dibaca dari chain via `packages/core`, tanpa database.
 
 **SRV-2 · LLM pembaca klaim** · P1 (DEC-C) · agent · 3 jam · ✅ (Gemini REST, ladder 6 model dengan fallback saat kuota habis; 7/7 tes live; laporan 50283: 6 klaim, 0 terbukti) · dep: SRV-1, PKG-3
 - Detail: baca `feedbackURI`, ekstrak `proof_of_payment {network, txHash}` dengan AI SDK (skema terstruktur), coba ambil proof via prover API; hasil: "terbukti", "chain salah", "tidak ditemukan". **Tidak menulis fakta on-chain.** Wajib ada contoh kasus LLM salah → precompile/prover menolak.
@@ -354,7 +380,82 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 **WEB-11 · Alur sewa dengan wallet pengunjung** · P0 (baru, keputusan Dien 12 Sep) · agent · ✅ · dep: WEB-5
 - Detail: `src/lib/wallet.ts` + `HirePanel.tsx`. Connect wallet, tambah/ganti ke CC3 testnet (`wallet_addEthereumChain`), `hire()` payable dengan nilai yang diisi pengunjung, `staticCall` lebih dulu supaya penolakan bureau muncul sebagai kalimat bukan transaksi gagal, dan error wallet diterjemahkan ke bahasa manusia.
 - Tanpa wallet atau tanpa saldo: jalur **pratinjau**, split biaya dihitung dari `quote()`, tidak ada yang dibelanjakan. Kunci privat tidak pernah ada di frontend.
-- [Belum diuji] Transaksi `hire` sungguhan dari browser belum pernah dijalankan (butuh wallet Dien dan tCTC). Jalur pratinjau dan `quote()` sudah diuji live.
+- [Diuji 14 Sep 02:30, WEB-21] Transaksi `hire` sungguhan dijalankan dari browser lewat `scripts/wallet-browser-test.mjs`: agent 21548, 0,01 tCTC, panel sukses muncul dengan pembagian premi/escrow dari log `Hired`. Jalur pratinjau dan `quote()` sudah diuji live sebelumnya.
+
+**WEB-12 · Halaman compare** · P0 (keputusan Dien 13 Sep 19:00) · agent · 2 jam · ✅ (`#/compare?a=&b=`, `src/components/ComparePage.tsx`: 9 baris fakta, tiap baris buka "what / how Attestcoin proves it / why"; pilih agent lewat select; hire + bounty per kolom) · dep: WEB-3
+- Detail: rute `#/compare?a=<id>&b=<id>`: dua agent berdampingan di bawah satu care level; baris per fakta (pengulas terverifikasi, celah, klon, attestor, kesegaran) dengan penjelasan "apa yang dilakukan, teknologi Attestcoin/precompile apa, manfaatnya" satu klik di bawahnya; tombol hire per agent; label **"passes your settings" vs "held"**, bukan "Recommended" (aturan §8b: tanpa vonis). Agent nyata: 22771 vs 50283 (533571/591140 tidak punya bukti on-chain).
+
+**WEB-13 · Tombol bounty di UI** · P0 (keputusan Dien 13 Sep 19:00) · agent · 1,5 jam · ✅ (`BountyPanel.tsx` + `wallet.fundBounty` dengan `staticCall` dulu; bounty terbuka dibaca `openBounties()` dan tampil di baris agent dan compare; [Diuji 14 Sep 02:30, WEB-21] transaksi `fund` dijalankan dari browser: agent 50283, 0,01 tCTC) · dep: WEB-11
+- Detail: agent yang ditahan (atau siapa pun) bisa didanai bounty dari wallet pengunjung: `CoverageBounty.fund(chainKey, agentId, minAge, minDepth, k, c, expiry)` payable memakai ambang care level yang aktif; pratinjau tanpa wallet; bounty terbuka untuk agent itu dibaca dari `bountyCount`/`bountyOf` dan ditampilkan ("0,05 tCTC menunggu bukti yang mengubah keputusan"). Penjelasan scout: siapa pun boleh menjalankannya, tanpa batasan tugas; dibayar hanya bila predikat keputusan berubah.
+
+**WEB-22 · Bounty jadi tab marketplace, compare keluar dari navbar** · P0 (keputusan Dien 14 Sep 03:10) · agent · 1,5 jam · ✅
+- **Marketplace punya dua tab** di bawah callout: "Agents" dan "Bounties", masing-masing dengan jumlahnya. Keduanya menyimpan alamatnya sendiri (`#/marketplace` dan `#/bounties`), jadi tiap tab bisa ditautkan dan tombol back bekerja di antara keduanya. Rute lama `#/bounties` sekarang membuka tab, bukan menggulir ke bawah, jadi tidak ada lagi tebakan posisi.
+- Daftar bounty naik dari `BountyBoard` ke `useOpenBounties` (`src/lib/useOpenBounties.ts`) supaya tab bisa menyebut jumlahnya sebelum papannya dibuka, dan keduanya tidak mungkin berbeda angka. Judul "Open bounties" jadi `sr-only`: tab di atasnya sudah menamainya.
+- **Compare dicabut dari navbar.** Alasannya: tautan navbar mendarat di tabel kosong dan tidak mengajarkan apa pun. Gantinya, di tiap kartu agent ada tombol **Compare** (jadi **Picked** saat aktif) menggantikan checkbox polos yang dulu menempel di judul, dan begitu ada satu pilihan muncul **tray** di kaki jendela: nama agent yang dipilih, slot kosong yang tersisa, tombol Clear, dan tombol Compare yang aktif mulai dua agent.
+- Tray dirender ke `document.body` lewat portal. `.route` memakai `animation: routeIn … both`, dan transform di keyframe terakhirnya membuat `position: fixed` terikat ke `.route`, bukan ke jendela; tanpa portal tray terparkir di kaki dokumen (terukur: `top` 3720px pada viewport 950px).
+- Baris hitungan kini berisi ajakan, bukan tombol mati: "Press Compare on two to four agents to read them side by side".
+- Kriteria selesai: audit 6 rute × 1440/375 × terang+gelap bersih; `tsc` dan `pnpm build` bersih; `wallet-browser-test.mjs` 4/4 (diperbarui untuk mengklik tab, bukan menggulir).
+
+**WEB-21 · Skeleton, proxy agent card, uji wallet dari browser, state kosong bergambar, bundle dipecah** · P0 (keputusan Dien 14 Sep 02:10, "kerjakan semuanya") · agent · 3 jam · ✅
+- **Halaman tidak lagi kosong 7 detik.** Marketplace dan compare menampilkan skeleton dalam bentuk kartu/kolom aslinya (`Skeleton` di `ui.tsx`, `.skel` bersinar, bukan berdenyut) mulai ~0,3 detik. Urutan baca di `useBureau` dibalik: pemindaian `AgentProven`/`ReviewProven` jalan sendiri lebih dulu, sedangkan penghitung jaringan dan daftar bounty menyusul di bawahnya. [Fakta] kartu pertama: 7,2 dtk → 4,6–7,2 dtk (median ~5,3 dtk dari 3 pengukuran); bentuk halaman: 7,2 dtk → 0,3 dtk.
+- **Rute prosa tidak lagi memicu pembacaan chain.** `useBureau(care, key, enabled)`; FAQ, How it works dan Developers tidak lagi menjalankan tiga pemindaian log dan 25 kuota untuk halaman teks. [Fakta] FAQ siap dalam 1,0 dtk.
+- **Proxy dokumen registrasi** (`GET /card/:agentId` di `apps/server`, `src/card.ts`): mengambil `tokenURI` dan dokumennya apa adanya, tanpa menafsirkan; semua penguraian tetap di browser. Browser menjalankan bacaan langsung dan proxy **bersamaan**, bacaan langsung tetap yang menang. [Fakta] agent dengan deskripsi: 2/25 → 4/25, dan semua kartu selesai dalam ~15 dtk, bukan menggantung. [Fakta] 21 agent sisanya memang tidak bisa dibaca siapa pun: 12 memuat halaman web (`execution.market`), 10 host mati (`agents.exquisite.land`), sisanya tanpa `tokenURI`. Teks kartu sekarang menyebut sebab yang benar (`reason`: `not-a-document` / `unreachable` / `none`), bukan menuduh CORS.
+- **Tiga alur wallet akhirnya diuji dari browser sungguhan** (`scripts/wallet-browser-test.mjs`): provider EIP-1193 disuntik ke halaman, baca diteruskan ke RPC publik, tanda tangan dilakukan Node dengan kunci proyek. `connect`, `hire` (agent 21548, 0,01 tCTC), `fund` (agent 50283, 0,01 tCTC) dan seluruh jalur `claim` (prover → `proveAndClaim.staticCall` → kalimat `NoChange`) lulus 4/4.
+- **Bug browser ditemukan dan diperbaiki oleh uji itu**: `ProverClient` menyimpan `fetch` tanpa mengikatnya, sehingga `this.fetchImpl(...)` dipanggil dengan `this` = klien. Node memaafkan, browser menolak dengan "Illegal invocation" — jadi klaim bounty dari browser **tidak pernah bisa jalan** sebelum ini (`packages/core/src/prover.ts`).
+- **State kosong dan gagal jadi bergambar** (`illustrations/StateMarks.tsx`: `NoMatchMark`, `NoBountyMark`, `OfflineMark`), dengan langkah berikutnya di dalam kalimatnya ("Clear the search", "Show all 25 agents"). Keadaan kosong tidak lagi ditampilkan sebelum chain benar-benar menjawab, supaya "tidak ada agent" tidak pernah berarti "belum dibaca".
+- **Preamble marketplace dipadatkan**: callout jadi satu baris ringkas, care level dan wallet bar berdampingan di `.market-head` pada ≥900px. Kartu pertama kini terlihat di 1440×950 tanpa menggulir.
+- **Compare 3–4 kolom** tidak lagi diperas: tabel punya lebar kolom minimum dan menggulir di dalam bingkainya sendiri (`.compare-scroll`), halaman tidak pernah menggulir menyamping. [Fakta] diuji di 820px (menggulir di bingkai) dan 1024px (muat).
+- **Tautan `#/bounties`** menunggu elemennya benar-benar ada dan punya tinggi, bukan timer 400 ms.
+- **Bundle dipecah**: halaman prosa dan compare jadi chunk `lazy`, `ethers`/`motion`/vendor terpisah. [Fakta] satu berkas 258 kB gzip → kode aplikasi 35 kB gzip + vendor yang di-cache terpisah.
+- Kriteria selesai: audit 6 rute × 1440/375 × terang+gelap bersih (0 masalah); `tsc` bersih di web, server dan core; `pnpm build` bersih; 49 tes kontrak + 7 tes server + 5 tes core lulus.
+
+**WEB-20 · Bounty digabung ke marketplace, callout use case, favicon** · P0 (keputusan Dien 14 Sep 01:30) · agent · 1 jam · ✅
+- **Bounty pindah ke marketplace** (`BountyBoard`, bagian `#bounties` di bawah daftar agent, lengkap dengan alur klaim). Item "Bounties" dicabut dari navbar; rute lama `#/bounties` tetap hidup dan langsung menggulir ke bagian itu, jadi tautan lama dan tautan footer tidak mati.
+- **Callout tersorot** di atas marketplace (latar teal 9%, garis teal 32%, ikon dalam lingkaran): menegaskan halaman ini hanya satu contoh pemakaian Tinjau, sementara produknya adalah kontrak bureau yang bisa dibaca marketplace, escrow, atau agent mana pun; dengan tautan ke Developers dan How it works.
+- **Favicon** digambar ulang mengikuti logo navbar (kaca pembesar teal di atas bidang membulat 32×32, garis lebih tebal supaya terbaca di 16px). Dicek di 16/32/64 px.
+- Kriteria selesai: audit 6 rute × 1440/375 × terang+gelap bersih; `tsc` dan `pnpm build` bersih.
+
+**WEB-19 · Halaman bounty + klaim dari browser, compare sampai 4, daftar agent penuh, rincian harga** · P0 (keputusan Dien 14 Sep 00:00) · agent · 2,5 jam · ✅
+- **`#/bounties` (baru, masuk navbar)**: daftar bounty terbuka dibaca dari `CoverageBounty` (`openBounties()`), lengkap dengan syaratnya (k, c, tenggat, pendana). Setiap kartu punya **alur klaim di browser**: tempel sampai 4 hash transaksi Ethereum → `ProverClient.proofByTx` mengambil proof → `proveAndClaim.staticCall` lebih dulu (penolakan muncul sebagai kalimat) → kirim. Jadi scout tidak lagi wajib CLI.
+- Pesan error kontrak diterjemahkan: `NoChange` (proof tidak mengubah keputusan, disertai saran bukti apa yang biasanya mengubah), `Closed`, `Expired`, `ProofRejected`, `TxHashNotFound`.
+- **Compare 2–4 agent**: rute jadi `#/compare?ids=a,b,c` (format `?a=&b=` lama tetap jalan), grid memakai `--compare-cols`, tiap kolom bisa diganti, dihapus, dan ada tombol "Add an agent". Marketplace memilih sampai 4.
+- **Daftar agent penuh**: `readAgents` batas dinaikkan dan `useBureau` memuat dua gelombang (12 dulu, sisanya menyusul). Bureau memuat **25 agent**, semuanya kini tampil; sebelumnya terpotong 12.
+- **Rincian harga** (`PriceBreakdown`): coverage, faktor look-alike, risk, dan premi ditampilkan dengan angkanya plus rumus kontrak, di balik "Why" tiap agent. Menjawab dugaan bahwa fee 1%/20% itu hardcode: fee dihitung; contoh nyata agent 50724 = risk 7223 bps → premi 1472 bps (14,72%).
+- On-chain hari ini: bounty 0,04 tCTC didanai untuk agent 50283 (tx `0x4450ce60…e276`) supaya halaman bounty punya isi nyata.
+- Kriteria selesai: audit 7 rute × 1440/375 × terang+gelap bersih; `tsc` dan `pnpm build` bersih.
+
+**WEB-18 · Grid dua kolom, teks dipangkas, penjelasan jadi ilustrasi** · P0 (keputusan Dien 13 Sep 23:40, referensi layout okx.ai/agents) · agent · 2 jam · ✅
+- Layout marketplace: kartu ringkas **dua per baris** (≥900px), thumbnail 5,5 rem + nama + verdict + deskripsi terpotong 2 baris + baris statistik (`#id · N proven reviews · sejak · pemilik`) + chip kategori + fee di kanan bawah + baris aksi (Hire · Bounty · Why · tautan ke halaman/harga agent). Monogram memakai ekor nomor registry supaya 50283 dan 50286 bisa dibedakan sekilas.
+- **Teks dipangkas di semua halaman** tanpa membuang informasi: hero, problem, scout, deployed, limits, CTA, marketplace, how, developers, FAQ, compare. Contoh: lede marketplace dari 4 kalimat jadi 2; langkah "path a fact takes" dari paragraf jadi satu kalimat per langkah.
+- **Tiga ilustrasi menggantikan paragraf** (`src/components/illustrations/`): `ProofPath` (tx Ethereum → proof → kontrak memverifikasi sendiri → fakta + harga) menggantikan tiga kartu teks; `ReviewGaps` (kotak ulasan bernomor, #97 terbukti, 96 sebelumnya kosong, stempel Held) menggantikan penjelasan gate; `FeeLadder` (20% turun ke 1% seiring pengulas terverifikasi) menggantikan penjelasan harga. Semuanya SVG bertoken, punya `<title>` untuk pembaca layar.
+- Pembersihan: blok CSS marketplace dan developer yang tergandakan dihapus (menyebabkan clamp deskripsi tidak berlaku).
+- Kriteria selesai: audit 6 rute × 1440/375 × terang+gelap bersih; detector impeccable 0 temuan; `tsc` dan `pnpm build` bersih.
+
+**WEB-17 · Marketplace jadi katalog agent sungguhan** · P0 (keputusan Dien 13 Sep 23:00, referensi layout okx.ai/agents) · agent · 2 jam · ✅
+- Detail: tiap listing kini punya **dua kompartemen yang tidak pernah dicampur**: "What it says it does" (kata-kata agent sendiri) dan "What Tinjau charges to hire it" (jawaban kontrak).
+- Sumber deskripsi: **agent card ERC-8004** dibaca langsung dari Ethereum di browser (`tokenURI` di `0x8004A169…a432` lewat RPC publik ber-CORS), lalu dokumennya diambil dari `data:`, IPFS (tiga gateway berurutan), atau HTTPS (`src/lib/agentCard.ts`). Isi yang dipakai: nama, deskripsi, gambar, kategori/tag, skill, antarmuka (A2A/MCP/API/x402), tautan halaman sendiri dan daftar harga sendiri.
+- **Kejujuran**: semua itu ditandai sebagai kata-kata agent yang tidak diperiksa siapa pun; kalau dokumen tidak bisa dibaca (host menolak CORS, atau isinya halaman web), kartu menyebut host-nya dan menautkannya, tidak pernah menebak isinya. Harga yang Tinjau tampilkan tetap premi kontrak + contoh uang, bukan harga karangan.
+- Alat: pencarian (nama, deskripsi, tag, skill, nomor), filter verdict (All / Hireable / Held), urutan (Most proven / Lowest fee / Newest), avatar dengan fallback monogram, chip kategori, tetap ada pilih-dua-untuk-compare.
+- Kriteria selesai: audit 6 rute × 1440/375 × terang+gelap bersih; `tsc` dan `pnpm build` bersih.
+
+**WEB-16 · Satu latar, daftar agent live, wallet + faucet, rute FAQ dan Developers** · P0 (keputusan Dien 13 Sep 22:00) · agent · 2,5 jam · ✅
+- Detail: **band warna dicabut** (Dien: tidak boleh ada section berlatar beda) → satu latar untuk seluruh produk, pemisah hanya garis rambut dan ritme; token `--field*` dihapus karena tak punya konsumen. Palet tetap terang bernuansa teal dengan satu aksen.
+- **Daftar agent jadi live**: dibaca dari event `AgentProven` + `ReviewProven` milik kontrak, diurutkan paling banyak terbukti, dibatasi 12 (`readAgents()` di `chain.ts`); `src/lib/agents.ts` (roster hardcode 4 agent) dihapus. Pengulas dimuat malas saat baris dibuka (`useReviewers`) supaya halaman tetap cepat.
+- **Wallet bersama** (`useWallet`): satu koneksi untuk seluruh halaman, saldo disegarkan setelah bayar. Marketplace punya **WalletBar**: tombol connect + saldo + tombol **Get test tCTC** (Discord `/faucet`, dokumentasi faucet, explorer) dan peringatan saat saldo di bawah 0,01 tCTC.
+- **Rute baru**: `#/faq` (FAQ jadi halaman sendiri, masuk navbar) dan `#/developers` (cara memakai Tinjau sebagai MCP: tiga tool, cara jalankan stdio, konfigurasi klien; baca kontrak langsung; read API; cara menjalankan scout). Navbar: Overview · Marketplace · Compare · How it works · Developers · FAQ.
+- **Animasi tambahan**: transisi antar rute, headline wipe clip-path, underline nav menyapu, ikon tombol bergeser, ikon tema berputar, baris/manifest/bukti terangkat saat hover, chip segmented tumbuh, stats + findings + item FAQ masuk berurutan, tombol salin muncul saat hover snippet.
+- Kriteria selesai: audit 6 rute × 1440/375 × terang+gelap = `contrast []`, `targets []`, `overflow false`, `problems []`; `tsc` dan `pnpm build` bersih; `apps/web/DESIGN.md` diperbarui.
+
+**WEB-15 · Palet berwarna, animasi, FAQ, halaman How it works** · P0 (keputusan Dien 13 Sep 21:00) · agent · 3 jam · ✅
+- Detail: palet **Committed** (keputusan Dien: "jangan hitam saja", tema terang default): netral nyaris putih bernuansa teal + tiga **band** teal pekat (hero, scout, penutup) yang membawa suara; tema gelap jadi tema kedua (tinta bernuansa, bukan hitam murni). Elemen "pill dengan titik berdenyut" dihapus total (permintaan Dien: terlihat generik AI); blok live jadi teks mono biasa.
+- Animasi: masuknya baris tabel berurutan (70 ms), pill verdict muncul skala-pudar, disclosure/panel memakai clip-path wipe, nilai compare di-crossfade saat care level berubah, kartu verdict crossfade, jawaban FAQ memakai `grid-template-rows`, glow band bergeser pelan 26 s. Angka live **tidak** dianimasikan (aturan produk: angka chain ditulis apa adanya); count-up hanya untuk fakta terkarang (346 / 225 / 83). Semua hormat `prefers-reduced-motion`.
+- FAQ (`src/components/Faq.tsx`): dua kolom pertanyaan, **For judges** (kedalaman Attestcoin, apakah load-bearing, kecocokan track AI, apa yang live, kebaruan, orisinalitas) dan **For visitors** (apakah ini skor, arti "Held", asal fakta, ke mana uang pergi, apa itu scout dan bounty, uang sungguhan?, kenapa Ethereum saja, cara mengecek sendiri).
+- Halaman **How it works** (`#/how`, `HowPage.tsx`): tiga pintu (penyewa, scout, pemilik agent), alur 5 langkah perjalanan sebuah fakta, pencarian agent langsung ke kontrak, dan perintah verifikasi. Navbar "Agents" → **"Marketplace"** dengan salinan use case.
+- Kriteria selesai: audit `scripts/screenshot.mjs` di 4 rute × 1440/375 × terang+gelap = `contrast []`, `targets []`, `overflow false`, `problems []`; `tsc` dan `pnpm build` bersih; `apps/web/DESIGN.md` ditulis ulang dari hasil build.
+
+**WEB-14 · Rombak UI/UX mengikuti aturan dan layout Veritas-UHI9** · P0 (keputusan Dien 13 Sep 19:00, via `/impeccable`) · agent · 4 jam · 🔄 build selesai 13 Sep 20:10, menunggu finish review: rute hash landing/agents/compare, token Veritas + aksen teal, Fraunces/Hanken Grotesk/IBM Plex Mono, gelap default + toggle; audit `scripts/screenshot.mjs` (kontras oklch→sRGB nyata) = 0 kontras gagal, 0 target <24px, 0 overflow di 1440/375 gelap+terang · dep: WEB-8
+- Detail: dunia visual Veritas (`Veritas-UHI9/DESIGN.md`): netral gelap chroma 0 + toggle terang, satu aksen brand untuk interaksi (Tinjau memakai aksen sendiri, bukan biru Reactive; keputusan Dien), hijau/amber/merah hanya untuk status dan selalu berpasangan dengan ikon + label; Fraunces (display) + Hanken Grotesk (body) + IBM Plex Mono (angka/hash); radius 14/10; ease-out-expo, satu reveal terorkestrasi; nav sticky dengan link + toggle tema; tabel baris tenang (bukan grid kartu); footer 3 kolom dengan manifest kontrak. Struktur: landing (`#/`) + `#/agents` + `#/compare`. Tetap CSS biasa (tanpa Tailwind) dan invariant §8b (tanpa skor, tanpa jargon di lapisan pertama, kalimat dari `plain.ts`).
+- Kriteria selesai: `node ../../scripts/screenshot.mjs` bersih di 1440 dan 375; detector impeccable dijalankan; DESIGN.md `apps/web` ditulis ulang dari hasil build.
 
 ### 5.9 DOC: Dokumen (G4)
 
@@ -373,7 +474,7 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 **DOC-5 · Deck** · P0 · agent · 1 jam · ✅ (11 halaman; `<VIDEO_URL>` menyusul) · dep: DOC-3
 - Detail: `docs/deck.md` (Marp) dari `docs/legacy/deck.md` dengan angka v3; build `npx -y @marp-team/marp-cli@latest docs/deck.md --pdf --allow-local-files -o docs/deck.pdf`; periksa halaman yang berubah sebagai gambar.
 
-**DOC-6 · Naskah video** · P0 · agent · 45 menit · ⬜ · dep: WEB-9
+**DOC-6 · Naskah video** · P0 · agent · 45 menit · ✅ (`docs/demo-script.md`, 13 Sep, mengikuti alur Dien; hash 12 Sep deployment; tiga bagian alur yang tidak ada di UI ditandai) · dep: WEB-9
 - Detail: `docs/demo-script.md` dengan hash v3 dan angka yang diucapkan = fakta on-chain; urutan adegan dari `docs/legacy/demo-script.md`.
 
 **DOC-7 · Produk dan teknis v3** · P1 · agent · 1 jam · ✅ (digabung ke panduan §5–§9 dan dosier §4) · dep: DOC-1
@@ -387,13 +488,13 @@ Acuan tampilan v2: `docs/legacy/screenshot-live.jpg`. Framing wajib: **biro kred
 **GH-1 · Commit bertahap** · P0 · agent · berjalan · 🔄 (commit bertahap, semua atas nama Scientivan tanpa trailer) · dep: SET-4
 - Detail: commit kecil per task (`feat:`, `fix:`, `docs:`, `chore:`), tanpa atribusi AI, tanpa `.env`. Periksa `git log --format='%an %(trailers)'` sebelum push.
 
-**GH-2 · Force-push ke `k3cs/TinjauAI`** · P0 · agent · 15 menit · ⏳ izin Dien · dep: WEB-9, DOC-2
+**GH-2 · Force-push ke `k3cs/TinjauAI`** · P0 · agent · 15 menit · 🔄 push pertama sudah (12 Sep, origin/main `ef692d2`, `gh-pages` terhapus); **push kedua diperlukan**: lokal 3 commit di depan + 12 file belum di-commit (13 Sep). Izin Dien per push · dep: WEB-9, DOC-2
 - Detail: minta izin eksplisit Dien di sesi itu; `git push --force origin main` (tanpa branch `gh-pages`; hosting di Vercel). Branch `gh-pages` lama (UI v2 di k3cs.github.io/TinjauAI) masih menampilkan angka v2: **keputusan Dien 11 Sep: hapus saat GH-2** (`git push origin --delete gh-pages`). Riwayat v2 di GitHub hilang (salinan lokal ada di Trash). Setelah push: buka repo di browser, pastikan README, deck, dan tidak ada `.env`.
 - Kriteria selesai: repo publik menampilkan v3; commit hanya atas nama Dien.
 
 ### 5.11 SUB: Submission
 
-**SUB-1 · Checklist pra-rekam** · P0 · agent · 20 menit · ⬜ · dep: WEB-9, DOC-6
+**SUB-1 · Checklist pra-rekam** · P0 · agent · 20 menit · 🔄 (checklist di `docs/demo-script.md` §4; tinggal dijalankan bersama Dien setelah web live) · dep: WEB-9, DOC-6
 - Detail: semua tab Blockscout, UI live, terminal siap; semua angka di layar dicocokkan dengan §8.
 
 **SUB-2 · Uji alur demo tanpa rekam** · P0 · agent + Dien · 30 menit · ⬜ · dep: SUB-1
@@ -467,14 +568,14 @@ Paralel yang aman: PKG-1…PKG-3 dan WEB-1…WEB-2 bisa dikerjakan saat kontrak 
 
 | Hal | Nilai | Sumber |
 |---|---|---|
-| `GroundedFacts` | `0xC045087Fd85Da4f2d981222b18E7e74c8040BC47` (tx `0x6e42e11d…0dda`, blok 5.470.068, 3.020.137 gas) | DEP-2 |
-| `AgentHireEscrow` | `0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB` (tx `0x64a8f850…eace`, blok 5.470.069, 920.666 gas) | DEP-2 |
-| `CoverageBounty` | `0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b` (tx `0x2035fa49…abb8`, blok 5.470.070, 862.895 gas) | DEP-2 |
-| Jumlah tes | 41/41 (`forge test`) | CON-14 |
-| Jumlah tx sumber teradmit | 25 per 12 Sep 2026 (24 mainnet chainKey 3, 1 Sepolia chainKey 1); `recomputeFromChain` = 25. Naik terus selama cron SCT-8 jalan | DEP-4 |
-| `facts(3, 22771)` / premi | raw 3, grounded 3, independent 3, gaps 0, clones 0, attestors 4 → premi **100 bps**, disewa scout (tx `0x3c70c911…c8fe`) | DEP-5 |
-| `facts(3, 50283)` / quote / `Gated` | raw 1, grounded 0, gaps 1, clones 6, registrantSib 6 (12 Sep) → quote **2.000 bps**, `hire` revert `Gated(1)` (`0x393108e5…01`) | DEP-5 |
-| Bounty diklaim / hire scout | bounty #0 0,05 tCTC (fund `0x8a4dc077…dc3f`) diklaim scout via `proveAndClaim` `0xfd342f65…cc79`; hire 21548 `0xe6ba85dd…077d` (100 bps) | DEP-7 |
+| `GroundedFacts` | `0x67394eC13E911ab0D3A26132BECa404F26e17a98` (tx `0x9cb61f28…8ba6`, blok 5.475.585, 3.192.770 gas, 12 Sep 21:54 WIB; DEC-F) | DEP-2 |
+| `AgentHireEscrow` | `0xF801a8a01E018f3Bf9a648F4C095a53979282EEA` (tx `0xad10ca1d…feab`, blok 5.475.586, 920.666 gas) | DEP-2 |
+| `CoverageBounty` | `0xa27f14CD50BF334E7Fb09601cEf203745aADF569` (tx `0x6c663e7c…b940`, blok 5.475.587, 862.895 gas) | DEP-2 |
+| Jumlah tes | 49/49 (`forge test`, 13 Sep; 41 saat deploy 11 Sep) | CON-14, CON-13 |
+| Jumlah tx sumber teradmit | **33 per 13 Sep 18:20** di kontrak 12 Sep (`TxAdmitted`, 11 tx `record`/`proveAndClaim`, sumber blok 14.306.215–25.949.112, semua mainnet). Kontrak 11 Sep (pensiun) memegang 34 termasuk 1 Sepolia | DEP-4, SCT-8 |
+| `facts(3, 22771)` / premi | raw 3, grounded 3, independent 3, gaps 0, clones 0, attestors 4 → premi **100 bps**, disewa scout (tx `0x3a8d2c53…b8c4`, 13 Sep) | DEP-5 |
+| `facts(3, 50283)` / quote / `Gated` | raw 1, grounded 0, gaps 1, clones 9, registrantSib 9 (13 Sep) → quote **2.000 bps**, `hire` revert `Gated(1)` (`0x393108e5…01`) | DEP-5 |
+| Bounty diklaim / hire scout | bounty #0 0,05 tCTC (fund `0xea3b3712…b27f`) diklaim scout via `proveAndClaim` `0x8a32b470…d68d`; hire 21548 `0x02933cb3…48d0` (100 bps); release job 1 `0x27fbf060…b95b` | DEP-7 |
 | Gas `verify` precompile | 62.292 (7 root) … 631.434 (984 root); tx tertua blok 14.306.215 (2 Mar 2022) = 506.986 gas; gas ≈ 55k + ~580·roots, jumlah root tidak monoton terhadap umur | DEP-4 |
 | URL video | ⬜ | SUB-3 |
 
@@ -484,6 +585,21 @@ Referensi v2 (**tidak boleh dipakai di materi publik v3**): lihat `docs/legacy/A
 
 | Waktu (WIB) | Task | Perubahan | Oleh |
 |---|---|---|---|
+| 14 Sep 03:40 | WEB-22 | Bounty jadi tab marketplace (`#/bounties` membuka tab, jumlahnya tampil di tab), compare dicabut dari navbar dan diganti tombol Compare per kartu + tray pilihan di kaki jendela (portal ke body, karena transform `.route` menangkap `position: fixed`) | Claude |
+| 14 Sep 02:40 | WEB-21 | Skeleton di marketplace dan compare (bentuk halaman 7,2 dtk → 0,3 dtk), rute prosa tidak lagi membaca chain, proxy dokumen registrasi `/card/:agentId`, state kosong/gagal bergambar, preamble dipadatkan, compare 3–4 kolom menggulir di bingkainya, bundle dipecah (258 → 35 kB gzip kode aplikasi). Hire, fund dan claim akhirnya dijalankan dari browser sungguhan (4/4 lulus) dan menemukan bug `fetch` tak terikat di `ProverClient` yang membuat klaim dari browser mustahil | Claude |
+| 14 Sep 01:40 | WEB-20 | Bounty digabung ke marketplace (rute lama tetap jalan), callout use case tersorot di atas marketplace, favicon mengikuti logo navbar | Claude |
+| 14 Sep 01:00 | WEB-19 | Halaman `#/bounties` + klaim bounty dari browser (tempel hash tx → proof → proveAndClaim), compare 2–4 agent, daftar agent penuh (25, dua gelombang), rincian perhitungan fee; bounty 0,04 tCTC didanai on-chain | Claude |
+| 14 Sep 00:10 | WEB-18 | Marketplace jadi grid dua kolom kartu ringkas (referensi okx.ai/agents); teks seluruh halaman dipangkas; tiga ilustrasi SVG (ProofPath, ReviewGaps, FeeLadder) menggantikan paragraf penjelas; CSS ganda dibersihkan | Claude |
+| 13 Sep 23:20 | WEB-17 | Marketplace jadi katalog agent: deskripsi, kategori, skill, antarmuka, dan tautan diambil dari agent card ERC-8004 milik agent sendiri (dibaca dari Ethereum di browser), ditandai sebagai klaim tak terverifikasi, berdampingan dengan premi kontrak; plus pencarian, filter, urutan, avatar | Claude |
+| 13 Sep 22:30 | WEB-16 | Band warna dicabut (satu latar), daftar agent live dari event kontrak (12 agent, roster hardcode dihapus), wallet bersama + WalletBar dengan faucet tCTC di marketplace, rute `#/faq` dan `#/developers` (panduan MCP), 9 animasi tambahan. Audit bersih di 6 rute × 2 lebar × 2 tema | Claude |
+| 13 Sep 21:40 | WEB-15 | Palet Committed (terang default + tiga band teal, gelap jadi tema kedua), pill berdenyut dihapus, 8 animasi ditambahkan, FAQ dua audiens, halaman `#/how`, navbar "Agents" → "Marketplace". Audit bersih di 4 rute × 2 lebar × 2 tema; `DESIGN.md` ditulis ulang | Claude |
+| 13 Sep 20:40 | WEB-12…14, §8b panduan | Frontend dirombak (WEB-14): rute hash landing/agents/compare, dunia visual Veritas + aksen teal, gelap default + toggle; compare (WEB-12) dan bounty di UI (WEB-13) selesai. Finish review impeccable: disposisi **fix**, 8 temuan diterapkan (jargon lapisan pertama, tint per-baris compare, eyebrow, contoh uang, nav mobile, motion, DESIGN.md, sitasi pin); audit ulang bersih; verdict pass + DESIGN.md (documenter) sedang berjalan. Panduan §8b ditulis ulang | Claude |
+| 13 Sep 19:00 | WEB-12…14 | Keputusan Dien: naskah pakai 22771 vs 50283 dan label "passes your settings"/"held"; tambah halaman compare (WEB-12), tombol bounty (WEB-13), rombak UI/UX mengikuti Veritas-UHI9 via /impeccable (WEB-14): aksen sendiri, gelap default + toggle, rute landing/agents/compare | Claude |
+| 13 Sep 18:45 | DEP-6, PKG-4 | `recomputeFromChain` dari data chain saja: 33/33 replay, identik untuk 22771, 21548, 50283, 50286. Perbaikan `packages/core/src/recompute.ts`: fallback Blockscout untuk lookup (blok, indeks) karena RPC publik memangkas riwayat < 15.500.000; tes core hijau. Dokumen publik, deck.pdf, `facts.json`, `scout-summary.json` sudah di alamat 12 Sep; typecheck web/server OK | Claude |
+| 13 Sep 18:20 | DEC-F, DEC-G, DEP-4…7, SCT-8, DOC-6, SUB-1, §8 | DEC-F (b) dikerjakan: urutan live di kontrak 12 Sep (`live-20260913-1805.log`), migrasi 11 proof lama, 33 `TxAdmitted`, verify + export (`facts.json`, `scout-summary.json`); launchd scout; `docs/demo-script.md` + checklist SUB-1; semua dokumen publik dipindah ke alamat 12 Sep, Sepolia = dikeluarkan by design | Claude |
+| 13 Sep 18:10 | §0b, CON-13, SCT-8, GH-2, §8 | Verifikasi independen: ditemukan deploy kedua 12 Sep 21:54 (`0x6739…`, kosong, tidak tercatat; `.env`/`deployments.json` sudah menunjuk ke sana, belum di-commit) → DEC-F; cron scout tidak terpasang, siklus terakhir 12 Sep 21:00 → DEC-G; tes 49/49; `TxAdmitted` 34; origin/main 3 commit di belakang + 12 file belum di-commit | Claude |
+| 13 Sep 17:30 | DOC-2…5, SET-5 | Koreksi: Evidence Exchange bukan "roadmap, belum ada kode"; inti (`fund`/`decisionOf`/`proveAndClaim`, urutan sumber) sudah live, yang belum: `proveBatchAndClaim`, adjudication receipt, re-pricing di tx yang sama. Diperbaiki di README, integration summary, AGENTS, deck (+PDF), dosier §8.3, panduan §3, CLAUDE.md, DECISIONS, list-document | Claude |
+| 13 Sep | DOC-1…5, SUB-5, SET | Sinkronisasi pemahaman produk (ideation final 13 Sep): headline "verified background checks", biro kredit = analogi; koreksi `minAttestors`/`coveredThrough`/completeness di README, integration summary, deck, submission, dosier, panduan, `plain.ts`, `app.ts`; Evidence Exchange ditandai roadmap; kriteria DoraHacks dibaca ulang live (137 BUIDL, deadline 14 Sep 10:59 WIB). Indeks file: `../docs/list-document.md` | Claude |
 | 12 Sep 13:10 | WEB-1…WEB-8, WEB-11 | Frontend dibangun: marketplace bahasa manusia, preset kehati-hatian, disclosure bukti, alur sewa wallet + pratinjau, latar hero sendiri, navbar yang membalik di band gelap. Audit browser bersih (kontras/target/overflow/konsol) di 1440 dan 375. Koreksi: kalimat `gapCount` yang salah arti, preset Careful yang mustahil dipenuhi, klaim "somebody funded the bounty" (kami sendiri yang danai) | Dien |
 | 12 Sep 10:30 | SRV-2, SCT-8, GH-2 | Pembaca klaim pindah dari Claude ke Gemini (ladder `3.8-flash`→…→`3.1-flash-lite`, fallback saat 429/503/404); `@anthropic-ai/sdk` dibuang; 7/7 tes live; laporan live 50283 = 6 klaim pembayaran, 0 ada di chain yang diklaim; cron scout dipasang; force-push ke `k3cs/TinjauAI` atas izin Dien | Dien |
 | 11 Sep 23:55 | DOC-1…5/7/8, SUB-5, SCT-8 | README, integration summary, dosier v3, deck, submission, panduan v3; klaim "active for years" untuk 22771 dikoreksi (97 hari sampai 4 tahun); scan angka v2: bersih | Claude |

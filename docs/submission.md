@@ -6,18 +6,18 @@ Field names follow the BUIDL CTC 2026 Fall form. Deadline: 13 Sep 2026 23:59 ET 
 
 **Project sector:** AI (secondary: DeFi)
 
-**One-liner (≤140 chars):** A credit bureau for AI agents: facts about ERC-8004 agents and reviewers, proven from Ethereum into Creditcoin. No score, no oracle.
+**One-liner (≤140 chars):** Verified background checks for AI agents: facts about ERC-8004 agents and reviewers, proven from Ethereum into Creditcoin. No score.
 
 **Project description (≤300 words):**
-Creditcoin began as a credit history for borrowers that banks cannot see. AI agents are the next such borrowers: over 19,000 are registered on ERC-8004 on Ethereum mainnet, other agents hire and pay them, and nothing a contract can check says which ones deserve trust. Read raw, the registry misleads: 346 of 367 rated agents have one reviewer, one wallet wrote 225 reviews, and owners of ten or more agents made 83% of recent registrations.
+Over 19,000 AI agents are registered on ERC-8004 on Ethereum mainnet, other agents pay them, and nothing a contract can check says which ones deserve trust. Read raw, the registry misleads: most rated agents have one reviewer, one wallet wrote 225 reviews, and clone-scale owners made 83% of recent registrations.
 
-Tinjau is the bureau. Its Creditcoin contract, GroundedFacts, admits data only through Attestcoin proofs of Ethereum transactions from the official registries: which reviews exist, how long each reviewer was active before reviewing, whether review indices have holes, whether a reviewer owns agents, how many agents share an owner, registrant or minting transaction, and how many bonded attestors stood behind each fact. It computes no score; consumers pass thresholds, and anyone can replay every admitted proof from chain data and get the same numbers.
+Tinjau is a verified background check for these agents before money moves: a bureau in Creditcoin's sense, it records and does not judge. Its Creditcoin contract, GroundedFacts, admits data only through Attestcoin proofs of Ethereum transactions: which reviews exist, how long each reviewer was active before reviewing, whether review indices have holes, whether a reviewer owns agents, how many agents share an owner or minting transaction, and how many attestors were registered when each fact was admitted. No score: consumers pass thresholds, get admitted evidence plus known gaps, and anyone can replay every proof from chain data.
 
-AgentHireEscrow prices a hire from those facts (the premium is the agent's cost of credit) and refuses agents whose record has holes. CoverageBounty pays for evidence that changes a decision, in either direction. GroundedScout, the autonomous agent, picks targets, proves evidence both ways, skips work other scouts did, claims bounties and hires on its own thresholds. An MCP server lets any agent query the bureau, and a Gemini-based reader checks payment claims in review documents against the Attestcoin prover: on one agent, 6 claimed payments, 0 found on the chain they name.
+AgentHireEscrow prices a hire from those facts and refuses records with holes. CoverageBounty pays for evidence that changes a decision, in either direction. GroundedScout, the autonomous agent, picks targets, proves evidence both ways, claims bounties and hires. Anyone may submit proofs and nobody can invent one: the precompile decides what is true, a dishonest scout can only withhold, and the registry's counter exposes that as a gap. A Gemini-based reader checks payment claims in review documents against the prover (one agent: 6 claimed, 0 found).
 
-Live on CC3 testnet: 25 Ethereum transactions admitted back to 2022 and still growing (the scout runs unattended until the deadline); two agents hired at 1%; one refused as gated; a bounty claimed by the scout; the same proof verified on CC3 mainnet.
+Live on CC3 testnet: 33 Ethereum mainnet transactions admitted back to 2022 and growing; two agents hired at 1%; one gated; a bounty claimed by the scout; the same proof verified on CC3 mainnet.
 
-Limits: Ethereum-side registries only; unsubmitted reviews are invisible; no consumer contract on Creditcoin yet.
+Limits: Ethereum mainnet only (Sepolia excluded by design); admitted evidence with known gaps, not a complete history; attestor count means registered at admission, not proof signers; no consumer contract on Creditcoin yet.
 
 **Attestcoin Protocol Integration Summary:** paste `ATTESTCOIN_INTEGRATION.md` (repo root).
 
@@ -29,6 +29,6 @@ Limits: Ethereum-side registries only; unsubmitted reviews are invisible; no con
 
 **Live app:** `<APP_URL>` (Vercel, after the frontend is deployed)
 
-**Contracts (Creditcoin CC3 Testnet, verified on Blockscout):** GroundedFacts `0xC045087Fd85Da4f2d981222b18E7e74c8040BC47` · AgentHireEscrow `0x82C604Ebf1090f3dceFa6F96b6DF624DF7eF16cB` · CoverageBounty `0x6AbF1F5F8850A347A5D5Bc6AcbA8961595C09A0b`
+**Contracts (Creditcoin CC3 Testnet, verified on Blockscout):** GroundedFacts `0x67394eC13E911ab0D3A26132BECa404F26e17a98` · AgentHireEscrow `0xF801a8a01E018f3Bf9a648F4C095a53979282EEA` · CoverageBounty `0xa27f14CD50BF334E7Fb09601cEf203745aADF569`
 
 **Team:** solo. Dien, builder (product, Solidity, TypeScript; previously built Veritas, UHI9).
