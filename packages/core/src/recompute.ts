@@ -1,5 +1,5 @@
 import { JsonRpcProvider } from "ethers";
-import { DEPLOYMENT } from "./config.js";
+import { DEPLOYMENT, sourceOf } from "./config.js";
 import { Tinjau } from "./contracts.js";
 import { FactsModel } from "./facts-model.js";
 import { ProverClient } from "./prover.js";
@@ -9,6 +9,33 @@ export const SOURCE_RPC: Record<number, string> = {
   1: "https://ethereum-sepolia-rpc.publicnode.com",
   3: "https://ethereum-rpc.publicnode.com",
 };
+
+/**
+ * Map (height, txIndex) to the source tx hash. Public Ethereum RPCs prune pre-merge history
+ * (publicnode: "pruned history unavailable: requested 14306215, earliest available 15500000",
+ * 13 Sep 2026), so when the RPC cannot answer, fall back to the chain's Blockscout block listing.
+ * Either way the hash is only a lookup key: the proof fetched for it is what gets verified.
+ */
+async function sourceTxHash(src: JsonRpcProvider, r: AdmittedRef): Promise<string> {
+  try {
+    const raw = (await src.send("eth_getTransactionByBlockNumberAndIndex", ["0x" + r.height.toString(16), "0x" + r.txIndex.toString(16)])) as { hash: string } | null;
+    if (raw?.hash) return raw.hash;
+  } catch {
+    /* fall through to Blockscout */
+  }
+  const base = `${sourceOf(r.chainKey).blockscout}/api/v2/blocks/${r.height}/transactions`;
+  let params = "";
+  for (let page = 0; page < 40; page++) {
+    const res = await fetch(base + params);
+    if (!res.ok) throw new Error(`blockscout ${res.status} for block ${r.height}`);
+    const body = (await res.json()) as { items: { hash: string; position: number }[]; next_page_params: Record<string, string | number> | null };
+    const hit = body.items.find((t) => BigInt(t.position) === r.txIndex);
+    if (hit) return hit.hash;
+    if (!body.next_page_params) break;
+    params = "?" + new URLSearchParams(Object.entries(body.next_page_params).map(([k, v]) => [k, String(v)])).toString();
+  }
+  throw new Error(`source tx not found at ${r.chainKey}:${r.height}:${r.txIndex}`);
+}
 
 export interface AdmittedRef {
   chainKey: number;
@@ -43,10 +70,8 @@ export async function recomputeFromChain(opts: { tinjau?: Tinjau; prover?: Prove
   for (const r of refs) {
     let src = sources.get(r.chainKey);
     if (!src) sources.set(r.chainKey, (src = new JsonRpcProvider(rpcs[r.chainKey], undefined, { staticNetwork: true })));
-    const raw = (await src.send("eth_getTransactionByBlockNumberAndIndex", ["0x" + r.height.toString(16), "0x" + r.txIndex.toString(16)])) as { hash: string } | null;
-    if (!raw) throw new Error(`source tx not found at ${r.chainKey}:${r.height}:${r.txIndex}`);
-    r.sourceTx = raw.hash;
-    const p = await prover.proofByTx(r.chainKey, raw.hash);
+    r.sourceTx = await sourceTxHash(src, r);
+    const p = await prover.proofByTx(r.chainKey, r.sourceTx);
     model.admit({ chainKey: r.chainKey, height: BigInt(p.headerNumber), txIndex: BigInt(p.txIndex), txBytes: p.txBytes, attestors: r.attestors });
   }
   return { model, refs };
